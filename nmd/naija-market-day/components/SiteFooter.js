@@ -19,7 +19,7 @@ export default function SiteFooter() {
         </div>
         <div className="foot-note">
           <span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span>
-          <span><Link href="/login" style={{ display: 'inline', color: '#9DBBAA' }}>Sign in</Link> · <Link href="/messages" style={{ display: 'inline', color: '#9DBBAA' }}>Messages</Link></span>
+          <span><Link href="/login" style={{ display: 'inline', color: '#9DBBAA' }}>Sign in</Link> · <Link href="/buyer/messages" style={{ display: 'inline', color: '#9DBBAA' }}>Messages</Link></span>
         </div>
       </div>
     </footer>

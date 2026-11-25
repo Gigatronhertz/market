@@ -26,7 +26,7 @@ export default function SiteHeader() {
   const isVendor = user && (user.roles || []).includes('vendor');
   const account = !user
     ? { href: '/login', label: 'Sign in' }
-    : isVendor ? { href: '/vendor', label: 'My dashboard' } : { href: '/messages', label: 'My account' };
+    : isVendor ? { href: '/vendor', label: 'My dashboard' } : { href: '/buyer', label: 'My account' };
 
   return (
     <header className={'site-header' + (open ? ' open' : '')}>

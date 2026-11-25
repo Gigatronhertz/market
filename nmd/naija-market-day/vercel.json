@@ -3,9 +3,8 @@
   "framework": "express",
   "functions": {
     "api/index.js": {
-      "includeFiles": "{server/**,app/**,assets/**,*.html,assets/icons.svg}",
+      "includeFiles": "{server/**,app/**,assets/**,*.html}",
       "maxDuration": 30
     }
-  },
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+  }
 }

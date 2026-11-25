@@ -1,8 +1,6 @@
 import '../styles/site.css';
 import '../styles/app.css';
-import SiteHeader from '../components/SiteHeader';
-import SiteFooter from '../components/SiteFooter';
-import { ToastProvider } from '../components/Toast';
+import { ToastProvider } from '@/components/Toast';
 
 export const metadata = {
   title: 'Naija Market Day',
@@ -18,9 +16,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ToastProvider>
-          <SiteHeader />
-          <main className="wrap page">{children}</main>
-          <SiteFooter />
+          {children}
         </ToastProvider>
       </body>
     </html>

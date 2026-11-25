@@ -1,5 +1,5 @@
 import { inject } from 'light-my-request';
-import { loadApi } from '../../../lib/load-api';
+import { loadApi } from '@/lib/load-api';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

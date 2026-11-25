@@ -25,7 +25,7 @@ export default function SignInForm({ initialRole = 'buyer', next = '' }) {
         return;
       }
       if (up) {
-        await api('/auth/buyer/signup', { method: 'POST', body: { name: f.name.value, email: f.email.value, password: f.password.value, marketing_consent: true } });
+        await api('/auth/buyer/signup', { method: 'POST', body: { name: f.elements.name.value, email: f.email.value, password: f.password.value, marketing_consent: true } });
         router.push(safeNext || '/market-square');
         router.refresh();
         return;

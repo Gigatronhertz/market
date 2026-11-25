@@ -13,7 +13,7 @@ export default function SummitForm() {
     const vendor = mode === 'vendor';
     try {
       await api('/contact', { method: 'POST', body: {
-        name: f.name.value, email: f.email.value,
+        name: f.elements.name.value, email: f.email.value,
         topic: vendor ? 'Summit: exhibitor request' : 'Summit: attendee registration',
         message: JSON.stringify({ business: vendor ? f.business.value : '', tickets: vendor ? '' : f.tickets.value }),
       } });

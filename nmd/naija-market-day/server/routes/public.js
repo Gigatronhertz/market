@@ -272,7 +272,7 @@ function listingInput(body) {
   const name = str(body.name, 120);
   if (!name) throw new HttpError(400, 'Listing name is required.');
   const price = require('../util').money(body.price);
-  const sale = body.sale_price !== undefined && body.sale_price !== '' ? require('../util').money(body.sale_price) : null;
+  const sale = body.sale_price != null && body.sale_price !== '' ? require('../util').money(body.sale_price) : null;
   if (sale !== null && sale >= price) throw new HttpError(400, 'The sale price must be lower than the price.');
   const photos = (Array.isArray(body.photos) ? body.photos : []).filter((p) => /^data:image\/(png|jpeg|webp);base64,/.test(String(p)) && String(p).length < 3 * 1024 * 1024).slice(0, 4);
   return { name, description: str(body.description, 4000), category: str(body.category, 40), price, sale, photos: JSON.stringify(photos) };

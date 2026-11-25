@@ -13,7 +13,7 @@ export default function ContactForm({ topic = '' }) {
     e.preventDefault();
     const f = e.currentTarget;
     try {
-      const r = await api('/contact', { method: 'POST', body: { name: f.name.value, email: f.email.value, topic: f.topic.value, message: f.message.value } });
+      const r = await api('/contact', { method: 'POST', body: { name: f.elements.name.value, email: f.email.value, topic: f.topic.value, message: f.message.value } });
       setDone(true);
       toast(r.message || 'Thank you. We will reply soon.');
     } catch (err) { toast(err.message, true); }

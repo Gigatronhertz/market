@@ -12,3 +12,11 @@ export function fmtDateTime(iso) {
   const dt = new Date(iso);
   return isNaN(dt) ? String(iso) : dt.toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
+export function timeAgo(iso) {
+  if (!iso) return '';
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  return fmtDate(iso);
+}

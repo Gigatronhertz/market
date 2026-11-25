@@ -16,7 +16,7 @@ export default function GuestForm({ marketId }) {
     try {
       const r = await api(`/markets/${marketId}/register`, {
         method: 'POST',
-        body: { name: f.name.value, email: f.email.value, phone: f.phone.value, guests_count: Number(f.guests_count.value) },
+        body: { name: f.elements.name.value, email: f.email.value, phone: f.phone.value, guests_count: Number(f.guests_count.value) },
       });
       setDone(r.guest);
       toast('You are registered. We emailed your QR code.');

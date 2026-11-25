@@ -44,7 +44,7 @@ input,select{font-family:inherit;font-size:15px}
 
 
 <main class="wrap" style="padding-top:16px;padding-bottom:56px">
-  <a href="#" style="display:block;position:relative;height:90px;border-radius:8px;overflow:hidden;color:#fff;background:#111816">
+  <a href="contact.html?topic=Advertising" style="display:block;position:relative;height:90px;border-radius:8px;overflow:hidden;color:#fff;background:#111816">
     <img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=1600&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0">
     <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,16,.85),rgba(10,20,16,.35))"></div>
     <div style="position:relative;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 24px">
@@ -139,7 +139,13 @@ input,select{font-family:inherit;font-size:15px}
   nmdPages['market-square'] = {
     lists: {
       listings: {
-        path: function () { return '/marketplace/listings' + (document.getElementById('f-upcoming').checked ? '?upcoming=1' : ''); },
+        path: function () {
+          var q = new URLSearchParams(location.search).get('q') || '';
+          var parts = [];
+          if (document.getElementById('f-upcoming').checked) parts.push('upcoming=1');
+          if (q) parts.push('q=' + encodeURIComponent(q));
+          return '/marketplace/listings' + (parts.length ? '?' + parts.join('&') : '');
+        },
         map: function (rows) {
           var kept = rows.filter(passes);
           setCount(kept.length);

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -26,7 +26,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-maps" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -43,8 +43,8 @@ a{color:inherit;text-decoration:none}
   </nav>
   <main class="main">
     <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
-      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Booth map</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Mark where each booth goes and set the price. Vendors choose from this map when they pay.</p></div>
-      <button id="save" class="pill" style="background:var(--accent);color:#fff;border:0;padding:12px 24px;font-weight:700">Save and publish map</button>
+      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Booth map</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Reserve booths for sponsors and upload the numbered floor plan. Vendors choose from this map when they pay.</p></div>
+      <button id="save" class="pill" type="button" style="background:var(--accent);color:#fff;border:0;padding:12px 24px;font-weight:700">Save and publish map</button>
     </header>
 
     <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
@@ -52,8 +52,7 @@ a{color:inherit;text-decoration:none}
         <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px">
           <div role="group" aria-label="Market" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <span style="font-size:14px;font-weight:600;margin-right:4px">Market</span>
-            <button class="pill on" data-m="brampton">Brampton</button>
-            <button class="pill" data-m="winnipeg">Winnipeg</button>
+            <span id="mk-chips" style="display:contents"></span>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <label class="pill" style="cursor:pointer">Upload map<input id="upload" type="file" accept="image/*" style="display:none"></label>
@@ -83,80 +82,82 @@ a{color:inherit;text-decoration:none}
   </main>
 </div>
 
+<script src="assets/nmd-wire.js"></script>
 <script>
-// Booth layout is illustrative. Edits live in the page only and are not saved.
-var data = {
-  brampton: [['A1',8,28,400,'Front','free'],['A2',15,28,400,'Front','taken'],['A3',22,28,400,'Front','free'],['A4',29,28,400,'Front','taken'],['B1',64,28,400,'Front','taken'],['B2',71,28,400,'Front','free'],['C1',8,46,300,'Standard','free'],['C2',15,46,300,'Standard','taken'],['C3',22,46,300,'Standard','free'],['C4',29,46,300,'Standard','free'],['D1',66,46,450,'Food','taken'],['D2',73,46,450,'Food','free'],['D3',80,46,450,'Food','free'],['E1',8,64,300,'Standard','free'],['E2',15,64,300,'Standard','free'],['E3',22,64,300,'Standard','taken'],['F1',66,64,450,'Food','free'],['F2',73,64,450,'Food','taken'],['G1',12,82,350,'Corner','free'],['G2',19,82,350,'Corner','taken'],['H1',62,82,350,'Corner','taken'],['H2',69,82,350,'Corner','free']],
-  winnipeg: [['A1',8,28,400,'Front','free'],['A2',15,28,400,'Front','taken'],['B1',64,28,400,'Front','free'],['C1',8,46,300,'Standard','free'],['C2',15,46,300,'Standard','taken'],['D1',66,46,450,'Food','free'],['D2',73,46,450,'Food','taken']]
-};
-var market = 'brampton', sel = null, addMode = false;
-function booths() { return data[market]; }
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function render() {
-  var map = document.getElementById('map');
-  map.style.outline = addMode ? '3px dashed #0F6B4A' : '';
-  map.style.cursor = addMode ? 'crosshair' : '';
-  map.innerHTML = '';
-  booths().forEach(function (b) {
-    var el = document.createElement('button');
-    el.type = 'button';
-    el.className = 'booth' + (b[5] === 'taken' ? ' taken' : '') + (sel && sel[0] === b[0] ? ' sel' : '');
-    el.style.left = b[1] + '%'; el.style.top = b[2] + '%';
-    el.textContent = b[0];
-    el.setAttribute('aria-label', 'Booth ' + b[0]);
-    el.addEventListener('click', function (e) { e.stopPropagation(); sel = b; render(); });
-    map.appendChild(el);
-  });
-  var total = booths().length, free = booths().filter(function (b) { return b[5] === 'free'; }).length;
-  var taken = booths().filter(function (b) { return b[5] === 'taken'; }).length;
-  var rev = booths().reduce(function (a, b) { return a + (b[5] === 'free' ? b[3] : 0); }, 0);
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('s-free').textContent = free;
-  document.getElementById('s-taken').textContent = taken;
-  document.getElementById('s-rev').textContent = 'CA$' + rev.toLocaleString();
-  document.getElementById('hint').textContent = addMode ? 'Click anywhere on the map to drop a new booth.' : 'Upload your own site plan or use the template. Click a booth to edit it.';
-  document.getElementById('add').textContent = addMode ? 'Done adding' : 'Add booths';
-  document.getElementById('add').classList.toggle('on', addMode);
-  var d = document.getElementById('details');
-  if (!sel) { d.innerHTML = '<p style="margin:0;color:var(--muted);font-size:14px;line-height:1.5">Click a booth on the map to edit it.</p>'; return; }
-  d.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">' +
-    '<label class="field">Label<input value="' + esc(sel[0]) + '" data-f="0"></label>' +
-    '<label class="field">Zone<select data-f="4">' + ['Front','Standard','Food','Corner'].map(function (z) { return '<option' + (z === sel[4] ? ' selected' : '') + '>' + z + '</option>'; }).join('') + '</select></label>' +
-    '<label class="field">Price (CAD)<input type="number" value="' + sel[3] + '" data-f="3"></label>' +
-    '<label class="field">Status<select data-f="5">' + [['free','Free'],['taken','Assigned']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === sel[5] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
-    '<button id="remove" class="pill" style="color:#8A2A1C;border-color:#E3B4AC">Remove booth</button></div>';
-}
-document.getElementById('details').addEventListener('change', function (e) {
-  var f = e.target.getAttribute('data-f'); if (f === null || !sel) return;
-  var i = Number(f); sel[i] = i === 3 ? Number(e.target.value) : e.target.value; render();
-});
-document.getElementById('details').addEventListener('click', function (e) {
-  if (e.target.id !== 'remove' || !sel) return;
-  data[market] = booths().filter(function (b) { return b !== sel; }); sel = null; render();
-});
-document.getElementById('map').addEventListener('click', function (e) {
-  if (!addMode) return;
-  var r = this.getBoundingClientRect();
-  var x = Math.round((e.clientX - r.left) / r.width * 1000) / 10;
-  var y = Math.round((e.clientY - r.top) / r.height * 1000) / 10;
-  var nb = ['N' + (booths().length + 1), x, y, 300, 'Standard', 'free'];
-  data[market].push(nb); sel = nb; render();
-});
-document.getElementById('add').addEventListener('click', function () { addMode = !addMode; render(); });
-document.querySelectorAll('[data-m]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    market = b.getAttribute('data-m'); sel = null;
-    document.querySelectorAll('[data-m]').forEach(function (x) { x.classList.toggle('on', x === b); });
-    render();
-  });
-});
-document.getElementById('upload').addEventListener('change', function (e) {
-  var f = e.target.files && e.target.files[0]; if (!f) return;
-  document.getElementById('map').style.backgroundImage = 'url(' + URL.createObjectURL(f) + ')';
-  document.getElementById('map').style.backgroundSize = 'cover';
-});
-document.getElementById('save').addEventListener('click', function () { this.textContent = 'Saved in this page'; });
-render();
+// Booth map: real booths for each market. Click a booth to reserve or release it. Add booths by range.
+(function () {
+  var market = null, booths = [];
+  function $(id) { return document.getElementById(id); }
+  function money(c) { return 'CA$' + (Number(c) / 100).toFixed(0); }
+  function place() {
+    var map = $('map');
+    map.querySelectorAll('.booth').forEach(function (b) { b.remove(); });
+    var n = booths.length, cols = Math.max(1, Math.ceil(Math.sqrt(n * 1.5)));
+    booths.forEach(function (b, i) {
+      var el = document.createElement('button');
+      var taken = !!b.assigned_application_id || b.status === 'Confirmed' || b.status === 'confirmed';
+      el.type = 'button';
+      el.className = 'booth' + (taken ? ' taken' : '') + (b.reserved ? ' reserved' : '');
+      el.style.cssText = 'position:absolute;width:' + (80 / cols) + '%;left:' + (6 + (i % cols) * (88 / cols)) + '%;top:' + (8 + Math.floor(i / cols) * (84 / Math.ceil(n / cols))) + '%;';
+      el.textContent = b.number;
+      el.title = b.number + ' · ' + b.tier + ' · ' + money(b.price_cents) + (b.reserved ? ' · reserved' : taken ? ' · vendor booked' : '');
+      el.addEventListener('click', function () {
+        if (taken) { nmdToast('This booth already has a vendor. Move the vendor from the application first.', true); return; }
+        nmd.api('/admin/booths/' + b.id + '/reserve', { method: 'POST', body: { reserved: !b.reserved, note: 'Reserved by admin' } })
+          .then(function () { nmdToast(b.reserved ? 'Booth ' + b.number + ' released' : 'Booth ' + b.number + ' reserved'); return load(); })
+          .catch(function (err) { nmdToast(err.message, true); });
+      });
+      map.appendChild(el);
+    });
+    var free = booths.filter(function (b) { return !b.assigned_application_id && !b.reserved; }).length;
+    $('hint').textContent = booths.length + ' booths · ' + free + ' free. Click a booth to reserve it for a sponsor, or click again to release it.';
+  }
+  function load() {
+    if (!market) return Promise.resolve();
+    return nmd.api('/admin/markets/' + market.id).then(function (m) {
+      booths = m.booths;
+      place();
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  function chooseMarket(m) {
+    market = m;
+    document.querySelectorAll('#mk-chips button').forEach(function (x) { x.classList.toggle('on', x.dataset.id === String(m.id)); });
+    load();
+  }
+  nmdPages['admin-maps'] = { init: function () {
+    nmd.api('/admin/markets').then(function (rows) {
+      var box = $('mk-chips'); box.innerHTML = '';
+      rows.filter(function (m) { return m.status !== 'draft'; }).forEach(function (m, i) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'pill' + (i === 0 ? ' on' : ''); b.dataset.id = m.id; b.textContent = m.city;
+        b.addEventListener('click', function () { chooseMarket(m); });
+        box.appendChild(b);
+      });
+      var first = rows.filter(function (m) { return m.status !== 'draft'; })[0];
+      if (first) chooseMarket(first);
+    }).catch(function (err) { nmdToast(err.message, true); });
+    $('add').addEventListener('click', function () {
+      if (!market) return;
+      var from = prompt('First booth number?', '1'); if (!from) return;
+      var to = prompt('Last booth number?', '10'); if (!to) return;
+      var tier = prompt('Tier (for example VIP, Deluxe, Standard)?', 'Standard'); if (!tier) return;
+      var price = prompt('Price in dollars?', '300'); if (!price) return;
+      nmd.api('/admin/markets/' + market.id + '/booths', { method: 'POST', body: { from: Number(from), to: Number(to), tier: tier, type: 'standard', price: price } })
+        .then(function (r) { nmdToast('Added ' + r.added + ' booths'); return load(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+    $('upload').addEventListener('change', function (e) {
+      var f = e.target.files[0]; if (!f || !market) return;
+      if (f.size > 8 * 1024 * 1024) { nmdToast('That image is over 8 MB', true); return; }
+      var r = new FileReader();
+      r.onload = function () {
+        nmd.api('/admin/markets/' + market.id + '/floor-plan', { method: 'POST', body: { data_url: r.result } })
+          .then(function () { nmdToast('Floor plan saved. Vendors see it on the booth page.'); }).catch(function (err) { nmdToast(err.message, true); });
+      };
+      r.readAsDataURL(f);
+    });
+    $('save').addEventListener('click', function () { load().then(function () { nmdToast('Booth map is up to date.'); }); });
+  } };
+})();
 </script>
 <script src="assets/site.js" defer></script>
 </body>

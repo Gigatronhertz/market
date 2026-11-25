@@ -24,7 +24,7 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="summit">
 
 <header class="site-header">
   <div class="wrap bar">
@@ -65,18 +65,18 @@ img{display:block;width:100%;height:100%;object-fit:cover}
     </div>
 
     <div style="flex:1 1 380px;max-width:480px">
-      <form onsubmit="event.preventDefault()" style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px;box-shadow:0 20px 50px rgba(17,24,22,.1)">
+      <form data-api="summit" style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px;box-shadow:0 20px 50px rgba(17,24,22,.1)">
         <div class="seg" role="group" aria-label="Registration type">
           <button type="button" aria-pressed="true" onclick="pick('att')">Attend (free)</button>
           <button type="button" aria-pressed="false" onclick="pick('vendor')">Exhibit as a vendor</button>
         </div>
-        <div class="field">Full name<input type="text" placeholder="Your name"></div>
-        <div class="field">Email<input type="email" placeholder="you@example.com"></div>
+        <div class="field">Full name<input type="text" name="name" required placeholder="Your name"></div>
+        <div class="field">Email<input type="email" name="email" required placeholder="you@example.com"></div>
         <div id="vendor-only" style="display:none">
-          <div class="field">Business name<input type="text" placeholder="Business name"></div>
+          <div class="field">Business name<input type="text" name="business" placeholder="Business name"></div>
           <div style="background:#F6F8F7;border-radius:12px;padding:14px;font-size:14px;line-height:1.5;margin-bottom:14px"><b>Exhibitor package: [fee]</b><br>Includes a booth, a listing in the summit directory and a showcase slot. You pick your spot on the map after you pay.</div>
         </div>
-        <div id="attendee-only" class="field">Tickets<select><option>1 ticket</option><option>2 tickets</option><option>3 tickets</option><option>4 tickets</option></select></div>
+        <div id="attendee-only" class="field">Tickets<select name="tickets"><option>1 ticket</option><option>2 tickets</option><option>3 tickets</option><option>4 tickets</option></select></div>
         <button id="cta" type="submit" style="width:100%;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:14px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit">Register for free</button>
       </form>
     </div>
@@ -120,5 +120,21 @@ function pick(t) {
 }
 </script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Summit registrations and exhibitor requests are received by the NMD team through the contact inbox.
+nmdPages.summit = {
+  forms: {
+    summit: function (v, form) {
+      var vendor = document.getElementById('vendor-only').style.display === 'block';
+      var topic = vendor ? 'Summit: exhibitor request' : 'Summit: attendee registration';
+      var name = (form.elements.name && form.elements.name.value) || '';
+      var email = (form.elements.email && form.elements.email.value) || '';
+      return nmd.api('/contact', { method: 'POST', body: { name: name || 'Summit guest', email: email, topic: topic, message: JSON.stringify(v) } })
+        .then(function () { form.reset(); return vendor ? 'Request received. The team will email you a payment link for your exhibitor package.' : 'Thanks. The team will confirm your place by email.'; });
+    },
+  },
+};
+</script>
 </body>
 </html>

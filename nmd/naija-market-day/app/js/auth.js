@@ -14,7 +14,7 @@
     const next = params.get('next');
     if (next && next.startsWith('/app/') && !next.includes('//')) return next;
     const roles = user.roles || [];
-    if (roles.includes('admin')) return '/app/admin.html';
+    if (roles.includes('admin')) return '/admin-dashboard.html';
     if (roles.includes('staff')) return '/app/checkin.html';
     if (roles.includes('vendor') && params.get('as') !== 'buyer') return '/app/vendor.html';
     return '/app/buyer.html';

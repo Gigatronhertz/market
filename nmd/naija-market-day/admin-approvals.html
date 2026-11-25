@@ -28,7 +28,7 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF;vertical-align:top}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-approvals" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -68,44 +68,71 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF;vertical-align:top}
     </section>
   </main>
 </div>
-<script>
-var items = [
-  { id: 1, name: '[Vendor business name]', type: 'Vendor', note: 'Regulatory documents uploaded', status: 'Pending' },
-  { id: 2, name: '[Vendor business name]', type: 'Vendor', note: 'Regulatory documents uploaded', status: 'Pending' },
-  { id: 3, name: 'Hand-dyed adire fabric', type: 'Listing', note: 'New product listing', status: 'Pending' },
-  { id: 4, name: 'Ankara tote bag', type: 'Listing', note: 'Edited description', status: 'Pending' },
-  { id: 5, name: '[Vendor event name]', type: 'Event', note: '[Date] · [City]', status: 'Pending' }
-];
-var tab = 'All';
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function render() {
-  var shown = tab === 'All' ? items : items.filter(function (i) { return i.type === tab; });
-  document.getElementById('rows').innerHTML = shown.map(function (i) {
-    var chip = i.status === 'Approved' ? 'chip ok' : (i.status === 'Sent back' ? 'chip no' : 'chip');
-    var actions = i.status === 'Pending'
-      ? '<button class="act" data-a="approve" data-id="' + i.id + '" style="background:var(--accent);color:#fff;border:0">Approve</button> <button class="act" data-a="reject" data-id="' + i.id + '" style="background:#fff;color:#8A2A1C;border:1px solid #E3B4AC">Send back</button>'
-      : '';
-    return '<tr><td><div style="font-weight:600">' + esc(i.name) + '</div><div style="font-size:13px;color:var(--muted)">' + esc(i.note) + '</div></td><td>' + esc(i.type) + '</td><td>[Vendor name]</td><td><span class="' + chip + '">' + esc(i.status) + '</span></td><td style="text-align:right;white-space:nowrap">' + actions + '</td></tr>';
-  }).join('');
-  var n = function (s) { return items.filter(function (i) { return i.status === s; }).length; };
-  document.getElementById('k-pending').textContent = n('Pending');
-  document.getElementById('k-approved').textContent = n('Approved');
-  document.getElementById('k-rejected').textContent = n('Sent back');
-}
-document.getElementById('tabs').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-t]'); if (!b) return;
-  tab = b.getAttribute('data-t');
-  document.querySelectorAll('[data-t]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-  render();
-});
-document.getElementById('rows').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-a]'); if (!b) return;
-  var id = Number(b.getAttribute('data-id'));
-  items = items.map(function (i) { return i.id === id ? Object.assign({}, i, { status: b.getAttribute('data-a') === 'approve' ? 'Approved' : 'Sent back' }) : i; });
-  render();
-});
-render();
-</script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Approvals: paid vendor applications and community events, from the live admin API.
+(function () {
+  var items = [], tab = 'All';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function $(id) { return document.getElementById(id); }
+  function statusOf(a) { return a.status === 'approved' ? 'Approved' : a.status === 'declined' ? 'Sent back' : 'Pending'; }
+  function load() {
+    return Promise.all([
+      nmd.api('/admin/applications?paid_only=1'),
+      nmd.api('/admin/events?status=pending').catch(function () { return []; }),
+    ]).then(function (r) {
+      var apps = r[0].map(function (a) {
+        return { id: a.id, kind: 'app', type: 'Vendor', name: a.business || a.owner_email, note: (a.category || 'Vendor') + ' · ' + a.market_name, by: a.owner_email, status: statusOf(a) };
+      });
+      var evs = r[1].map(function (e) {
+        return { id: e.id, kind: 'event', type: 'Event', name: e.title, note: e.event_date + (e.place ? ' · ' + e.place : ''), by: e.submitter_email || 'Admin', status: 'Pending' };
+      });
+      items = apps.concat(evs);
+      draw();
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  function draw() {
+    var pending = items.filter(function (i) { return i.status === 'Pending'; }).length;
+    var approved = items.filter(function (i) { return i.status === 'Approved'; }).length;
+    var sent = items.filter(function (i) { return i.status === 'Sent back'; }).length;
+    $('k-pending').textContent = pending; $('k-approved').textContent = approved; $('k-rejected').textContent = sent;
+    var shown = tab === 'All' ? items : items.filter(function (i) { return i.type === tab; });
+    $('rows').innerHTML = shown.length ? shown.map(function (i) {
+      var chip = i.status === 'Approved' ? 'chip ok' : (i.status === 'Sent back' ? 'chip no' : 'chip');
+      var actions = i.status === 'Pending'
+        ? '<button class="act" data-a="approve" data-id="' + i.id + '" data-k="' + i.kind + '" style="background:var(--accent);color:#fff;border:0">Approve</button> <button class="act" data-a="reject" data-id="' + i.id + '" data-k="' + i.kind + '" style="background:#fff;color:#8A2A1C;border:1px solid #E3B4AC">Send back</button>'
+        : '';
+      return '<tr><td><div style="font-weight:600">' + esc(i.name) + '</div><div style="font-size:13px;color:var(--muted)">' + esc(i.note) + '</div></td><td>' + esc(i.type) + '</td><td>' + esc(i.by) + '</td><td><span class="' + chip + '">' + esc(i.status) + '</span></td><td style="text-align:right;white-space:nowrap">' + actions + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Nothing waiting in this queue.</td></tr>';
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        tab = b.getAttribute('data-t');
+        document.querySelectorAll('.tab').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        draw();
+      });
+    });
+    $('rows').addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-a]'); if (!btn) return;
+      var id = btn.getAttribute('data-id'), kind = btn.getAttribute('data-k'), a = btn.getAttribute('data-a');
+      var item = items.filter(function (i) { return String(i.id) === id && i.kind === kind; })[0];
+      var call;
+      if (kind === 'event') call = nmd.api('/admin/events/' + id + '/decide', { method: 'POST', body: { decision: a === 'approve' ? 'approve' : 'reject' } });
+      else if (a === 'approve') call = nmd.api('/admin/applications/' + id + '/approve', { method: 'POST', body: {} });
+      else {
+        var note = prompt('What does the vendor need to send back? They get this by email.');
+        if (!note) return;
+        call = nmd.api('/admin/applications/' + id + '/more-info', { method: 'POST', body: { note: note } });
+      }
+      call.then(function () { nmdToast(a === 'approve' ? 'Approved' : 'Sent back for changes'); return load(); })
+        .catch(function (err) { nmdToast(err.message, true); });
+    });
+    load();
+  });
+})();
+</script>
+
 </body>
 </html>

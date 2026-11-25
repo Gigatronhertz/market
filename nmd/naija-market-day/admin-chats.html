@@ -24,7 +24,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-chats" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -51,7 +51,7 @@ a{color:inherit;text-decoration:none}
       </section>
       <section class="card">
         <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:18px">Vendor support</h2><span style="background:#E1F1E8;color:#145A3A;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px">Suggested reply</span></div>
-        <div style="background:#F6F8F7;border-radius:14px;padding:14px;margin:14px 0;font-size:15px;line-height:1.5"><div style="font-size:13px;color:var(--muted);margin-bottom:4px">[Vendor name] asks</div>How do I change my booth after I have paid, and will I get a refund of the difference?</div>
+        <div id="ask" style="background:#F6F8F7;border-radius:14px;padding:14px;margin:14px 0;font-size:15px;line-height:1.5">Loading...</div>
         <label for="reply" style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Suggested reply (review before sending)</label>
         <textarea id="reply" rows="6" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D5DBD8;border-radius:12px;font-size:15px;font-family:inherit;line-height:1.5"></textarea>
         <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
@@ -62,38 +62,55 @@ a{color:inherit;text-decoration:none}
     </div>
   </main>
 </div>
+<script src="assets/nmd-wire.js"></script>
 <script>
-var drafts = [
-  'Hi [Vendor name], thanks for asking. You can move to another free booth from the Booth page until two weeks before the market. If the new booth costs less we refund the difference through Stripe; if it costs more, you pay the difference.',
-  'Hello [Vendor name]. Booth changes are possible while spots are free. Open Booth and payments, pick a new position on the map and we will adjust the price.'
-];
-var draftIdx = 0;
-var reports = [
-  { who: 'Buyer vs. [Vendor name]', why: 'Asked for payment outside the platform before agreeing a price', st: 'open' },
-  { who: '[Buyer] vs. [Vendor name]', why: 'Rude messages in the chat', st: 'open' },
-  { who: '[Vendor name]', why: 'Spam links in chat', st: 'open' }
-];
-var LABEL = { open: ['Open', 'open'], warned: ['Warned', 'done'], dismissed: ['Dismissed', 'done'], suspended: ['Suspended', 'bad'] };
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function renderReports() {
-  document.getElementById('reports').innerHTML = reports.map(function (r, i) {
-    var lab = LABEL[r.st];
-    var actions = r.st === 'open'
-      ? '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-a="warned" data-i="' + i + '">Warn user</button><button class="btn" data-a="dismissed" data-i="' + i + '">Dismiss</button><button class="btn danger" data-a="suspended" data-i="' + i + '">Suspend</button></div>'
-      : '';
-    return '<div style="padding:14px 0;border-top:1px solid #EEF1EF"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>' + esc(r.who) + '</b><span class="chip ' + lab[1] + '">' + lab[0] + '</span></div><div style="font-size:14px;color:var(--muted);margin:4px 0 10px">' + esc(r.why) + '</div>' + actions + '</div>';
-  }).join('');
-}
-document.getElementById('reports').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-a]'); if (!b) return;
-  reports[Number(b.getAttribute('data-i'))].st = b.getAttribute('data-a'); renderReports();
-});
-document.getElementById('again').addEventListener('click', function () {
-  draftIdx = (draftIdx + 1) % drafts.length; document.getElementById('reply').value = drafts[draftIdx];
-});
-document.getElementById('send').addEventListener('click', function () { this.textContent = 'Sent to vendor'; });
-document.getElementById('reply').value = drafts[0];
-renderReports();
+// Chats and support: reported chats and contact-form messages, live from the admin inbox.
+(function () {
+  var drafts = [
+    'Hi, thanks for asking. You can move to another free booth from the Booth page until two weeks before the market. If the new booth costs less we refund the difference; if it costs more, you pay the difference.',
+    'Hello. Booth changes are possible until two weeks before the market, from your application. Let us know the booth you want and we will check it for you.'
+  ];
+  var draft = 0, inquiries = [], support = null;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load() {
+    return nmd.api('/admin/inquiries?status=new').then(function (rows) {
+      inquiries = rows;
+      var reports = rows.filter(function (r) { return r.topic === 'Report a chat'; });
+      document.getElementById('reports').innerHTML = reports.length ? reports.map(function (r) {
+        return '<div style="padding:12px 0;border-top:1px solid #EEF1EF"><div style="font-weight:600">' + esc(r.name) + ' · ' + esc(r.email) + '</div><div style="font-size:14px;color:var(--muted);margin-top:4px;white-space:pre-wrap">' + esc(r.message) + '</div>' +
+          '<button class="btn" style="margin-top:8px;padding:6px 12px" data-handle="' + r.id + '">Mark reviewed</button></div>';
+      }).join('') : '<p style="color:var(--muted)">No reported chats right now.</p>';
+      support = rows.filter(function (r) { return r.topic !== 'Report a chat'; })[0] || null;
+      var ask = document.getElementById('ask');
+      if (support) {
+        ask.innerHTML = '<div style="font-size:13px;color:var(--muted);margin-bottom:4px">' + esc(support.name) + ' asks (' + esc(support.topic) + ')</div>' + esc(support.message);
+        ask.style.whiteSpace = 'pre-wrap';
+      } else {
+        ask.textContent = 'No new support messages.';
+      }
+      document.getElementById('reply').value = support ? drafts[draft] : '';
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    load();
+    document.getElementById('reports').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-handle]'); if (!b) return;
+      nmd.api('/admin/inquiries/' + b.getAttribute('data-handle') + '/handle', { method: 'POST', body: {} })
+        .then(function () { nmdToast('Marked reviewed'); return load(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+    document.getElementById('send').addEventListener('click', function () {
+      var text = document.getElementById('reply').value.trim();
+      if (!support) { nmdToast('There is no support message to answer.', true); return; }
+      if (!text) { nmdToast('Write a reply first.', true); return; }
+      nmd.api('/admin/inquiries/' + support.id + '/reply', { method: 'POST', body: { body: text } })
+        .then(function () { nmdToast('Reply sent to ' + support.email); return load(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+    document.getElementById('again').addEventListener('click', function () {
+      draft = (draft + 1) % drafts.length;
+      document.getElementById('reply').value = support ? drafts[draft] : '';
+    });
+  });
+})();
 </script>
 <script src="assets/site.js" defer></script>
 </body>

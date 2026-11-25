@@ -29,7 +29,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-dashboard" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -51,16 +51,16 @@ a{color:inherit;text-decoration:none}
     </header>
 
     <section class="kpi">
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Approved vendors</div><div style="font-size:30px;font-weight:700;margin-top:4px">128</div><div style="font-size:13px;color:var(--muted)">+14 this month</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Live listings</div><div style="font-size:30px;font-weight:700;margin-top:4px">764</div><div style="font-size:13px;color:var(--muted)">+62 this week</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Booth revenue</div><div style="font-size:30px;font-weight:700;margin-top:4px">CA$48.2k</div><div style="font-size:13px;color:var(--muted)">This tour so far</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Ad revenue</div><div style="font-size:30px;font-weight:700;margin-top:4px">CA$9.6k</div><div style="font-size:13px;color:var(--muted)">3 slots running</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Open chats</div><div style="font-size:30px;font-weight:700;margin-top:4px;color:var(--accent)">312</div><div style="font-size:13px;color:var(--muted)">5 reported</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Approved vendors</div><div id="k-vendors" style="font-size:30px;font-weight:700;margin-top:4px">128</div><div id="k-vendors-sub" style="font-size:13px;color:var(--muted)">Vendors with an approved booth</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Live listings</div><div id="k-listings" style="font-size:30px;font-weight:700;margin-top:4px">764</div><div style="font-size:13px;color:var(--muted)">Visible in the Market Square</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Booth revenue</div><div id="k-booth" style="font-size:30px;font-weight:700;margin-top:4px">CA$48.2k</div><div style="font-size:13px;color:var(--muted)">Paid booth fees, net of refunds</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Ad revenue</div><div id="k-ads" style="font-size:30px;font-weight:700;margin-top:4px">CA$9.6k</div><div id="k-ads-sub" style="font-size:13px;color:var(--muted)">Live banners</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Open chats</div><div id="k-chats" style="font-size:30px;font-weight:700;margin-top:4px;color:var(--accent)">312</div><div id="k-chats-sub" style="font-size:13px;color:var(--muted)">New messages</div></div>
     </section>
 
     <div style="display:flex;flex-wrap:wrap;gap:16px">
       <section class="card" style="flex:2 1 420px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="margin:0;font-size:18px">Market Square visits</h2><span style="font-size:12px;color:#8A948F">Sample figures</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="margin:0;font-size:18px">Market Square visits</h2><span style="font-size:12px;color:#8A948F">Visit tracking not set up yet</span></div>
         <div class="bars">
           <div><i style="height:60px;opacity:.5"></i><span style="font-size:12px;color:var(--muted)">Jan</span></div>
           <div><i style="height:80px;opacity:.5"></i><span style="font-size:12px;color:var(--muted)">Feb</span></div>
@@ -73,11 +73,7 @@ a{color:inherit;text-decoration:none}
       </section>
       <section class="card" style="flex:1 1 280px">
         <h2 style="margin:0 0 16px;font-size:18px">Top categories</h2>
-        <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Fashion and textiles</span><b>38%</b></div><div class="bar"><b style="width:38%"></b></div></div>
-        <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Food and drink</span><b>27%</b></div><div class="bar"><b style="width:27%"></b></div></div>
-        <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Jewellery</span><b>16%</b></div><div class="bar"><b style="width:16%"></b></div></div>
-        <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Crafts and home</span><b>12%</b></div><div class="bar"><b style="width:12%"></b></div></div>
-        <div><div style="display:flex;justify-content:space-between;font-size:14px"><span>Beauty</span><b>7%</b></div><div class="bar"><b style="width:7%"></b></div></div>
+        <div id="cats"></div>
       </section>
     </div>
 
@@ -103,5 +99,39 @@ a{color:inherit;text-decoration:none}
   </main>
 </div>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Admin overview: live KPIs and category split from the admin API.
+(function () {
+  function money(c) { return 'CA$' + (Number(c || 0) / 100).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var CAT = { premium: 'Premium (mostly food)', general: 'General', sponsors: 'Sponsors', corporate: 'Corporate', unset: 'Not set' };
+  nmdPages['admin-dashboard'] = {
+    init: function () {
+      nmd.me().then(function (u) {
+        if (!u || (u.roles || []).indexOf('admin') < 0) return;
+        return Promise.all([nmd.api('/admin/dashboard'), nmd.api('/admin/listings'), nmd.api('/admin/inquiries?status=new'), nmd.api('/admin/banners')]).then(function (r) {
+          var d = r[0], listings = r[1], inq = r[2], banners = r[3];
+          var today = new Date().toISOString().slice(0, 10);
+          document.getElementById('k-vendors').textContent = d.cards.booths_sold;
+          document.getElementById('k-vendors-sub').textContent = 'Booths sold across ' + d.markets.length + ' market(s)';
+          document.getElementById('k-listings').textContent = listings.filter(function (l) { return !l.hidden; }).length;
+          document.getElementById('k-booth').textContent = money(d.cards.booth_fees_cents);
+          document.getElementById('k-ads').textContent = banners.filter(function (b) { return b.active && b.starts_on <= today && b.ends_on >= today; }).length + ' running';
+          document.getElementById('k-ads-sub').textContent = 'Banners on air today';
+          document.getElementById('k-chats').textContent = inq.length;
+          document.getElementById('k-chats-sub').textContent = inq.filter(function (x) { return x.topic === 'Report a chat'; }).length + ' reported';
+          var cats = d.vendors.by_category || [];
+          var total = cats.reduce(function (s, c) { return s + c.n; }, 0) || 1;
+          document.getElementById('cats').innerHTML = cats.length ? cats.map(function (c) {
+            var pct = Math.round(c.n / total * 100);
+            return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>' + esc(CAT[c.category] || c.category) + '</span><b>' + pct + '%</b></div><div class="bar"><b style="width:' + pct + '%"></b></div></div>';
+          }).join('') : '<p style="color:var(--muted)">No approved vendors yet.</p>';
+        });
+      }).catch(function (err) { nmdToast(err.message, true); });
+    },
+  };
+})();
+</script>
 </body>
 </html>

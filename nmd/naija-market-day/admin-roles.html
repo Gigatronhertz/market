@@ -29,7 +29,7 @@ td:first-child{font-weight:500}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-roles" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -47,7 +47,7 @@ td:first-child{font-weight:500}
   <main class="main">
     <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
       <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Roles and permissions</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Decide who on the NMD team can do what.</p></div>
-      <button class="btn">Invite teammate</button>
+      <button class="btn" id="invite" type="button">Invite teammate</button>
     </header>
 
     <section class="card">
@@ -61,36 +61,52 @@ td:first-child{font-weight:500}
     <section class="card">
       <h2 style="margin:0 0 8px;font-size:18px">Team</h2>
       <table>
-        <thead><tr><th style="text-align:left">Name</th><th style="text-align:left">Role</th><th style="text-align:left">Status</th></tr></thead>
-        <tbody>
-          <tr><td><b>[Name]</b></td><td style="text-align:left">Super admin</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
-          <tr><td><b>[Name]</b></td><td style="text-align:left">Operations</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
-          <tr><td><b>[Name]</b></td><td style="text-align:left">Content editor</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
-          <tr><td><b>[Name]</b></td><td style="text-align:left">Support</td><td style="text-align:left"><span class="chip wait">Invited</span></td></tr>
-        </tbody>
+        <thead><tr><th style="text-align:left">Name</th><th style="text-align:left">Email</th><th style="text-align:left">Role</th><th style="text-align:left">Status</th><th style="text-align:left"></th></tr></thead>
+        <tbody id="team-rows"></tbody>
       </table>
     </section>
   </main>
 </div>
+<script src="assets/nmd-wire.js"></script>
 <script>
-var perms = ['Approve vendors', 'Approve listings', 'Approve events', 'Assign booths', 'View payments', 'Manage ads', 'Edit news and events', 'Manage roles'];
-var roles = ['Super admin', 'Operations', 'Content editor', 'Support'];
-var m = [[1,1,0,1],[1,1,0,1],[1,1,0,0],[1,1,0,0],[1,1,0,0],[1,0,0,0],[1,0,1,0],[1,0,0,0]];
-function render() {
-  document.getElementById('matrix').innerHTML = perms.map(function (p, i) {
-    return '<tr><td>' + p + '</td>' + roles.map(function (r, j) {
-      var on = !!m[i][j];
-      return '<td><button class="sw" role="switch" aria-checked="' + on + '" aria-label="' + r + ': ' + p + '" data-p="' + i + '" data-r="' + j + '" style="justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#0F6B4A' : '#CBD3CF') + '"><span class="knob"></span></button></td>';
-    }).join('') + '</tr>';
-  }).join('');
-}
-document.getElementById('matrix').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-p]'); if (!b) return;
-  var p = Number(b.getAttribute('data-p')), r = Number(b.getAttribute('data-r'));
-  m[p][r] = m[p][r] ? 0 : 1; render();
-});
-render();
+// Team: live accounts. Invite creates a staff or admin account and emails a set-password link.
+(function () {
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var LABEL = { admin: 'Admin', staff: 'Check-in staff', vendor: 'Vendor', buyer: 'Buyer' };
+  var CHIP = { active: '<span class="chip ok">Active</span>', invited: '<span class="chip wait">Invited</span>', suspended: '<span class="chip no">Suspended</span>', removed: '<span class="chip no">Removed</span>' };
+  function load() {
+    return nmd.api('/admin/users?role=admin').then(function (admins) {
+      return nmd.api('/admin/users?role=staff').then(function (staff) {
+        var team = admins.concat(staff.filter(function (s) { return !admins.some(function (a) { return a.id === s.id; }); }));
+        document.getElementById('team-rows').innerHTML = team.length ? team.map(function (u) {
+          var role = (u.roles || '').split(',').map(function (r) { return LABEL[r.trim()] || r; }).join(', ');
+          return '<tr><td><b>' + esc(u.name || '(no name)') + '</b></td><td>' + esc(u.email) + '</td><td>' + esc(role) + '</td><td>' + (CHIP[u.status] || esc(u.status)) + '</td><td>' +
+            '<button class="btn" style="padding:6px 12px" data-suspend="' + u.id + '" data-status="' + u.status + '">' + (u.status === 'suspended' ? 'Reactivate' : 'Suspend') + '</button></td></tr>';
+        }).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No team members yet.</td></tr>';
+      });
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    load();
+    document.getElementById('invite').addEventListener('click', function () {
+      var name = prompt('Their name?'); if (!name) return;
+      var email = prompt('Their email address?'); if (!email) return;
+      var role = prompt('Role: type admin or staff (check-in staff)', 'staff');
+      nmd.api('/admin/users/invite', { method: 'POST', body: { name: name, email: email, role: role === 'admin' ? 'admin' : 'staff', market_ids: [] } })
+        .then(function () { nmdToast('Invitation sent to ' + email); return load(); })
+        .catch(function (err) { nmdToast(err.message, true); });
+    });
+    document.getElementById('team-rows').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-suspend]'); if (!b) return;
+      var id = b.getAttribute('data-suspend');
+      var action = b.getAttribute('data-status') === 'suspended' ? 'reactivate' : 'suspend';
+      nmd.api('/admin/users/' + id + '/' + action, { method: 'POST', body: {} })
+        .then(function () { nmdToast('Updated'); return load(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+  });
+})();
 </script>
+</body>
 <script src="assets/site.js" defer></script>
 </body>
 </html>

@@ -24,15 +24,15 @@ nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:3px}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="mobile-home">
 <div class="screen">
   <div class="body">
     <div style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px"><span style="width:32px;height:32px;border-radius:10px;background:#0F6B4A;color:#fff;display:flex;align-items:center;justify-content:center">N</span>Naija Market Day</div>
-      <a href="#" aria-label="Notifications" style="width:40px;height:40px;border:1px solid #E6EAE8;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a>
+      <a href="messages.html" aria-label="Notifications" style="width:40px;height:40px;border:1px solid #E6EAE8;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a>
     </div>
 
-    <form onsubmit="event.preventDefault()"><label for="q" style="position:absolute;left:-9999px">Search</label><input id="q" type="search" placeholder="Search products, vendors or markets" style="width:100%;padding:13px 16px;border:1px solid #D5DBD8;border-radius:999px;font-size:15px;background:#F6F8F7;font-family:inherit"></form>
+    <form action="market-square.html" method="get"><label for="q" style="position:absolute;left:-9999px">Search</label><input id="q" name="q" type="search" placeholder="Search products, vendors or markets" style="width:100%;padding:13px 16px;border:1px solid #D5DBD8;border-radius:999px;font-size:15px;background:#F6F8F7;font-family:inherit"></form>
 
     <a class="ad" href="market-square.html" aria-label="Advertisement: Adire season is here">
       <img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=900&q=80&auto=format&fit=crop" alt="" aria-hidden="true">

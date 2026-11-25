@@ -25,7 +25,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-ads" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -42,26 +42,83 @@ a{color:inherit;text-decoration:none}
   </nav>
   <main class="main">
     <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
-      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Ads</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Slots, schedules and creatives. Approved ads rotate for exactly the period that was paid.</p></div>
-      <button class="btn">Add an ad</button>
+      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Ads</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Banner ads for the homepage and blog. Each city has a fixed number of slots, and banners show only on their dates.</p></div>
+      <button class="btn" id="add" type="button">Add an ad</button>
     </header>
 
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><h2 style="margin:0;font-size:18px">Top banner</h2><span style="font-size:14px;color:var(--muted)">970 x 90 · CA$120/week</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Ade's Adire<div style="font-weight:400;font-size:13px;color:var(--muted)">May 01 to May 28</div></div><div class="bar"><i style="left:0;width:45%"></i></div><span class="chip ok">Running</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Naija Market Day<div style="font-weight:400;font-size:13px;color:var(--muted)">Jun 01 to Jul 15</div></div><div class="bar"><i style="left:35%;width:60%"></i></div><span class="chip info">Scheduled</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Hair by Tolu<div style="font-weight:400;font-size:13px;color:var(--muted)">Jul 01 to Jul 14</div></div><div class="bar"><i style="left:70%;width:25%"></i></div><span class="chip wait">Pending approval</span></div>
-    </section>
-
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><h2 style="margin:0;font-size:18px">Side skyscrapers</h2><span style="font-size:14px;color:var(--muted)">160 x 600 · CA$70/week</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Mama Chioma's Kitchen<div style="font-weight:400;font-size:13px;color:var(--muted)">May 10 to Jun 07</div></div><div class="bar"><i style="left:20%;width:40%"></i></div><span class="chip ok">Running</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Zuri Beads<div style="font-weight:400;font-size:13px;color:var(--muted)">Jun 10 to Jun 24</div></div><div class="bar"><i style="left:55%;width:25%"></i></div><span class="chip info">Scheduled</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">Eko Crafts<div style="font-weight:400;font-size:13px;color:var(--muted)">May 05 to May 19</div></div><div class="bar"><i style="left:10%;width:25%"></i></div><span class="chip no">Ended</span></div>
-      <div class="slot"><div style="flex:1 1 180px;font-weight:600">[Advertiser]<div style="font-weight:400;font-size:13px;color:var(--muted)">Jun 01 to Jun 28</div></div><div class="bar"><i style="left:45%;width:40%"></i></div><span class="chip wait">Pending approval</span></div>
-    </section>
+    <section class="card" id="form-box" hidden></section>
+    <section class="card"><h2 style="margin:0 0 8px;font-size:18px">Banners</h2><div id="ads"><p style="color:var(--muted)">Loading banners...</p></div></section>
   </main>
 </div>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Ads: live banners by location and city, with an add form and on/off switch.
+(function () {
+  var LOC = { home: 'Homepage', blog: 'Blog pages' };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function status(b) {
+    var today = new Date().toISOString().slice(0, 10);
+    if (!b.active) return ['Off', 'wait'];
+    if (b.ends_on < today) return ['Ended', 'info'];
+    if (b.starts_on > today) return ['Scheduled', 'info'];
+    return ['Running', 'ok'];
+  }
+  function load() {
+    return nmd.api('/admin/banners').then(function (rows) {
+      document.getElementById('ads').innerHTML = rows.length ? rows.map(function (b) {
+        var st = status(b);
+        return '<div class="slot" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 0;border-top:1px solid #EEF1EF">' +
+          '<img src="' + esc(b.image_url) + '" alt="" style="width:120px;height:52px;object-fit:cover;border-radius:8px">' +
+          '<div style="flex:1 1 200px;font-weight:600">' + esc(b.advertiser || 'Advertiser') + '<div style="font-weight:400;font-size:13px;color:var(--muted)">' + esc(LOC[b.location] || b.location) + ' · ' + esc(b.city) + ' · ' + esc(b.starts_on) + ' to ' + esc(b.ends_on) + '</div></div>' +
+          '<span class="chip ' + st[1] + '">' + st[0] + '</span>' +
+          '<button class="btn" style="padding:6px 12px" data-toggle="' + b.id + '" data-on="' + b.active + '" data-start="' + esc(b.starts_on) + '" data-end="' + esc(b.ends_on) + '" data-city="' + esc(b.city) + '" data-loc="' + esc(b.location) + '">' + (b.active ? 'Turn off' : 'Turn on') + '</button></div>';
+      }).join('') : '<p style="color:var(--muted)">No banners yet. Add the first one.</p>';
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  function openForm() {
+    var box = document.getElementById('form-box');
+    if (!box.hidden) { box.hidden = true; return; }
+    var today = new Date().toISOString().slice(0, 10);
+    box.hidden = false;
+    box.innerHTML = '<h2 style="margin:0 0 12px;font-size:18px">New banner</h2>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">' +
+      '<label class="field">Image<input type="file" id="f-img" accept="image/png,image/jpeg,image/webp,image/gif"></label>' +
+      '<label class="field">Advertiser<input id="f-adv" type="text"></label>' +
+      '<label class="field">Link<input id="f-link" type="url" placeholder="https://"></label>' +
+      '<label class="field">City<input id="f-city" type="text" placeholder="Brampton"></label>' +
+      '<label class="field">Where<select id="f-loc"><option value="home">Homepage</option><option value="blog">Blog pages</option></select></label>' +
+      '<label class="field">Starts<input id="f-start" type="date" value="' + today + '"></label>' +
+      '<label class="field">Ends<input id="f-end" type="date" value="' + today + '"></label></div>' +
+      '<button class="btn" id="f-save" type="button">Save banner</button>';
+    document.getElementById('f-save').addEventListener('click', function () {
+      var f = document.getElementById('f-img').files[0];
+      if (!f) { nmdToast('Upload a banner image.', true); return; }
+      if (f.size > 5 * 1024 * 1024) { nmdToast('That image is over 5 MB.', true); return; }
+      var r = new FileReader();
+      r.onload = function () {
+        nmd.api('/admin/banners', { method: 'POST', body: {
+          image_url: r.result, advertiser: document.getElementById('f-adv').value, link: document.getElementById('f-link').value,
+          city: document.getElementById('f-city').value, location: document.getElementById('f-loc').value,
+          starts_on: document.getElementById('f-start').value, ends_on: document.getElementById('f-end').value, frequency_seconds: 6 } })
+          .then(function () { box.hidden = true; nmdToast('Banner saved'); return load(); })
+          .catch(function (err) { nmdToast(err.message, true); });
+      };
+      r.readAsDataURL(f);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    load();
+    document.getElementById('add').addEventListener('click', openForm);
+    document.getElementById('ads').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-toggle]'); if (!b) return;
+      var on = b.getAttribute('data-on') === 'true';
+      nmd.api('/admin/banners/' + b.getAttribute('data-toggle'), { method: 'PUT', body: { active: !on, starts_on: b.getAttribute('data-start'), ends_on: b.getAttribute('data-end'), city: b.getAttribute('data-city'), location: b.getAttribute('data-loc') } })
+        .then(function () { nmdToast(on ? 'Banner off' : 'Banner on'); return load(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+  });
+})();
+</script>
+
 </body>
 </html>

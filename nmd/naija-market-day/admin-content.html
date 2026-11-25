@@ -27,7 +27,7 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-content" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -52,7 +52,7 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
       <button class="tab" aria-pressed="false" data-t="Events">Events</button>
       <button class="tab" aria-pressed="false" data-t="Gallery">Gallery</button>
     </div>
-    <div style="background:#EEF4F0;border:1px solid #CFE3D8;border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.5"><b>Moving from the old site:</b> existing news, gallery photos and events are being imported. Review them here before they go live.</div>
+    <div style="background:#EEF4F0;border:1px solid #CFE3D8;border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.5">Publish news, approve community events, and manage the gallery. Changes show on the public site straight away.</div>
     <section class="card">
       <table>
         <thead><tr><th>Title</th><th>Source</th><th>Updated</th><th>Status</th><th></th></tr></thead>
@@ -61,32 +61,49 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
     </section>
   </main>
 </div>
+<script src="assets/nmd-wire.js"></script>
 <script>
-var data = {
-  News: [['NMD Summer Tour 2026 takes off in Brampton', 'Old site', 'May 2026', true], ['Naija Market Day in the media', 'Old site', 'Feb 2026', true], ['Early bird vendor registration', 'New', 'Mar 2026', false]],
-  Events: [['Brampton Market Day', 'Old site', 'May 30', true], ['From Benin to Brandon', 'Old site', 'Jul 11', true], ['Summit registration opens', 'New', 'Draft', false]],
-  Gallery: [['Brampton 2024 album (84 photos)', 'Old site', 'Jul 2024', true], ['Winnipeg 2025 album (61 photos)', 'Old site', 'Aug 2025', false], ['Summer Tour 2026 launch (40 photos)', 'Old site', 'Jan 2026', false]]
-};
-var tab = 'News';
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function render() {
-  document.getElementById('rows').innerHTML = data[tab].map(function (r, i) {
-    return '<tr><td style="font-weight:600">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td>' +
-      '<td><span class="chip ' + (r[3] ? 'ok' : 'wait') + '">' + (r[3] ? 'Published' : 'Draft') + '</span></td>' +
-      '<td style="text-align:right"><button class="act" data-i="' + i + '">' + (r[3] ? 'Unpublish' : 'Publish') + '</button></td></tr>';
-  }).join('');
-}
-document.getElementById('tabs').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-t]'); if (!b) return;
-  tab = b.getAttribute('data-t');
-  document.querySelectorAll('[data-t]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-  render();
-});
-document.getElementById('rows').addEventListener('click', function (e) {
-  var b = e.target.closest('[data-i]'); if (!b) return;
-  var i = Number(b.getAttribute('data-i')); data[tab][i][3] = !data[tab][i][3]; render();
-});
-render();
+// News, events and gallery: live from the site content and event approvals.
+(function () {
+  var tab = 'News';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function chip(on, label) { return '<span class="chip ' + (on ? 'ok' : 'wait') + '">' + label + '</span>'; }
+  function rows() {
+    if (tab === 'News') return nmd.api('/admin/content/blog_posts').then(function (r) {
+      return r.map(function (p) { return '<tr><td>' + esc(p.title) + '</td><td>NMD</td><td>' + esc(new Date(p.publish_at).toLocaleDateString()) + '</td><td>' + chip(p.status === 'published', p.status === 'published' ? 'Published' : 'Draft') + '</td><td style="text-align:right"><button class="act" data-act="post" data-id="' + p.id + '" data-on="' + (p.status === 'published') + '">' + (p.status === 'published' ? 'Unpublish' : 'Publish') + '</button></td></tr>'; });
+    });
+    if (tab === 'Events') return nmd.api('/admin/events').then(function (r) {
+      return r.map(function (e) { var on = e.status === 'approved'; return '<tr><td>' + esc(e.title) + '</td><td>' + esc(e.submitter_email || 'Admin') + '</td><td>' + esc(e.event_date) + '</td><td>' + chip(on, e.status) + '</td><td style="text-align:right">' + (e.status === 'pending' ? '<button class="act" data-act="approve" data-id="' + e.id + '">Approve</button> <button class="act" data-act="reject" data-id="' + e.id + '">Reject</button>' : '') + '</td></tr>'; });
+    });
+    return nmd.api('/admin/content/gallery').then(function (r) {
+      return r.map(function (g) { return '<tr><td>' + esc(g.title || g.kind) + '</td><td>' + esc(g.kind) + '</td><td>' + esc(g.market_id) + '</td><td>' + chip(true, 'Live') + '</td><td style="text-align:right"><button class="act" data-act="del" data-id="' + g.id + '">Remove</button></td></tr>'; });
+    });
+  }
+  function draw() {
+    var kind = tab === 'News' ? 'blog_posts' : 'gallery';
+    rows().then(function (list) {
+      document.getElementById('rows').innerHTML = list.length ? list.join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Nothing here yet.</td></tr>';
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        tab = b.getAttribute('data-t');
+        document.querySelectorAll('.tab').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        draw();
+      });
+    });
+    document.getElementById('rows').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-act]'); if (!b) return;
+      var id = b.getAttribute('data-id'), act = b.getAttribute('data-act'), call;
+      if (act === 'post') call = nmd.api('/admin/content/blog_posts/' + id, { method: 'PUT', body: { status: b.getAttribute('data-on') === 'true' ? 'draft' : 'published' } });
+      else if (act === 'approve' || act === 'reject') call = nmd.api('/admin/events/' + id + '/decide', { method: 'POST', body: { decision: act === 'approve' ? 'approve' : 'reject' } });
+      else if (act === 'del') { if (!confirm('Remove this photo from the gallery?')) return; call = nmd.api('/admin/content/gallery/' + id, { method: 'DELETE' }); }
+      call.then(function () { nmdToast('Saved'); draw(); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+    draw();
+  });
+})();
 </script>
 <script src="assets/site.js" defer></script>
 </body>

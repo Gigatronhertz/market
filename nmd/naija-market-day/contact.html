@@ -98,6 +98,7 @@ details p{margin:0 0 18px;color:var(--muted);line-height:1.6}
 <script src="assets/site.js" defer></script>
 <script src="assets/nmd-wire.js"></script>
 <script>
+(function () { var t = new URLSearchParams(location.search).get('topic'); var sel = document.querySelector('select[name=topic]'); if (t && sel) { Array.prototype.forEach.call(sel.options, function (o) { if (o.value === t || o.text === t) sel.value = o.value; }); } })();
 nmdPages.contact = {
   forms: {
     contact: function (v, form) {

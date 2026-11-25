@@ -11,7 +11,7 @@ const checkin = require('../checkin');
 const admin = require('../admin');
 const commerce = require('../commerce');
 const scheduler = require('../scheduler');
-const { wrap, HttpError, int, str, toCsv } = require('../util');
+const { wrap, HttpError, int, str, reqStr, toCsv } = require('../util');
 
 const router = express.Router();
 router.use(auth.loadUser);
@@ -149,6 +149,25 @@ router.get('/admin/messaging/templates/:key/preview', ...adminOnly, wrap(async (
 router.post('/admin/messaging/bulk/preview', ...adminOnly, wrap(async (req, res) => res.json(admin.bulkPreview(req.body || {}))));
 router.post('/admin/messaging/bulk/send', ...adminOnly, wrap(async (req, res) => res.json(admin.bulkSend(req.user, req.body || {}))));
 router.get('/admin/outbox', ...adminOnly, wrap(async (req, res) => res.json(admin.outbox(req.query.limit))));
+// Send a template to the signed-in admin, so the team can see exactly what vendors receive.
+router.post('/admin/messaging/test', ...adminOnly, wrap(async (req, res) => {
+  const key = String((req.body || {}).key || '');
+  const t = db.get('SELECT key FROM notification_templates WHERE key = ?', key);
+  if (!t) throw new HttpError(404, 'That message was not found.');
+  const preview = admin.previewTemplate(key, null);
+  require('../notify').queue({ to: req.user.email, subject: '[Test] ' + preview.subject, body: preview.body, templateKey: key });
+  res.json({ ok: true, to: req.user.email });
+}));
+// Reply to a support inquiry by email and mark it handled.
+router.post('/admin/inquiries/:id/reply', ...adminOnly, wrap(async (req, res) => {
+  const inq = db.get('SELECT * FROM inquiries WHERE id = ?', int(req.params.id));
+  if (!inq) throw new HttpError(404, 'That inquiry was not found.');
+  const body = reqStr((req.body || {}).body, 'Reply', 4000);
+  require('../notify').queue({ to: inq.email, subject: 'Re: ' + inq.topic, body });
+  db.run("UPDATE inquiries SET status = 'handled' WHERE id = ?", inq.id);
+  markets.logActivity(req.user, 'inquiry.replied', String(inq.id));
+  res.json({ ok: true });
+}));
 
 // ======================= ADMIN: BANNER ADS (ADM-50 to ADM-52) =======================
 

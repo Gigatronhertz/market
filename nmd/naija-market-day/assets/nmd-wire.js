@@ -160,6 +160,16 @@
     });
   }
 
+  // Log out: end the session on the server, then show the logged-out page.
+  function bindLogout() {
+    document.querySelectorAll('a[href="logged-out.html"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        api('/auth/logout', { method: 'POST' }).catch(function () {}).then(function () { location.href = 'logged-out.html'; });
+      });
+    });
+  }
+
   // Per-page behaviour. Filled in by each page section below.
   var PAGES = {};
   window.nmdPages = PAGES;
@@ -169,7 +179,15 @@
     bindForms(page);
     bindActions(page);
     loadLists(page);
+    // Admin pages: only admins and check-in staff see them. Everyone else goes to the staff sign-in.
+    if (document.body.getAttribute('data-gate') === 'admin') {
+      me().then(function (u) {
+        var roles = (u && u.roles) || [];
+        if (roles.indexOf('admin') < 0) location.replace('/app/admin-login.html?next=' + encodeURIComponent(location.pathname.replace(/^\//, '')));
+      });
+    }
     bindHeader();
+    bindLogout();
     if (PAGES[page] && PAGES[page].init) PAGES[page].init(api, me, toast);
   });
   window.nmd = { api: api, me: me, toast: toast, money: money, fmtDate: fmtDate, fill: fill,

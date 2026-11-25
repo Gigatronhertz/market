@@ -26,7 +26,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-emails" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -50,43 +50,68 @@ a{color:inherit;text-decoration:none}
         <h2 id="pv-name" style="margin:4px 0 14px;font-size:20px"></h2>
         <div style="background:#F6F8F7;border-radius:14px;padding:20px;font-size:15px;line-height:1.6">
           <div style="font-size:13px;color:var(--muted);margin-bottom:8px" id="pv-subj"></div>
-          Hi [Vendor name],<br><br><span id="pv-body"></span><br><br>The Naija Market Day team
+          <span id="pv-body" style="white-space:pre-wrap"></span>
         </div>
-        <div style="display:flex;gap:10px;margin-top:16px"><button class="btn primary">Send test to me</button><button class="btn">Edit template</button></div>
+        <div style="display:flex;gap:10px;margin-top:16px"><button class="btn primary" id="test" type="button">Send test to me</button><button class="btn" id="edit" type="button">Edit template</button></div>
       </section>
     </div>
   </main>
 </div>
+<script src="assets/nmd-wire.js"></script>
 <script>
-var EM = [
-  ['Welcome and onboarding', 'When a vendor creates an account', 'Welcome to Naija Market Day. Next, upload your regulatory documents so we can approve your shop.', true],
-  ['Documents received', 'After documents are uploaded', 'We have your documents and will review them within [review time].', true],
-  ['Approved', 'When the team approves a vendor', 'Good news, you are approved. You can now list products and book a booth.', true],
-  ['Sent back with notes', 'When something needs fixing', 'Thanks for applying. Please fix the points below and resubmit.', true],
-  ['Booth payment receipt', 'After a successful Stripe payment', 'Thank you. Your booth is confirmed. Your QR check-in code is attached.', true],
-  ['Payment reminder', '7 days before the deadline', 'A friendly reminder that your booth payment is due soon.', true],
-  ['Market reminder', '3 days before the market', 'Your market is almost here. Here is your booth position and check-in time.', true],
-  ['Ad ending soon', '2 days before an ad stops', 'Your ad is about to end. Renew to stay in rotation.', false]
-];
-var sel = 0;
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function render() {
-  document.getElementById('list').innerHTML = EM.map(function (e, i) {
-    return '<div class="row' + (i === sel ? ' sel' : '') + '" data-i="' + i + '">' +
-      '<div style="flex:1"><b style="font-size:15px">' + esc(e[0]) + '</b><br><span style="font-size:13px;color:var(--muted)">' + esc(e[1]) + '</span></div>' +
-      '<button class="sw" role="switch" aria-checked="' + e[3] + '" aria-label="Send automatically" data-t="' + i + '" style="justify-content:' + (e[3] ? 'flex-end' : 'flex-start') + ';background:' + (e[3] ? '#0F6B4A' : '#CBD3CF') + '"><span class="knob"></span></button></div>';
-  }).join('');
-  document.getElementById('pv-name').textContent = EM[sel][0];
-  document.getElementById('pv-subj').textContent = 'Subject: ' + EM[sel][0] + ' · Naija Market Day';
-  document.getElementById('pv-body').textContent = EM[sel][2];
-}
-document.getElementById('list').addEventListener('click', function (e) {
-  var t = e.target.closest('[data-t]');
-  if (t) { var i = Number(t.getAttribute('data-t')); EM[i][3] = !EM[i][3]; render(); return; }
-  var r = e.target.closest('.row'); if (r) { sel = Number(r.getAttribute('data-i')); render(); }
-});
-render();
+// Vendor emails: every automatic message is a live template. Switch them on or off, preview, and send a test.
+(function () {
+  var current = null, rows = [];
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var WHEN = { action: 'When it happens', before_market: 'Before the market', after_market: 'After the market', manual: 'Sent by hand' };
+  function show(t) {
+    current = t;
+    document.getElementById('pv-name').textContent = t.name;
+    nmd.api('/admin/messaging/templates/' + t.key + '/preview').then(function (p) {
+      document.getElementById('pv-subj').textContent = 'Subject: ' + p.subject;
+      document.getElementById('pv-body').textContent = p.body;
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  function draw() {
+    document.getElementById('list').innerHTML = '<h2 style="margin:0 0 8px;font-size:20px">Automatic emails</h2>' + rows.map(function (t) {
+      return '<div style="display:flex;gap:14px;align-items:flex-start;justify-content:space-between;padding:14px 0;border-top:1px solid #EEF1EF">' +
+        '<button type="button" data-key="' + esc(t.key) + '" style="all:unset;cursor:pointer;flex:1;min-width:0"><div style="font-weight:600">' + esc(t.name) + '</div>' +
+        '<div style="font-size:13px;color:var(--muted);margin-top:2px">' + esc(WHEN[t.trigger_type] || '') + (t.trigger_type === 'before_market' ? ' (' + t.offset_days + ' day)' : '') + ' · ' + esc(t.audience) + '</div></button>' +
+        '<label style="display:flex;gap:6px;align-items:center;font-size:13px;white-space:nowrap"><input type="checkbox" data-toggle="' + esc(t.key) + '"' + (t.active ? ' checked' : '') + '> On</label></div>';
+    }).join('');
+  }
+  function load() {
+    return nmd.api('/admin/messaging/templates').then(function (r) {
+      rows = r;
+      draw();
+      if (!current && rows.length) show(rows[0]);
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    load();
+    document.getElementById('list').addEventListener('click', function (e) {
+      var k = e.target.closest('button[data-key]');
+      if (k) { var t = rows.filter(function (r) { return r.key === k.getAttribute('data-key'); })[0]; if (t) show(t); }
+    });
+    document.getElementById('list').addEventListener('change', function (e) {
+      var c = e.target.closest('input[data-toggle]'); if (!c) return;
+      nmd.api('/admin/messaging/templates/' + c.getAttribute('data-toggle'), { method: 'PUT', body: { active: c.checked } })
+        .then(function () { nmdToast(c.checked ? 'Turned on' : 'Turned off'); load(); })
+        .catch(function (err) { c.checked = !c.checked; nmdToast(err.message, true); });
+    });
+    document.getElementById('test').addEventListener('click', function () {
+      if (!current) return;
+      nmd.api('/admin/messaging/test', { method: 'POST', body: { key: current.key } })
+        .then(function (r) { nmdToast('Test sent to ' + r.to); }).catch(function (err) { nmdToast(err.message, true); });
+    });
+    document.getElementById('edit').addEventListener('click', function () {
+      if (!current) return;
+      location.href = '/app/admin.html#/messaging/template/' + current.key;
+    });
+  });
+})();
 </script>
+</body>
 <script src="assets/site.js" defer></script>
 </body>
 </html>

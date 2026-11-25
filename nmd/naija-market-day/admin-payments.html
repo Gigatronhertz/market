@@ -26,7 +26,7 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="admin-payments" data-gate="admin">
 <div class="shell">
   <nav class="side" aria-label="Admin sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -43,35 +43,63 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
   </nav>
   <main class="main">
     <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
-      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Payments</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Booth fees and ad payments in GBP, USD and CAD. Figures are sample data.</p></div>
-      <button class="btn">Export CSV</button>
+      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Payments</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Booth fees and refunds, live from the payment records.</p></div>
+      <button class="btn" id="export" type="button">Export CSV</button>
     </header>
 
     <section class="kpi">
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Collected</div><div style="font-size:30px;font-weight:700;margin-top:4px">CA$31.4k</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Awaiting payment</div><div style="font-size:30px;font-weight:700;margin-top:4px;color:#7A4A0A">CA$2.1k</div><div style="font-size:13px;color:var(--muted)">4 vendors</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Refunded</div><div style="font-size:30px;font-weight:700;margin-top:4px">CA$0.3k</div><div style="font-size:13px;color:var(--muted)">1 booth</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--muted)">Stripe payouts</div><div style="font-size:30px;font-weight:700;margin-top:4px">Weekly</div><div style="font-size:13px;color:var(--muted)">Next: Friday</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Collected</div><div id="k-collected" style="font-size:30px;font-weight:700;margin-top:4px">-</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Awaiting payment</div><div id="k-awaiting" style="font-size:30px;font-weight:700;margin-top:4px;color:#7A4A0A">-</div><div id="k-awaiting-n" style="font-size:13px;color:var(--muted)"></div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Refunded</div><div id="k-refunded" style="font-size:30px;font-weight:700;margin-top:4px">-</div><div id="k-refunded-n" style="font-size:13px;color:var(--muted)"></div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Stripe payouts</div><div style="font-size:30px;font-weight:700;margin-top:4px">Stripe</div><div style="font-size:13px;color:var(--muted)">Payouts follow your Stripe schedule</div></div>
     </section>
 
     <section class="card">
       <h2 style="margin:0 0 8px;font-size:18px">Booth fees</h2>
       <div style="overflow-x:auto">
         <table>
-          <thead><tr><th>Vendor</th><th>Market</th><th>Booth</th><th>Amount</th><th>Status</th><th>Date</th><th></th></tr></thead>
-          <tbody>
-            <tr><td><b>Ade's Adire</b></td><td>Brampton</td><td>C3</td><td>CA$300</td><td><span class="chip ok">Paid</span></td><td>May 02</td><td></td></tr>
-            <tr><td><b>Mama Chioma's Kitchen</b></td><td>Brampton</td><td>D2</td><td>CA$450</td><td><span class="chip ok">Paid</span></td><td>May 03</td><td></td></tr>
-            <tr><td><b>Zuri Beads</b></td><td>Winnipeg</td><td>A1</td><td>US$292</td><td><span class="chip ok">Paid</span></td><td>May 05</td><td></td></tr>
-            <tr><td><b>Eko Crafts</b></td><td>Edmonton</td><td>E4</td><td>CA$300</td><td><span class="chip wait">Awaiting payment</span></td><td>Invoice sent</td><td><button class="btn" style="padding:6px 14px">Send reminder</button></td></tr>
-            <tr><td><b>[Vendor name]</b></td><td>Brampton</td><td>B2</td><td>£216</td><td><span class="chip info">Refunded</span></td><td>May 09</td><td></td></tr>
-            <tr><td><b>Hair by Tolu</b></td><td>Ottawa</td><td>G1</td><td>CA$350</td><td><span class="chip no">Failed card</span></td><td>Retry sent</td><td><button class="btn" style="padding:6px 14px">Send reminder</button></td></tr>
-          </tbody>
+          <thead><tr><th>Vendor</th><th>Market</th><th>Booth</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="pay-rows"></tbody>
         </table>
       </div>
     </section>
   </main>
 </div>
-<script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Payments: live booth fees and refunds. Export builds a CSV of the rows on screen.
+(function () {
+  var rows = [];
+  function money(c) { return 'CA$' + (Number(c || 0) / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load() {
+    return Promise.all([nmd.api('/admin/payments'), nmd.api('/admin/applications?payment=unpaid').catch(function () { return []; })]).then(function (r) {
+      rows = r[0];
+      var collected = rows.filter(function (p) { return p.kind === 'booth_fee' && p.status === 'succeeded'; }).reduce(function (s, p) { return s + p.amount_cents; }, 0);
+      var refunded = rows.filter(function (p) { return p.kind === 'refund'; }).reduce(function (s, p) { return s + p.amount_cents; }, 0);
+      document.getElementById('k-collected').textContent = money(collected);
+      document.getElementById('k-refunded').textContent = money(refunded);
+      document.getElementById('k-refunded-n').textContent = rows.filter(function (p) { return p.kind === 'refund'; }).length + ' refunds';
+      document.getElementById('k-awaiting').textContent = r[1].length ? 'Pending' : money(0);
+      document.getElementById('k-awaiting-n').textContent = r[1].length + ' vendors not yet paid';
+      document.getElementById('pay-rows').innerHTML = rows.length ? rows.map(function (p) {
+        var chip = p.kind === 'refund' ? '<span class="chip info">Refunded</span>' : '<span class="chip ok">Paid</span>';
+        return '<tr><td><b>' + esc(p.business || '') + '</b></td><td>' + esc(p.market_name || '') + '</td><td>' + esc(p.booth || '') + '</td><td>' + (p.kind === 'refund' ? '-' : '') + money(p.amount_cents) + '</td><td>' + chip + '</td><td>' + esc(new Date(p.created_at).toLocaleDateString()) + '</td></tr>';
+      }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">No payments yet.</td></tr>';
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+  document.getElementById('export').addEventListener('click', function () {
+    var lines = ['Vendor,Market,Booth,Amount CAD,Type,Date'].concat(rows.map(function (p) {
+      return [p.business || '', p.market_name || '', p.booth || '', (p.amount_cents / 100).toFixed(2), p.kind === 'refund' ? 'Refund' : 'Booth fee', new Date(p.created_at).toISOString().slice(0, 10)]
+        .map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }));
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' }));
+    a.download = 'payments.csv'; a.click();
+    nmdToast('CSV downloaded');
+  });
+  document.addEventListener('DOMContentLoaded', load);
+})();
+</script>
 </body>
 </html>

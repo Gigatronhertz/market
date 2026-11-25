@@ -18,12 +18,17 @@ Staff land on the check-in screen at `/app/checkin.html`.
 
 ## Demo data
 
-An empty database is filled with demo content on startup (set `DEMO_DATA=0` to turn this off). Demo accounts:
+An empty database is filled with demo content on startup: four markets (two upcoming, two past), booths and applications at each stage, vendors with businesses, products and subscriptions, guest tickets, news, events, banners, sponsors, resources and a gallery. Set `DEMO_DATA=0` to turn it off. Demo accounts:
 
 | Role | Email | Password |
 |---|---|---|
-| Vendor (three businesses, six products, active subscriptions) | vendor@demo.test | DemoVendor1 |
+| Vendor (Ngozi, three businesses) | vendor@demo.test | DemoVendor1 |
+| Vendor (Chidi, Ankara clothing) | chidi@demo.test | DemoVendor1 |
+| Vendor (Amara, beauty) | amara@demo.test | DemoVendor1 |
+| Vendor (Kofi, jewellery and woodcraft) | kofi@demo.test | DemoVendor1 |
 | Buyer | buyer@demo.test | DemoBuyer1 |
+| Buyer | ada@demo.test | DemoBuyer1 |
+| Staff (check-in) | staff@demo.test | DemoStaff1 |
 
 ## Environment variables
 

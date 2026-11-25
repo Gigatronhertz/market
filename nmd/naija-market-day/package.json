@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Naija Market Day platform: public site, vendor, buyer, admin and check-in workspaces",
-  "main": "server/index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server/index.js",
     "seed:demo": "SEED_DEMO=1 node --disable-warning=ExperimentalWarning -e \"require('./server/db').init(); require('./server/demo').seed(); console.log('demo data added')\"",

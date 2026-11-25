@@ -1,13 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "express",
   "functions": {
-    "api/index.js": {
+    "app.js": {
       "includeFiles": "{server/**,app/**,assets/**,*.html}",
       "maxDuration": 30
     }
   },
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/api/index.js" }
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/app.js"
+    }
   ]
 }

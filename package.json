@@ -1,0 +1,14 @@
+{
+  "name": "market",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Naija Market Day. The app lives in nmd/naija-market-day; this top-level entry lets Vercel deploy from the repo root.",
+  "main": "app.js",
+  "engines": { "node": ">=22.13" },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "stripe": "^17.0.0"
+  }
+}

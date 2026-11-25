@@ -6,7 +6,9 @@ const path = require('path');
 const fs = require('fs');
 const { DatabaseSync } = require('node:sqlite');
 
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
+// On Vercel the deployed folder is read-only; only /tmp can be written to. Locally the file lives in data/.
+const ON_VERCEL = !!process.env.VERCEL;
+const DATA_DIR = process.env.DATA_DIR || (ON_VERCEL ? '/tmp' : path.join(__dirname, '..', 'data'));
 const DB_FILE = process.env.DB_FILE || path.join(DATA_DIR, 'nmd.sqlite');
 
 let db = null;

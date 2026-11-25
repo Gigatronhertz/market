@@ -303,3 +303,7 @@ form.inline label{margin-bottom:6px}
   .side .who .btn{margin-top:0;width:auto}
 }
 @media (max-width:600px){.kpi{grid-template-columns:1fr 1fr}.kpi .n{font-size:24px}}
+
+.newsletter-form{flex:1 1 440px;max-width:560px;display:grid;gap:14px}
+.newsletter-form .field-row{margin:0}
+.newsletter-form .consent{font-size:14px;color:#4a4a4a;display:flex;align-items:center;gap:8px;cursor:pointer}

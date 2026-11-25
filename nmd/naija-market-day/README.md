@@ -16,6 +16,15 @@ npm run backup           # copies the database to data/backups and keeps 14 days
 Admin and staff sign in at `/app/admin-login.html` (not linked from the public site).
 Staff land on the check-in screen at `/app/checkin.html`.
 
+## Demo data
+
+An empty database is filled with demo content on startup (set `DEMO_DATA=0` to turn this off). Demo accounts:
+
+| Role | Email | Password |
+|---|---|---|
+| Vendor (three businesses, six products, active subscriptions) | vendor@demo.test | DemoVendor1 |
+| Buyer | buyer@demo.test | DemoBuyer1 |
+
 ## Environment variables
 
 | Variable | Purpose |

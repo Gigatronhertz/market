@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 260" role="img" aria-label="Illustration of a market stall with a striped awning">
+  <rect width="320" height="260" rx="22" fill="#E7F5EC"/>
+  <path d="M40 90 L60 50 L260 50 L280 90 Z" fill="#0F6B4A"/>
+  <path d="M60 50 L70 90 M100 50 L108 90 M140 50 L146 90 M180 50 L184 90 M220 50 L222 90 M260 50 L260 90" stroke="#F4B740" stroke-width="10" fill="none"/>
+  <path d="M40 90 Q60 104 80 90 Q100 104 120 90 Q140 104 160 90 Q180 104 200 90 Q220 104 240 90 Q260 104 280 90" fill="#F4B740"/>
+  <rect x="60" y="120" width="200" height="16" rx="4" fill="#8A4B22"/>
+  <rect x="70" y="136" width="10" height="90" fill="#8A4B22"/>
+  <rect x="240" y="136" width="10" height="90" fill="#8A4B22"/>
+  <ellipse cx="120" cy="108" rx="16" ry="8" fill="#E0523D"/>
+  <ellipse cx="150" cy="108" rx="14" ry="7" fill="#F4B740"/>
+  <ellipse cx="200" cy="108" rx="18" ry="8" fill="#8EE0B0"/>
+  <path d="M100 226 Q100 200 130 200 Q160 200 160 226 Z" fill="#C07A3E"/>
+  <path d="M175 226 Q175 196 210 196 Q240 196 240 226 Z" fill="#0F6B4A" opacity=".8"/>
+  <circle cx="60" cy="40" r="6" fill="#F4B740"/>
+  <circle cx="270" cy="30" r="8" fill="#8EE0B0"/>
+</svg>

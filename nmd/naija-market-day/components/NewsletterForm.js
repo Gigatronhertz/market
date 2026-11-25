@@ -18,10 +18,14 @@ export default function NewsletterForm() {
     setBusy(false);
   }
   return (
-    <form className="field-row" onSubmit={submit} style={{ alignItems: 'center' }}>
-      <input type="email" name="email" placeholder="Your email" required aria-label="Email" />
-      <label className="inline small" style={{ alignSelf: 'center' }}><input type="checkbox" name="consent" required /> Send me market news</label>
-      <button className="btn btn-ink" type="submit" disabled={busy}>Subscribe</button>
+    <form className="newsletter-form" onSubmit={submit}>
+      <div className="field-row">
+        <input type="email" name="email" placeholder="Your email" required aria-label="Email" />
+        <button className="btn btn-ink" type="submit" disabled={busy}>Subscribe</button>
+      </div>
+      <label className="consent">
+        <input type="checkbox" name="consent" required /> Send me market news and offers. You can unsubscribe any time.
+      </label>
     </form>
   );
 }

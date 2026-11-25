@@ -12,6 +12,8 @@ function createApp() {
   db.init();
   seed.seedDefaults();
   const created = seed.ensureAdmin();
+  // Demo content on an empty database, unless DEMO_DATA=0. Safe to run every start: it does nothing once markets exist.
+  if (process.env.DEMO_DATA !== '0') require('./demo').seed();
 
   const app = express();
   app.disable('x-powered-by');

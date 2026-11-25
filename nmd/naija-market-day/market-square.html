@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Square · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--ink:#111816;--muted:#5F6B66;--line:#E6EAE8;--accent:#0F6B4A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.ph{background:#DCE8E1;color:#4A5551;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;padding:12px}
+.chip{border:1px solid #D5DBD8;border-radius:6px;padding:10px 18px;font-size:15px;font-weight:500;background:#fff;cursor:pointer;font-family:inherit}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.layout{display:flex;flex-wrap:wrap;gap:24px;margin-top:24px;align-items:flex-start}
+aside.filters{flex:0 0 220px;border:1px solid var(--line);border-radius:8px;padding:20px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.card{display:block;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.card:hover{box-shadow:0 2px 12px rgba(17,24,22,.12)}
+input,select{font-family:inherit;font-size:15px}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="events.html">Markets</a>
+      <a class="link on" href="market-square.html" aria-current="page">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link" href="summit.html">Summit</a>
+      <a class="link" href="contact.html">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+
+<main class="wrap" style="padding-top:16px;padding-bottom:56px">
+  <a href="#" style="display:block;position:relative;height:90px;border-radius:8px;overflow:hidden;color:#fff;background:#111816">
+    <img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=1600&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,16,.85),rgba(10,20,16,.35))"></div>
+    <div style="position:relative;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 24px">
+      <div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.85">Ad · Naija Market Day</div><div style="font-size:20px;font-weight:700">Book a booth at the next market</div></div>
+      <span style="background:#fff;color:#111816;border-radius:6px;padding:9px 18px;font-weight:600;font-size:14px">Reserve</span>
+    </div>
+  </a>
+
+  <div style="margin-top:24px">
+    <h1 style="margin:0;font-size:34px;letter-spacing:-.02em">Market Square</h1>
+    <p style="margin:6px 0 0;color:var(--muted);font-size:16px">Browse vendors, then chat to order. Payment is arranged with the vendor.</p>
+  </div>
+
+  <div role="group" aria-label="Quick filters" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px">
+    <button class="chip" aria-pressed="true">All</button>
+    <button class="chip" aria-pressed="false">Clothing</button>
+    <button class="chip" aria-pressed="false">Crafts</button>
+    <button class="chip" aria-pressed="false">Food</button>
+    <button class="chip" aria-pressed="false">Jewellery</button>
+    <button class="chip" aria-pressed="false">Beauty</button>
+  </div>
+
+  <div class="layout">
+    <aside class="filters" aria-label="Filters">
+      <div style="font-weight:700;font-size:16px;margin-bottom:16px">Filters</div>
+      <label for="city" style="font-size:13px;font-weight:600;color:var(--muted)">City</label>
+      <select id="city" style="width:100%;padding:10px;border:1px solid #D5DBD8;border-radius:10px;background:#fff;margin:8px 0 20px"><option>All cities</option><option>Brampton</option><option>Edmonton</option><option>Winnipeg</option></select>
+      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:8px"><input type="checkbox"> New this week</label>
+      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:20px"><input type="checkbox"> Vendors at the next market</label>
+      <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px">Price (CAD)</div>
+      <div style="display:flex;gap:8px">
+        <label for="min" style="position:absolute;left:-9999px">Minimum price</label><input id="min" type="number" placeholder="Min" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
+        <label for="max" style="position:absolute;left:-9999px">Maximum price</label><input id="max" type="number" placeholder="Max" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
+      </div>
+    </aside>
+
+    <section style="flex:999 1 520px;min-width:0">
+      <div style="font-size:14px;color:var(--muted);margin-bottom:16px">Showing 6 listings</div>
+      <div class="grid">
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=800&q=80&auto=format&fit=crop" alt="Market stalls with vendors and shoppers"></div><div style="padding:14px"><div style="font-weight:600">Market stall finds</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?w=800&q=80&auto=format&fit=crop" alt="Jollof rice served with grilled fish and vegetables"></div><div style="padding:14px"><div style="font-weight:600">Jollof rice meal kit</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1751048053312-73c620d69557?w=800&q=80&auto=format&fit=crop" alt="Person in traditional African attire"></div><div style="padding:14px"><div style="font-weight:600">Traditional attire</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=800&q=80&auto=format&fit=crop" alt="Woman in a colorful dress"></div><div style="padding:14px"><div style="font-weight:600">Colourful dress</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=800&q=80&auto=format&fit=crop" alt="Woman in a red and white floral dress"></div><div style="padding:14px"><div style="font-weight:600">Floral wrap dress</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=800&q=80&auto=format&fit=crop" alt="Man in front of a fruit stand"></div><div style="padding:14px"><div style="font-weight:600">Fresh produce box</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--deep)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:14px 0 16px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#9DBBAA">Sign in</a> · <a href="messages.html" style="display:inline;color:#9DBBAA">Messages</a></span></div>
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>

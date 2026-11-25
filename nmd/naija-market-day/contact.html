@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--ink:#111816;--muted:#5F6B66;--line:#E6EAE8;--accent:#0F6B4A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.field input,.field select,.field textarea{padding:12px 14px;border:1px solid #D5DBD8;border-radius:12px;font-size:15px;font-weight:400;font-family:inherit;background:#fff}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px}
+details{border-top:1px solid var(--line)}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:18px 0;font-size:17px;font-weight:600;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary span{font-weight:400}
+details p{margin:0 0 18px;color:var(--muted);line-height:1.6}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="events.html">Markets</a>
+      <a class="link" href="market-square.html">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link" href="summit.html">Summit</a>
+      <a class="link on" href="contact.html" aria-current="page">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+
+<section style="position:relative;color:#fff;background:#0B3D2A;overflow:hidden">
+  <img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=2000&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;opacity:.45">
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,61,42,.9),rgba(11,61,42,.35))"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:64px">
+    <h1 style="margin:10px 0 12px;font-size:46px;line-height:1.1;font-weight:800;letter-spacing:-.015em">Contact us</h1>
+    <p style="margin:0;font-size:19px;line-height:1.5;max-width:560px;color:#E3F3EA">Questions about a market, a booth or advertising? We are happy to help.</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:48px;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+  <form onsubmit="event.preventDefault()" class="card" style="flex:2 1 420px;display:flex;flex-direction:column;gap:14px;padding:28px">
+    <h2 style="margin:0 0 4px;font-size:22px">Send us a message</h2>
+    <label class="field">Name<input type="text" placeholder="Your name"></label>
+    <label class="field">Email<input type="email" placeholder="you@example.com"></label>
+    <label class="field">Topic<select><option>General question</option><option>Vendor registration</option><option>Booth or payment</option><option>Advertising</option><option>Media and press</option></select></label>
+    <label class="field">Message<textarea rows="5"></textarea></label>
+    <button type="submit" style="background:var(--accent);color:#fff;border:0;padding:14px;border-radius:6px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit">Send message</button>
+  </form>
+
+  <aside style="flex:1 1 280px;display:flex;flex-direction:column;gap:14px">
+    <div class="card"><div style="font-size:13px;color:var(--muted)">Email</div><div style="font-weight:700;margin-top:2px">[contact email]</div></div>
+    <div class="card"><div style="font-size:13px;color:var(--muted)">Phone</div><div style="font-weight:700;margin-top:2px">[phone]</div></div>
+    <div class="card"><div style="font-size:13px;color:var(--muted)">Instagram</div><div style="font-weight:700;margin-top:2px">@naijamarketday</div></div>
+    <div class="card"><div style="font-size:13px;color:var(--muted)">Based in</div><div style="font-weight:700;margin-top:2px">Canada, touring nationwide</div></div>
+  </aside>
+</main>
+
+<section class="wrap" style="padding-top:56px">
+  <h2 style="margin:0 0 20px;font-size:38px;font-weight:800;letter-spacing:-.015em">Questions</h2>
+  <details><summary>Is entry to the markets free? <span>+</span></summary><p>Yes. Naija Market Day is free and open to the public.</p></details>
+  <details><summary>How do I become a vendor? <span>+</span></summary><p>Create a vendor account, upload your regulatory information, and the NMD team reviews it. Once approved you can list products and book a booth.</p></details>
+  <details><summary>How do I pay for a booth? <span>+</span></summary><p>Pay by card with Stripe in GBP, USD or CAD, then choose your position on the market map.</p></details>
+  <details><summary>Can I buy on Naija Market Day? <span>+</span></summary><p>Browse the Market Square with no account. Create a free account to chat with sellers. Payment is arranged directly with the seller.</p></details>
+  <details><summary>Does NMD take payment for goods? <span>+</span></summary><p>No. We connect buyers and sellers. We earn from booth fees and ads.</p></details>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--deep)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:14px 0 16px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#9DBBAA">Sign in</a> · <a href="messages.html" style="display:inline;color:#9DBBAA">Messages</a></span></div>
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--ink:#111816;--muted:#5F6B66;--line:#E6EAE8;--accent:#0F6B4A}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img{display:block;object-fit:cover}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.box{background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;flex-wrap:wrap;overflow:hidden;min-height:620px}
+.thread{width:100%;display:flex;gap:12px;text-align:left;border:0;border-top:1px solid #EEF1EF;padding:14px;cursor:pointer;font-family:inherit;background:#fff}
+.thread[aria-current="true"]{background:#EEF4F0}
+.bubble{max-width:70%;padding:10px 14px;border-radius:8px;font-size:15px;line-height:1.45}
+.me{align-self:flex-end;background:var(--accent);color:#fff}
+.them{align-self:flex-start;background:#fff;border:1px solid var(--line)}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="events.html">Markets</a>
+      <a class="link" href="market-square.html">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link" href="summit.html">Summit</a>
+      <a class="link" href="contact.html">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+
+<main class="wrap" style="padding-top:24px;padding-bottom:48px">
+  <h1 style="margin:0 0 16px;font-size:28px;letter-spacing:-.02em">Messages</h1>
+  <div class="box">
+    <aside aria-label="Conversations" style="flex:0 0 300px;border-right:1px solid var(--line);display:flex;flex-direction:column">
+      <div style="padding:14px"><label for="search" style="position:absolute;left:-9999px">Search messages</label><input id="search" type="search" placeholder="Search messages" style="width:100%;padding:12px 14px;border:1px solid #D5DBD8;border-radius:12px;font-size:15px;font-family:inherit"></div>
+      <div id="threads"></div>
+    </aside>
+    <section aria-label="Conversation" style="flex:1 1 420px;display:flex;flex-direction:column;min-width:0">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div><b id="name" style="font-size:17px"></b><div id="about" style="font-size:13px;color:var(--muted)"></div></div>
+        <button id="report" type="button" style="background:#fff;border:1px solid #D5DBD8;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit">Report this chat</button>
+      </div>
+      <div id="log" role="log" aria-live="polite" style="flex:1;padding:20px;display:flex;flex-direction:column;gap:10px;background:#FAFBFA"></div>
+      <form id="send" style="border-top:1px solid var(--line);padding:14px 20px;display:flex;gap:10px;flex-wrap:wrap">
+        <label for="msg" style="position:absolute;left:-9999px">Message</label>
+        <input id="msg" type="text" placeholder="Write a message" style="flex:1;min-width:180px;padding:12px 14px;border:1px solid #D5DBD8;border-radius:6px;font-size:15px;font-family:inherit">
+        <button type="submit" style="background:var(--accent);color:#fff;border:0;border-radius:6px;padding:12px 22px;font-weight:600;cursor:pointer;font-family:inherit">Send</button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--deep)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:14px 0 16px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#9DBBAA">Sign in</a> · <a href="messages.html" style="display:inline;color:#9DBBAA">Messages</a></span></div>
+  </div>
+</footer>
+
+<script>
+// Demo data only. Messages are kept in memory and reset on reload.
+var threads = [
+  { name: "Ade's Adire", product: 'Hand-dyed adire fabric', img: 'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=120&q=80&auto=format&fit=crop', time: '10:42', msgs: [ { me: false, t: 'Hello! Thanks for your interest in the adire fabric.' }, { me: true, t: 'Hi, is it available in blue? Can you ship to Calgary?' }, { me: false, t: 'Yes, blue is in stock. Shipping to Calgary is $12.' } ] },
+  { name: "Mama Chioma's Kitchen", product: 'House spice blend', img: 'https://images.unsplash.com/photo-1664992960082-0ea299a9c53e?w=120&q=80&auto=format&fit=crop', time: 'Yesterday', msgs: [ { me: true, t: 'Is the spice blend very hot?' }, { me: false, t: 'Medium. I can make a milder one for you.' } ] },
+  { name: 'Zuri Beads', product: 'Beaded necklace set', img: 'https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=120&q=80&auto=format&fit=crop', time: 'Mon', msgs: [ { me: false, t: 'We will be at the Brampton market on May 30. Come and see us!' } ] }
+];
+var sel = 0;
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function renderThreads() {
+  document.getElementById('threads').innerHTML = threads.map(function (t, i) {
+    return '<button class="thread" type="button" aria-current="' + (i === sel) + '" data-i="' + i + '">' +
+      '<img src="' + t.img + '" alt="" style="width:44px;height:44px;border-radius:50%;flex:none">' +
+      '<span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px">' + esc(t.name) + '</b><span style="font-size:12px;color:#8A948F">' + esc(t.time) + '</span></span>' +
+      '<span style="display:block;font-size:13px;color:#5F6B66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(t.msgs[t.msgs.length - 1].t) + '</span></span></button>';
+  }).join('');
+}
+function renderActive() {
+  var t = threads[sel];
+  document.getElementById('name').textContent = t.name;
+  document.getElementById('about').textContent = 'About: ' + t.product;
+  document.getElementById('log').innerHTML = t.msgs.map(function (m) {
+    return '<div class="bubble ' + (m.me ? 'me' : 'them') + '">' + esc(m.t) + '</div>';
+  }).join('');
+}
+document.getElementById('threads').addEventListener('click', function (e) {
+  var b = e.target.closest('.thread'); if (!b) return;
+  sel = Number(b.getAttribute('data-i')); renderThreads(); renderActive();
+});
+document.getElementById('send').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var input = document.getElementById('msg'); var text = input.value.trim(); if (!text) return;
+  threads[sel].msgs.push({ me: true, t: text }); input.value = ''; renderThreads(); renderActive();
+});
+document.getElementById('report').addEventListener('click', function () {
+  this.textContent = 'Reported to NMD'; this.disabled = true;
+});
+renderThreads(); renderActive();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

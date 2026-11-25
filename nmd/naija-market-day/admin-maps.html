@@ -1,0 +1,165 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booth map Â· Naija Market Day admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.booth{position:absolute;transform:translate(-50%,-50%);width:5.6%;aspect-ratio:1.3;border-radius:6px;font-size:12px;font-weight:700;padding:0;background:#fff;color:var(--ink);border:2px solid var(--accent);cursor:pointer;font-family:inherit}
+.booth.taken{background:#D5DBD8;color:#5F6B66;border:1px solid #B8C0BC}
+.booth.sel{background:#111816;color:#fff;border-color:#111816}
+.pill{border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;background:#fff;border:1px solid #D5DBD8;cursor:pointer;font-family:inherit}
+.pill.on{background:#111816;color:#fff;border-color:#111816}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.field input,.field select{padding:12px 14px;border:1px solid #D5DBD8;border-radius:12px;font-size:15px;font-weight:400;font-family:inherit;background:#fff;min-width:0}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Admin sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-approvals.html">Approvals</a>
+    <a href="admin-maps.html" class="on">Booth map</a>
+    <a href="admin-payments.html">Payments</a>
+    <a href="admin-emails.html">Vendor emails</a>
+    <a href="admin-ads.html">Ads</a>
+    <a href="admin-content.html">News and events</a>
+    <a href="admin-chats.html">Chats and support</a>
+    <a href="admin-roles.html">Roles and permissions</a>
+    <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--line)"><a href="logged-out.html" style="color:#8A2A1C">Log out</a></div>
+  </nav>
+  <main class="main">
+    <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
+      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Booth map</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Mark where each booth goes and set the price. Vendors choose from this map when they pay.</p></div>
+      <button id="save" class="pill" style="background:var(--accent);color:#fff;border:0;padding:12px 24px;font-weight:700">Save and publish map</button>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+      <section class="card" aria-label="Map editor" style="flex:2 1 600px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div role="group" aria-label="Market" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:14px;font-weight:600;margin-right:4px">Market</span>
+            <button class="pill on" data-m="brampton">Brampton</button>
+            <button class="pill" data-m="winnipeg">Winnipeg</button>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <label class="pill" style="cursor:pointer">Upload map<input id="upload" type="file" accept="image/*" style="display:none"></label>
+            <button id="add" class="pill">Add booths</button>
+          </div>
+        </div>
+        <div id="map" style="position:relative;width:100%;aspect-ratio:3/2;border-radius:14px;overflow:hidden;background:#E4EFD9 url('https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=1200&q=80&auto=format&fit=crop') center/cover"></div>
+        <p id="hint" style="margin:10px 0 0;font-size:13px;color:var(--muted)">Upload your own site plan or use the template. Click a booth to edit it.</p>
+      </section>
+
+      <aside style="flex:1 1 300px;display:flex;flex-direction:column;gap:16px" aria-label="Booth details">
+        <div class="card">
+          <h2 style="margin:0 0 12px;font-size:18px">Booth details</h2>
+          <div id="details"><p style="margin:0;color:var(--muted);font-size:14px;line-height:1.5">Click a booth on the map to edit it, or switch on Add booths and click an empty spot to place a new one.</p></div>
+        </div>
+        <div class="card">
+          <h2 style="margin:0 0 12px;font-size:18px">This market</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px">
+            <div style="background:#F6F8F7;border-radius:12px;padding:12px">Booths<br><b id="s-total" style="font-size:22px"></b></div>
+            <div style="background:#F6F8F7;border-radius:12px;padding:12px">Free<br><b id="s-free" style="font-size:22px;color:var(--accent)"></b></div>
+            <div style="background:#F6F8F7;border-radius:12px;padding:12px">Assigned<br><b id="s-taken" style="font-size:22px"></b></div>
+            <div style="background:#F6F8F7;border-radius:12px;padding:12px">Potential<br><b id="s-rev" style="font-size:22px"></b></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+// Booth layout is illustrative. Edits live in the page only and are not saved.
+var data = {
+  brampton: [['A1',8,28,400,'Front','free'],['A2',15,28,400,'Front','taken'],['A3',22,28,400,'Front','free'],['A4',29,28,400,'Front','taken'],['B1',64,28,400,'Front','taken'],['B2',71,28,400,'Front','free'],['C1',8,46,300,'Standard','free'],['C2',15,46,300,'Standard','taken'],['C3',22,46,300,'Standard','free'],['C4',29,46,300,'Standard','free'],['D1',66,46,450,'Food','taken'],['D2',73,46,450,'Food','free'],['D3',80,46,450,'Food','free'],['E1',8,64,300,'Standard','free'],['E2',15,64,300,'Standard','free'],['E3',22,64,300,'Standard','taken'],['F1',66,64,450,'Food','free'],['F2',73,64,450,'Food','taken'],['G1',12,82,350,'Corner','free'],['G2',19,82,350,'Corner','taken'],['H1',62,82,350,'Corner','taken'],['H2',69,82,350,'Corner','free']],
+  winnipeg: [['A1',8,28,400,'Front','free'],['A2',15,28,400,'Front','taken'],['B1',64,28,400,'Front','free'],['C1',8,46,300,'Standard','free'],['C2',15,46,300,'Standard','taken'],['D1',66,46,450,'Food','free'],['D2',73,46,450,'Food','taken']]
+};
+var market = 'brampton', sel = null, addMode = false;
+function booths() { return data[market]; }
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function render() {
+  var map = document.getElementById('map');
+  map.style.outline = addMode ? '3px dashed #0F6B4A' : '';
+  map.style.cursor = addMode ? 'crosshair' : '';
+  map.innerHTML = '';
+  booths().forEach(function (b) {
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'booth' + (b[5] === 'taken' ? ' taken' : '') + (sel && sel[0] === b[0] ? ' sel' : '');
+    el.style.left = b[1] + '%'; el.style.top = b[2] + '%';
+    el.textContent = b[0];
+    el.setAttribute('aria-label', 'Booth ' + b[0]);
+    el.addEventListener('click', function (e) { e.stopPropagation(); sel = b; render(); });
+    map.appendChild(el);
+  });
+  var total = booths().length, free = booths().filter(function (b) { return b[5] === 'free'; }).length;
+  var taken = booths().filter(function (b) { return b[5] === 'taken'; }).length;
+  var rev = booths().reduce(function (a, b) { return a + (b[5] === 'free' ? b[3] : 0); }, 0);
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-free').textContent = free;
+  document.getElementById('s-taken').textContent = taken;
+  document.getElementById('s-rev').textContent = 'CA$' + rev.toLocaleString();
+  document.getElementById('hint').textContent = addMode ? 'Click anywhere on the map to drop a new booth.' : 'Upload your own site plan or use the template. Click a booth to edit it.';
+  document.getElementById('add').textContent = addMode ? 'Done adding' : 'Add booths';
+  document.getElementById('add').classList.toggle('on', addMode);
+  var d = document.getElementById('details');
+  if (!sel) { d.innerHTML = '<p style="margin:0;color:var(--muted);font-size:14px;line-height:1.5">Click a booth on the map to edit it.</p>'; return; }
+  d.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">' +
+    '<label class="field">Label<input value="' + esc(sel[0]) + '" data-f="0"></label>' +
+    '<label class="field">Zone<select data-f="4">' + ['Front','Standard','Food','Corner'].map(function (z) { return '<option' + (z === sel[4] ? ' selected' : '') + '>' + z + '</option>'; }).join('') + '</select></label>' +
+    '<label class="field">Price (CAD)<input type="number" value="' + sel[3] + '" data-f="3"></label>' +
+    '<label class="field">Status<select data-f="5">' + [['free','Free'],['taken','Assigned']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === sel[5] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
+    '<button id="remove" class="pill" style="color:#8A2A1C;border-color:#E3B4AC">Remove booth</button></div>';
+}
+document.getElementById('details').addEventListener('change', function (e) {
+  var f = e.target.getAttribute('data-f'); if (f === null || !sel) return;
+  var i = Number(f); sel[i] = i === 3 ? Number(e.target.value) : e.target.value; render();
+});
+document.getElementById('details').addEventListener('click', function (e) {
+  if (e.target.id !== 'remove' || !sel) return;
+  data[market] = booths().filter(function (b) { return b !== sel; }); sel = null; render();
+});
+document.getElementById('map').addEventListener('click', function (e) {
+  if (!addMode) return;
+  var r = this.getBoundingClientRect();
+  var x = Math.round((e.clientX - r.left) / r.width * 1000) / 10;
+  var y = Math.round((e.clientY - r.top) / r.height * 1000) / 10;
+  var nb = ['N' + (booths().length + 1), x, y, 300, 'Standard', 'free'];
+  data[market].push(nb); sel = nb; render();
+});
+document.getElementById('add').addEventListener('click', function () { addMode = !addMode; render(); });
+document.querySelectorAll('[data-m]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    market = b.getAttribute('data-m'); sel = null;
+    document.querySelectorAll('[data-m]').forEach(function (x) { x.classList.toggle('on', x === b); });
+    render();
+  });
+});
+document.getElementById('upload').addEventListener('change', function (e) {
+  var f = e.target.files && e.target.files[0]; if (!f) return;
+  document.getElementById('map').style.backgroundImage = 'url(' + URL.createObjectURL(f) + ')';
+  document.getElementById('map').style.backgroundSize = 'cover';
+});
+document.getElementById('save').addEventListener('click', function () { this.textContent = 'Saved in this page'; });
+render();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
+
+

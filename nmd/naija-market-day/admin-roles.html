@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roles and permissions · Naija Market Day admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600;text-align:center}
+th:first-child,td:first-child{text-align:left}
+td{padding:14px 12px;border-bottom:1px solid #EEF1EF;text-align:center}
+td:first-child{font-weight:500}
+.chip{padding:3px 12px;font-size:13px;font-weight:600;border-radius:999px;white-space:nowrap}
+.ok{background:#E1F1E8;color:#145A3A}.wait{background:#FBEBCB;color:#7A4A0A}
+.sw{width:44px;height:26px;border-radius:999px;border:0;padding:3px;cursor:pointer;display:inline-flex;align-items:center}
+.knob{width:20px;height:20px;border-radius:50%;background:#fff;display:block}
+.btn{border-radius:999px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;border:1px solid var(--accent)}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Admin sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-approvals.html">Approvals</a>
+    <a href="admin-maps.html">Booth map</a>
+    <a href="admin-payments.html">Payments</a>
+    <a href="admin-emails.html">Vendor emails</a>
+    <a href="admin-ads.html">Ads</a>
+    <a href="admin-content.html">News and events</a>
+    <a href="admin-chats.html">Chats and support</a>
+    <a href="admin-roles.html" class="on">Roles and permissions</a>
+    <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--line)"><a href="logged-out.html" style="color:#8A2A1C">Log out</a></div>
+  </nav>
+  <main class="main">
+    <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
+      <div><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Roles and permissions</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Decide who on the NMD team can do what.</p></div>
+      <button class="btn">Invite teammate</button>
+    </header>
+
+    <section class="card">
+      <h2 style="margin:0 0 8px;font-size:18px;text-align:left">Permissions by role</h2>
+      <table>
+        <thead><tr><th></th><th>Super admin</th><th>Operations</th><th>Content editor</th><th>Support</th></tr></thead>
+        <tbody id="matrix"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2 style="margin:0 0 8px;font-size:18px">Team</h2>
+      <table>
+        <thead><tr><th style="text-align:left">Name</th><th style="text-align:left">Role</th><th style="text-align:left">Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>[Name]</b></td><td style="text-align:left">Super admin</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
+          <tr><td><b>[Name]</b></td><td style="text-align:left">Operations</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
+          <tr><td><b>[Name]</b></td><td style="text-align:left">Content editor</td><td style="text-align:left"><span class="chip ok">Active</span></td></tr>
+          <tr><td><b>[Name]</b></td><td style="text-align:left">Support</td><td style="text-align:left"><span class="chip wait">Invited</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+<script>
+var perms = ['Approve vendors', 'Approve listings', 'Approve events', 'Assign booths', 'View payments', 'Manage ads', 'Edit news and events', 'Manage roles'];
+var roles = ['Super admin', 'Operations', 'Content editor', 'Support'];
+var m = [[1,1,0,1],[1,1,0,1],[1,1,0,0],[1,1,0,0],[1,1,0,0],[1,0,0,0],[1,0,1,0],[1,0,0,0]];
+function render() {
+  document.getElementById('matrix').innerHTML = perms.map(function (p, i) {
+    return '<tr><td>' + p + '</td>' + roles.map(function (r, j) {
+      var on = !!m[i][j];
+      return '<td><button class="sw" role="switch" aria-checked="' + on + '" aria-label="' + r + ': ' + p + '" data-p="' + i + '" data-r="' + j + '" style="justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#0F6B4A' : '#CBD3CF') + '"><span class="knob"></span></button></td>';
+    }).join('') + '</tr>';
+  }).join('');
+}
+document.getElementById('matrix').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-p]'); if (!b) return;
+  var p = Number(b.getAttribute('data-p')), r = Number(b.getAttribute('data-r'));
+  m[p][r] = m[p][r] ? 0 : 1; render();
+});
+render();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

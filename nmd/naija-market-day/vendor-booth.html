@@ -1,0 +1,154 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book a booth Â· Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.booth{position:absolute;transform:translate(-50%,-50%);width:5.6%;aspect-ratio:1.3;border-radius:6px;font-size:12px;font-weight:700;padding:0;border:2px solid var(--accent);background:#fff;color:var(--ink);cursor:pointer;font-family:inherit}
+.booth.taken{background:#D5DBD8;color:#8A948F;border-color:#C4CBC7;cursor:not-allowed}
+.booth.sel{background:var(--accent);color:#fff;border-color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.pill{border-radius:999px;padding:8px 18px;font-size:14px;font-weight:600;border:1px solid #D5DBD8;background:#fff;cursor:pointer;font-family:inherit}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cur.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Vendor sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
+    <a href="vendor-dashboard.html">Overview</a>
+    <a href="vendor-product-form.html">Products</a>
+    <a href="messages.html">Chats and orders</a>
+    <a href="vendor-dashboard.html#events">Events</a>
+    <a href="vendor-booth.html" class="on">Booth and payments</a>
+    <a href="vendor-ads.html">Ads</a>
+    <a href="vendor-onboarding.html">Onboarding</a>
+    <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--line)"><a href="logged-out.html" style="color:#8A2A1C">Log out</a></div>
+  </nav>
+
+  <main class="main">
+    <header>
+      <h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Book your booth</h1>
+      <p style="margin:4px 0 0;color:var(--muted);font-size:15px">Choose your position on the map, then pay.</p>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <section class="card" aria-label="Market map" style="flex:2 1 600px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div role="group" aria-label="Choose market" style="display:flex;gap:8px">
+            <button class="pill on" type="button" data-m="brampton">Brampton</button>
+            <button class="pill" type="button" data-m="winnipeg">Winnipeg</button>
+          </div>
+          <div style="display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap"><span>&#9633; Free</span><span>&#9632; Taken</span><span style="color:var(--accent)">&#9632; Your pick</span></div>
+        </div>
+        <div id="map" style="position:relative;width:100%;aspect-ratio:3/2;border-radius:14px;overflow:hidden;background:#E4EFD9"><img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=1200&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45"></div>
+        <p style="margin:12px 0 0;font-size:13px;color:var(--muted)">Click a free booth to choose your position. Food-court booths cost more.</p>
+      </section>
+
+      <aside class="card" aria-label="Your booth" style="flex:1 1 300px;position:sticky;top:16px">
+        <div id="paid" style="display:none;text-align:center">
+          <h2 style="margin:0;font-size:22px" id="paid-title"></h2>
+          <p id="paid-text" style="color:var(--muted);line-height:1.5;font-size:14px"></p>
+          <a href="vendor-dashboard.html" class="pill on" style="display:inline-block;border-radius:999px">Back to my dashboard</a>
+        </div>
+        <div id="open">
+          <h2 style="margin:0 0 4px;font-size:22px">Your booth</h2>
+          <p id="mkt" style="margin:0 0 16px;color:var(--muted);font-size:14px"></p>
+          <div id="detail" style="background:#F6F8F7;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;font-size:15px">
+            <div style="display:flex;justify-content:space-between"><span>Position</span><b id="d-id">None</b></div>
+            <div style="display:flex;justify-content:space-between"><span>Zone</span><b id="d-zone">-</b></div>
+            <div style="display:flex;justify-content:space-between"><span>Size</span><b>3 m x 3 m</b></div>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;font-size:18px"><span>Total</span><b id="d-total">-</b></div>
+          </div>
+          <div style="margin:16px 0 8px;font-size:13px;font-weight:600">Pay in</div>
+          <div role="group" aria-label="Currency" style="display:flex;gap:6px">
+            <button class="pill cur on" type="button" data-c="CAD">CAD</button>
+            <button class="pill cur" type="button" data-c="USD">USD</button>
+            <button class="pill cur" type="button" data-c="GBP">GBP</button>
+          </div>
+          <button id="pay" type="button" disabled style="width:100%;margin-top:18px;border:0;border-radius:999px;padding:14px;font-size:16px;font-weight:700;background:#E6EAE8;color:#8A948F;cursor:not-allowed;font-family:inherit">Pay booth fee with Stripe</button>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0">Your spot is held for 15 minutes. Cards are handled by Stripe, so NMD never sees your card number.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+// Booth layout is illustrative. Prices are placeholders; no payment is taken.
+var RATE = { CAD: 1, USD: 0.73, GBP: 0.54 }, SYM = { CAD: 'CA$', USD: '$', GBP: 'Â£' };
+var BOOTHS = [
+  ['A1',8,28,400,'Front',0],['A2',15,28,400,'Front',1],['A3',22,28,400,'Front',0],['A4',29,28,400,'Front',1],
+  ['B1',64,28,400,'Front',1],['B2',71,28,400,'Front',0],['B3',78,28,400,'Front',1],['B4',85,28,400,'Front',0],
+  ['C1',8,46,300,'Standard',0],['C2',15,46,300,'Standard',1],['C3',22,46,300,'Standard',0],['C4',29,46,300,'Standard',0],
+  ['D1',66,46,450,'Food',1],['D2',73,46,450,'Food',0],['D3',80,46,450,'Food',0],['D4',87,46,450,'Food',1],
+  ['E1',8,64,300,'Standard',0],['E2',15,64,300,'Standard',0],['E3',22,64,300,'Standard',1],['E4',29,64,300,'Standard',0],
+  ['F1',66,64,450,'Food',0],['F2',73,64,450,'Food',1],['F3',80,64,450,'Food',0],['F4',87,64,450,'Food',0],
+  ['G1',12,82,350,'Corner',0],['G2',19,82,350,'Corner',1],['G3',26,82,350,'Corner',0],['G4',33,82,350,'Corner',0],
+  ['H1',62,82,350,'Corner',1],['H2',69,82,350,'Corner',0],['H3',76,82,350,'Corner',0],['H4',83,82,350,'Corner',1]
+];
+var state = { market: 'Brampton', sel: null, cur: 'CAD' };
+var map = document.getElementById('map');
+BOOTHS.forEach(function (b) {
+  var el = document.createElement('button');
+  el.type = 'button'; el.className = 'booth' + (b[5] ? ' taken' : '');
+  el.style.left = b[1] + '%'; el.style.top = b[2] + '%';
+  el.textContent = b[0];
+  el.setAttribute('aria-label', 'Booth ' + b[0] + (b[5] ? ', taken' : ''));
+  el.addEventListener('click', function () { if (!b[5]) { state.sel = b; render(); } });
+  el.dataset.id = b[0];
+  map.appendChild(el);
+});
+function render() {
+  document.querySelectorAll('.booth').forEach(function (el) {
+    el.classList.toggle('sel', !!state.sel && el.dataset.id === state.sel[0]);
+  });
+  document.getElementById('mkt').textContent = state.market + ' Market Day';
+  document.getElementById('d-id').textContent = state.sel ? state.sel[0] : 'None';
+  document.getElementById('d-zone').textContent = state.sel ? state.sel[4] : '-';
+  document.getElementById('d-total').textContent = state.sel ? SYM[state.cur] + Math.round(state.sel[3] * RATE[state.cur]) : '-';
+  var pay = document.getElementById('pay');
+  pay.disabled = !state.sel;
+  pay.style.background = state.sel ? '#0F6B4A' : '#E6EAE8';
+  pay.style.color = state.sel ? '#fff' : '#8A948F';
+  pay.style.cursor = state.sel ? 'pointer' : 'not-allowed';
+}
+document.querySelectorAll('[data-m]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    document.querySelectorAll('[data-m]').forEach(function (x) { x.classList.toggle('on', x === b); });
+    state.market = b.dataset.m === 'brampton' ? 'Brampton' : 'Winnipeg'; state.sel = null; render();
+  });
+});
+document.querySelectorAll('[data-c]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    document.querySelectorAll('[data-c]').forEach(function (x) { x.classList.toggle('on', x === b); });
+    state.cur = b.dataset.c; render();
+  });
+});
+document.getElementById('pay').addEventListener('click', function () {
+  if (!state.sel) return;
+  document.getElementById('open').style.display = 'none';
+  var paid = document.getElementById('paid');
+  paid.style.display = 'block';
+  document.getElementById('paid-title').textContent = 'Booth ' + state.sel[0] + ' is yours';
+  document.getElementById('paid-text').textContent = state.market + ' Market Day. A receipt and your QR check-in code would be emailed.';
+});
+render();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
+

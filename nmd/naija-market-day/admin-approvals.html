@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Approvals · Naija Market Day admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:14px 12px;border-bottom:1px solid #EEF1EF;vertical-align:top}
+.chip{padding:3px 12px;font-size:13px;font-weight:600;border-radius:999px;background:#FBEBCB;color:#7A4A0A}
+.chip.ok{background:#E1F1E8;color:#145A3A}.chip.no{background:#FADDD8;color:#8A2A1C}
+.tab{border-radius:999px;padding:8px 16px;font-size:14px;font-weight:500;background:#fff;border:1px solid #D5DBD8;cursor:pointer;font-family:inherit}
+.tab[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.act{border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Admin sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-approvals.html" class="on">Approvals</a>
+    <a href="admin-maps.html">Booth map</a>
+    <a href="admin-payments.html">Payments</a>
+    <a href="admin-emails.html">Vendor emails</a>
+    <a href="admin-ads.html">Ads</a>
+    <a href="admin-content.html">News and events</a>
+    <a href="admin-chats.html">Chats and support</a>
+    <a href="admin-roles.html">Roles and permissions</a>
+    <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--line)"><a href="logged-out.html" style="color:#8A2A1C">Log out</a></div>
+  </nav>
+  <main class="main">
+    <header><h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Approvals</h1><p style="margin:4px 0 0;color:var(--muted);font-size:15px">One queue for vendors, vendor events and product listings.</p></header>
+
+    <section class="kpi">
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Waiting for review</div><div id="k-pending" style="font-size:30px;font-weight:700;margin-top:4px">5</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Approved</div><div id="k-approved" style="font-size:30px;font-weight:700;margin-top:4px">0</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--muted)">Sent back</div><div id="k-rejected" style="font-size:30px;font-weight:700;margin-top:4px">0</div></div>
+    </section>
+
+    <section class="card">
+      <div role="group" aria-label="Filter queue" id="tabs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <button class="tab" aria-pressed="true" data-t="All">All</button>
+        <button class="tab" aria-pressed="false" data-t="Vendor">Vendors</button>
+        <button class="tab" aria-pressed="false" data-t="Listing">Listings</button>
+        <button class="tab" aria-pressed="false" data-t="Event">Events</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Item</th><th>Type</th><th>Submitted by</th><th>Status</th><th style="text-align:right">Decision</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+var items = [
+  { id: 1, name: '[Vendor business name]', type: 'Vendor', note: 'Regulatory documents uploaded', status: 'Pending' },
+  { id: 2, name: '[Vendor business name]', type: 'Vendor', note: 'Regulatory documents uploaded', status: 'Pending' },
+  { id: 3, name: 'Hand-dyed adire fabric', type: 'Listing', note: 'New product listing', status: 'Pending' },
+  { id: 4, name: 'Ankara tote bag', type: 'Listing', note: 'Edited description', status: 'Pending' },
+  { id: 5, name: '[Vendor event name]', type: 'Event', note: '[Date] · [City]', status: 'Pending' }
+];
+var tab = 'All';
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function render() {
+  var shown = tab === 'All' ? items : items.filter(function (i) { return i.type === tab; });
+  document.getElementById('rows').innerHTML = shown.map(function (i) {
+    var chip = i.status === 'Approved' ? 'chip ok' : (i.status === 'Sent back' ? 'chip no' : 'chip');
+    var actions = i.status === 'Pending'
+      ? '<button class="act" data-a="approve" data-id="' + i.id + '" style="background:var(--accent);color:#fff;border:0">Approve</button> <button class="act" data-a="reject" data-id="' + i.id + '" style="background:#fff;color:#8A2A1C;border:1px solid #E3B4AC">Send back</button>'
+      : '';
+    return '<tr><td><div style="font-weight:600">' + esc(i.name) + '</div><div style="font-size:13px;color:var(--muted)">' + esc(i.note) + '</div></td><td>' + esc(i.type) + '</td><td>[Vendor name]</td><td><span class="' + chip + '">' + esc(i.status) + '</span></td><td style="text-align:right;white-space:nowrap">' + actions + '</td></tr>';
+  }).join('');
+  var n = function (s) { return items.filter(function (i) { return i.status === s; }).length; };
+  document.getElementById('k-pending').textContent = n('Pending');
+  document.getElementById('k-approved').textContent = n('Approved');
+  document.getElementById('k-rejected').textContent = n('Sent back');
+}
+document.getElementById('tabs').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-t]'); if (!b) return;
+  tab = b.getAttribute('data-t');
+  document.querySelectorAll('[data-t]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  render();
+});
+document.getElementById('rows').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-a]'); if (!b) return;
+  var id = Number(b.getAttribute('data-id'));
+  items = items.map(function (i) { return i.id === id ? Object.assign({}, i, { status: b.getAttribute('data-a') === 'approve' ? 'Approved' : 'Sent back' }) : i; });
+  render();
+});
+render();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

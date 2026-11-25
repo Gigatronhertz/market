@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summit · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--ink:#111816;--muted:#5F6B66;--line:#E6EAE8;--accent:#0F6B4A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.split{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.seg{display:flex;background:#F0F3F1;border-radius:6px;padding:4px;margin-bottom:20px}
+.seg button{flex:1;border:0;border-radius:6px;padding:10px;font-size:15px;font-weight:500;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;margin-bottom:14px}
+.field input,.field select{padding:12px 14px;border:1px solid #D5DBD8;border-radius:12px;font-size:15px;font-weight:400;font-family:inherit;background:#fff}
+.speakers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.prog{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.prog b{width:56px;color:var(--accent)}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="events.html">Markets</a>
+      <a class="link" href="market-square.html">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link on" href="summit.html" aria-current="page">Summit</a>
+      <a class="link" href="contact.html">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+
+<section style="position:relative;color:#fff;background:#0B3D2A;overflow:hidden">
+  <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=2000&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;opacity:.45">
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,61,42,.9),rgba(11,61,42,.35))"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:64px">
+    <h1 style="margin:10px 0 12px;font-size:46px;line-height:1.1;font-weight:800;max-width:720px;letter-spacing:-.015em">The Naija Market Day Summit</h1>
+    <p style="margin:0;font-size:19px;line-height:1.5;max-width:560px;color:#E3F3EA">A full day for the community and the people who build it. Talks, workshops, a vendor showcase and a party to finish.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="split" style="padding-top:48px">
+    <div style="flex:1 1 440px">
+      <h2 style="margin:0 0 20px;font-size:38px;font-weight:800;letter-spacing:-.015em">Programme</h2>
+      <div class="prog"><b>9:00</b><span>Doors open and vendor check-in</span></div>
+      <div class="prog"><b>10:00</b><span>Opening keynote: building a business that travels</span></div>
+      <div class="prog"><b>11:30</b><span>Panel: selling online and at markets</span></div>
+      <div class="prog"><b>13:00</b><span>Lunch and vendor showcase</span></div>
+      <div class="prog"><b>14:30</b><span>Workshop: pricing, packaging and shipping</span></div>
+      <div class="prog" style="border-bottom:1px solid var(--line)"><b>16:00</b><span>Awards and closing party</span></div>
+    </div>
+
+    <div style="flex:1 1 380px;max-width:480px">
+      <form onsubmit="event.preventDefault()" style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px;box-shadow:0 20px 50px rgba(17,24,22,.1)">
+        <div class="seg" role="group" aria-label="Registration type">
+          <button type="button" aria-pressed="true" onclick="pick('att')">Attend (free)</button>
+          <button type="button" aria-pressed="false" onclick="pick('vendor')">Exhibit as a vendor</button>
+        </div>
+        <div class="field">Full name<input type="text" placeholder="Your name"></div>
+        <div class="field">Email<input type="email" placeholder="you@example.com"></div>
+        <div id="vendor-only" style="display:none">
+          <div class="field">Business name<input type="text" placeholder="Business name"></div>
+          <div style="background:#F6F8F7;border-radius:12px;padding:14px;font-size:14px;line-height:1.5;margin-bottom:14px"><b>Exhibitor package: [fee]</b><br>Includes a booth, a listing in the summit directory and a showcase slot. You pick your spot on the map after you pay.</div>
+        </div>
+        <div id="attendee-only" class="field">Tickets<select><option>1 ticket</option><option>2 tickets</option><option>3 tickets</option><option>4 tickets</option></select></div>
+        <button id="cta" type="submit" style="width:100%;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:14px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit">Register for free</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="padding-top:56px">
+    <h2 style="margin:0 0 24px;font-size:38px;font-weight:800;letter-spacing:-.015em">Speakers</h2>
+    <div class="speakers">
+      <div style="text-align:center"><img src="https://images.unsplash.com/photo-1661332306744-70f9ed1a7f40?w=600&q=80&auto=format&fit=crop" alt="" style="aspect-ratio:1;border-radius:10px"><div style="font-weight:700;margin-top:10px">[Speaker name]</div><div style="font-size:14px;color:var(--muted)">[Title, company]</div></div>
+      <div style="text-align:center"><img src="https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=600&q=80&auto=format&fit=crop" alt="" style="aspect-ratio:1;border-radius:10px"><div style="font-weight:700;margin-top:10px">[Speaker name]</div><div style="font-size:14px;color:var(--muted)">[Title, company]</div></div>
+      <div style="text-align:center"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=600&q=80&auto=format&fit=crop" alt="" style="aspect-ratio:1;border-radius:10px"><div style="font-weight:700;margin-top:10px">[Speaker name]</div><div style="font-size:14px;color:var(--muted)">[Title, company]</div></div>
+      <div style="text-align:center"><img src="https://images.unsplash.com/photo-1751374858042-b8b9ff8480aa?w=600&q=80&auto=format&fit=crop" alt="" style="aspect-ratio:1;border-radius:10px"><div style="font-weight:700;margin-top:10px">[Speaker name]</div><div style="font-size:14px;color:var(--muted)">[Title, company]</div></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--deep)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:14px 0 16px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#9DBBAA">Sign in</a> · <a href="messages.html" style="display:inline;color:#9DBBAA">Messages</a></span></div>
+  </div>
+</footer>
+
+<script>
+// Page-level toggles only; registration is not submitted anywhere.
+function pick(t) {
+  var v = t === 'vendor';
+  document.querySelectorAll('.seg button').forEach(function (b, i) { b.setAttribute('aria-pressed', String((i === 1) === v)); });
+  document.getElementById('vendor-only').style.display = v ? 'block' : 'none';
+  document.getElementById('attendee-only').style.display = v ? 'none' : 'flex';
+  document.getElementById('cta').textContent = v ? 'Register and pay with Stripe' : 'Register for free';
+}
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upcoming markets · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--ink:#111816;--muted:#5F6B66;--line:#E6EAE8;--accent:#0F6B4A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.display{font-weight:800;letter-spacing:-.015em;margin:0}
+.chip{border:1px solid #D5DBD8;border-radius:6px;padding:8px 16px;font-size:14px;font-weight:500;background:#fff;cursor:pointer;font-family:inherit}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.event{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.event .date{position:absolute;left:16px;bottom:-26px;width:70px;height:78px;border-radius:8px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.btn{display:inline-block;padding:9px 18px;border-radius:6px;font-size:14px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link on" href="events.html" aria-current="page">Markets</a>
+      <a class="link" href="market-square.html">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link" href="summit.html">Summit</a>
+      <a class="link" href="contact.html">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+
+<section style="position:relative;color:#fff;background:#0B3D2A;overflow:hidden">
+  <img src="https://images.unsplash.com/photo-1666190092689-e3968aa0c32c?w=2000&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;opacity:.4">
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,61,42,.9),rgba(11,61,42,.35))"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:64px">
+    <h1 class="display" style="font-size:46px;line-height:1.1;max-width:720px">Upcoming markets</h1>
+    <p style="margin:12px 0 0;font-size:19px;line-height:1.5;max-width:560px;color:#E3F3EA">Naija Market Day travels across Canada. Free to attend, packed with food, fashion, music and makers.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <a href="index.html#sell" aria-label="Advertisement" style="display:block;position:relative;height:90px;border-radius:8px;overflow:hidden;color:#fff;background:#111816;margin-top:16px">
+    <img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=1600&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;opacity:.8">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.7),rgba(0,0,0,.1))"></div>
+    <div style="position:absolute;left:24px;top:50%;transform:translateY(-50%)"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.8">Sponsored</span><br><b style="font-size:22px">Book a booth at the next Market Day</b></div>
+    <span style="position:absolute;right:20px;top:50%;transform:translateY(-50%);background:#8EE0B0;color:#0B3D2A;font-weight:700;padding:10px 20px;border-radius:6px">Reserve</span>
+  </a>
+
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin:48px 0 24px">
+    <h2 class="display" style="font-size:38px">The 2026 Summer Tour</h2>
+    <a href="summit.html" style="font-weight:600;color:var(--accent)">Annual summit &rarr;</a>
+  </div>
+  <div role="group" aria-label="Filter by city" id="cities" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+    <button class="chip" aria-pressed="true" data-city="All">All cities</button>
+    <button class="chip" aria-pressed="false" data-city="Brampton">Brampton</button>
+    <button class="chip" aria-pressed="false" data-city="Edmonton">Edmonton</button>
+    <button class="chip" aria-pressed="false" data-city="Winnipeg">Winnipeg</button>
+    <button class="chip" aria-pressed="false" data-city="Ottawa">Ottawa</button>
+    <button class="chip" aria-pressed="false" data-city="Moncton">Moncton</button>
+  </div>
+
+  <div class="grid" id="events">
+    <article class="event" data-city="Brampton">
+      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=900&q=80&auto=format&fit=crop" alt="Market stalls with vendors and shoppers"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">MAY</div><div class="display" style="font-size:28px;line-height:1">30</div></div></div>
+      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Brampton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Brampton Market Day</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Market like never before. The 2026 Summer Tour takes off here.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+    </article>
+    <article class="event" data-city="Edmonton">
+      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=900&q=80&auto=format&fit=crop" alt="Fruit stand at a market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
+      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Edmonton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Edmonton, loud and proud</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Enugu is landing in Edmonton this summer.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+    </article>
+    <article class="event" data-city="Winnipeg">
+      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1577116730797-5d99b71d3946?w=900&q=80&auto=format&fit=crop" alt="Fresh fruit on display"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
+      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Winnipeg · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Winnipeg Street Market</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">The Forks CN Stage and Field, Warri style.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+    </article>
+    <article class="event" data-city="Ottawa">
+      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=900&q=80&auto=format&fit=crop" alt="Aerial view of a street market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
+      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Ottawa · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Onitsha meets Ottawa</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">The largest market in West Africa lands in Ottawa.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+    </article>
+    <article class="event" data-city="Moncton">
+      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=900&q=80&auto=format&fit=crop" alt="Assorted fruit at a market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
+      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Moncton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Moncton, first time</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Naija Market Day hits Moncton for the very first time.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+    </article>
+  </div>
+
+  <section style="margin-top:48px;border:1px solid var(--line);border-radius:8px;padding:28px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px">
+      <h2 class="display" style="font-size:38px">Vendor events</h2>
+      <a href="login.html" class="btn" style="background:var(--accent);color:#fff">Submit your event</a>
+    </div>
+    <p style="margin:0 0 12px;color:var(--muted)">Vendor events appear here once the NMD team approves them.</p>
+    <div class="row"><div style="width:64px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--accent)">JUN</div><div class="display" style="font-size:28px;line-height:1">14</div></div><div style="flex:1 1 260px"><div style="font-size:18px;font-weight:700">Afro Fashion Pop-up</div><div style="font-size:14px;color:var(--muted)">Hosted by Zuri Collective · Hamilton</div></div><span style="background:#E1F1E8;color:#145A3A;padding:3px 12px;font-size:13px;font-weight:600;border-radius:6px">Approved by NMD</span></div>
+    <div class="row"><div style="width:64px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--accent)">JUL</div><div class="display" style="font-size:28px;line-height:1">02</div></div><div style="flex:1 1 260px"><div style="font-size:18px;font-weight:700">Jollof Night Supper Club</div><div style="font-size:14px;color:var(--muted)">Hosted by Mama Chioma's Kitchen · Edmonton</div></div><span style="background:#E1F1E8;color:#145A3A;padding:3px 12px;font-size:13px;font-weight:600;border-radius:6px">Approved by NMD</span></div>
+    <div class="row"><div style="width:64px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--accent)">JUL</div><div class="display" style="font-size:28px;line-height:1">19</div></div><div style="flex:1 1 260px"><div style="font-size:18px;font-weight:700">Adire Dye Workshop</div><div style="font-size:14px;color:var(--muted)">Hosted by Ade's Adire · Brampton</div></div><span style="background:#E1F1E8;color:#145A3A;padding:3px 12px;font-size:13px;font-weight:600;border-radius:6px">Approved by NMD</span></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--deep)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:14px 0 16px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#9DBBAA">Sign in</a> · <a href="messages.html" style="display:inline;color:#9DBBAA">Messages</a></span></div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('#cities .chip').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var city = btn.getAttribute('data-city');
+    document.querySelectorAll('#cities .chip').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    document.querySelectorAll('#events .event').forEach(function (e) {
+      e.style.display = (city === 'All' || e.getAttribute('data-city') === city) ? '' : 'none';
+    });
+  });
+});
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

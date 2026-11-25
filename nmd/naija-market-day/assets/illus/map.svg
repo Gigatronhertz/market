@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" role="img" aria-label="Illustration of the tour route across six cities">
+  <rect width="600" height="260" rx="18" fill="#EAF6EF"/>
+  <path d="M40 210 C120 150 160 170 220 120 S330 80 380 130 S500 190 560 80" fill="none" stroke="#0F6B4A" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+  <g>
+    <path d="M70 160c0-12 9-20 20-20s20 8 20 20c0 13-20 32-20 32S70 173 70 160z" fill="#F4B740"/>
+    <circle cx="90" cy="160" r="7" fill="#EAF6EF"/>
+    <path d="M205 105c0-12 9-20 20-20s20 8 20 20c0 13-20 32-20 32S205 118 205 105z" fill="#0F6B4A"/>
+    <circle cx="225" cy="105" r="7" fill="#EAF6EF"/>
+    <path d="M350 118c0-12 9-20 20-20s20 8 20 20c0 13-20 32-20 32S350 131 350 118z" fill="#F4B740"/>
+    <circle cx="370" cy="118" r="7" fill="#EAF6EF"/>
+    <path d="M478 96c0-12 9-20 20-20s20 8 20 20c0 13-20 32-20 32S478 109 478 96z" fill="#0F6B4A"/>
+    <circle cx="498" cy="96" r="7" fill="#EAF6EF"/>
+  </g>
+  <g fill="#0E1210">
+    <circle cx="40" cy="210" r="5"/>
+    <circle cx="560" cy="80" r="5"/>
+  </g>
+</svg>

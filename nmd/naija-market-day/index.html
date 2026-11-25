@@ -1,0 +1,337 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naija Market Day · Come experience the best of African market</title>
+<meta name="description" content="The only travelling African market in North America. Food, fashion, music and small businesses, free to attend.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* Landing page only */
+.hero{position:relative;height:min(92vh,880px);min-height:560px;background:#0B0F0D;color:#fff;overflow:hidden}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,9,.6) 0%,rgba(4,12,9,.5) 45%,rgba(4,12,9,.82) 100%)}
+/* Summer Tour: city photos hang on their map pins */
+.tour-map{position:relative;height:620px;border-radius:6px;overflow:hidden;margin-bottom:60px;background:#EAF6EF}
+.tour-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.stop{position:absolute;transform:translate(-50%,calc(-100% - 44px));width:206px;background:#fff;border-radius:10px;box-shadow:0 14px 34px rgba(0,0,0,.16);overflow:hidden;transition:transform .35s,box-shadow .35s;z-index:2;display:block}
+.stop:hover{transform:translate(-50%,calc(-100% - 52px));box-shadow:0 22px 46px rgba(0,0,0,.22)}
+.stop-pic{display:block;height:124px}
+.stop-pic img{width:100%;height:100%;object-fit:cover}
+.stop-txt{display:block;padding:11px 14px 13px}
+.stop-txt b{display:block;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.stop-txt small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+@media (max-width:900px){
+  .tour-map{height:auto;background:none;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .tour-bg{display:none}
+  .stop{position:relative;left:auto!important;top:auto!important;transform:none!important;width:auto}
+  .stop:hover{transform:none!important}
+  .stop-pic{height:150px}
+}
+@media (max-width:560px){.tour-map{grid-template-columns:1fr}}
+.hero-copy{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 0 64px}
+.hero h1{font-size:clamp(52px,9vw,148px);line-height:.92;letter-spacing:-.05em;max-width:1200px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between;margin-top:30px}
+.hero-meta p{font-size:19px;line-height:1.5;max-width:520px;margin:0;color:#EDF4F0}
+.hero-meta .actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero .btn{color:#fff;border-color:#fff}.hero .btn:hover{background:#fff;color:var(--ink)}
+.hero .btn-ink{background:#fff;color:var(--ink);border-color:#fff}.hero .btn-ink:hover{background:var(--mint);border-color:var(--mint)}
+.intro{display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;align-items:flex-start}
+.intro .lede{flex:1 1 760px}
+.next{font-size:15px;color:var(--muted);line-height:1.6;flex:0 1 300px;padding-top:10px;border-top:1.5px solid var(--ink)}
+.next b{display:block;color:var(--ink);font-size:20px;letter-spacing:-.02em;margin:6px 0 4px}
+.work .frame{background:#E9ECEB}
+.stat-line{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:120px}
+.stat-line div{flex:1 1 220px;padding:30px 28px;border-left:1px solid var(--line)}
+.stat-line div:first-child{border-left:0}
+.stat-line b{display:block;font-size:clamp(40px,4.4vw,64px);letter-spacing:-.04em;font-weight:800}
+.stat-line span{font-size:15px;color:var(--muted)}
+.video-band{height:min(78vh,760px)}
+.video-band .text{position:absolute;left:48px;bottom:48px;z-index:2;color:#fff;max-width:620px}
+.video-band .text h2{font-size:clamp(40px,5vw,72px)}
+.video-band .text p{font-size:17px;line-height:1.55;color:#E7F1EB;margin:16px 0 0}
+.video-band::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.65),rgba(0,0,0,0) 60%)}
+.video-band video{position:absolute;inset:0;z-index:1}
+.summit{padding:140px 0 0}
+.summit-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.summit-photo{height:460px;border-radius:6px;overflow:hidden}
+.summit-photo img{width:100%;height:100%;object-fit:cover}
+.summit-grid h2{font-size:clamp(32px,4vw,56px);letter-spacing:-.03em;font-weight:700}
+.summit-grid p{font-size:18px;line-height:1.6;color:var(--muted);margin:0 0 26px;max-width:460px}
+.sell{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
+.sell .frame{height:620px;border-radius:6px;overflow:hidden}
+.sell .frame img{width:100%;height:100%;object-fit:cover}
+.steps{list-style:none;margin:0 0 36px;padding:0;border-top:1px solid var(--line)}
+.steps li{display:flex;gap:22px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);font-size:19px;font-weight:600;letter-spacing:-.01em}
+.steps li i{font-style:normal;font-size:14px;color:var(--muted);font-weight:500;min-width:28px}
+.newsletter{margin-top:140px;padding:72px 0;border-top:1px solid var(--ink)}
+.newsletter .inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:36px;align-items:flex-end}
+.newsletter h2{font-size:clamp(30px,3.6vw,46px);font-weight:700;letter-spacing:-.03em;display:flex;align-items:center;gap:14px}
+.newsletter h2 .ic{width:34px;height:34px;color:var(--green)}
+.newsletter .field-row{flex:1 1 440px;max-width:560px}
+.credit{font-size:12px;color:#8A948F;margin:40px 0 0}
+/* Features with icons */
+.features{padding-top:120px}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.feat{border-top:1px solid var(--ink);padding-top:22px}
+.feat-ic{width:56px;height:56px;border-radius:50%;background:#E7F5EC;color:var(--green);display:flex;align-items:center;justify-content:center}
+.feat-ic .ic{width:26px;height:26px}
+.feat h3{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:18px 0 6px;line-height:1.2}
+.feat p{margin:0;color:var(--muted);font-size:15px;line-height:1.55}
+.steps li i{color:var(--green);display:inline-flex;min-width:30px}
+.steps li i .ic{width:22px;height:22px}
+.sell-panel .steps li i{color:#F4B740}
+.sub-ill{width:100%;max-width:520px;height:auto;border-radius:6px;display:block}
+@media (max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.feat-grid{grid-template-columns:1fr}}
+/* Colour blocks */
+.colour-block{background:#F4B740;color:#0B3D2A;padding:130px 0;margin-top:140px}
+.colour-block .cb-kicker{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:26px}
+.colour-block .cb-line{font-size:clamp(34px,4.6vw,68px);font-weight:700;letter-spacing:-.035em;line-height:1.02;margin:0;max-width:1000px}
+.panel-green{background:#0F6B4A;color:#fff;border-radius:6px;padding:96px 64px;margin-top:140px}
+.summit.panel-green{padding:96px 64px}
+.panel-green h2{color:#fff}
+.panel-green p{color:#D4EADF}
+.panel-green .btn{color:#fff;border-color:#fff}.panel-green .btn:hover{background:#fff;color:var(--green)}
+.panel-green .btn-ink{background:#fff;color:var(--green);border-color:#fff}
+.section.sell-panel{background:#1D2C6B;color:#fff;border-radius:6px;padding:96px 64px;margin-top:140px}
+.sell-panel h2{color:#fff}
+.sell-panel .eyebrow{color:#F4B740}
+.sell-panel .steps{border-color:rgba(255,255,255,.22)}
+.sell-panel .steps li{border-color:rgba(255,255,255,.22);color:#fff}
+.sell-panel .steps li i{color:#F4B740}
+.sell-panel .frame{border-radius:6px}
+.sell-panel .btn-ink{background:#F4B740;color:#0B3D2A;border-color:#F4B740}
+.sell-panel .btn-ink:hover{background:#fff;border-color:#fff}
+@media (max-width:1000px){.summit-grid,.sell{grid-template-columns:1fr}.sell .frame{height:420px}.stat-line div{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="events.html">Markets</a>
+      <a class="link" href="market-square.html">Market Square</a>
+      <a class="link" href="news.html">News</a>
+      <a class="link" href="summit.html">Summit</a>
+      <a class="link" href="contact.html">Contact</a>
+      <a class="link" href="login.html">Sign in</a>
+      <a class="cta" href="vendor-onboarding.html">Sell on NMD</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<main>
+  <!-- Full-bleed opening video -->
+  <section class="hero" aria-label="Welcome">
+    <img class="poster" src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=2000&q=80&auto=format&fit=crop" alt="">
+    
+    <div class="wrap hero-copy">
+      <div class="eyebrow" style="color:#E7F1EB">Brampton · Edmonton · Winnipeg · Online</div>
+      <h1 style="margin-top:16px">Come experience the best of African market</h1>
+      <div class="hero-meta">
+        <p>The only travelling African market in North America. Food, fashion, music and small businesses, free to attend.</p>
+        <div class="actions">
+          <a class="btn btn-ink" href="#markets">Find a market</a>
+          <a class="btn" href="market-square.html">Shop the Market Square</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- Intro: one large statement and the next date -->
+    <section class="section intro" aria-label="Introduction">
+      <p class="lede">Traditional clothing, handmade crafts and Nigerian food, brought to a new city every summer by the people who make them.</p>
+      <aside class="next">
+        Next market
+        <b>Brampton, May 30</b>
+        Summer Tour 2026 kicks off. Free entry.
+      </aside>
+    </section>
+
+    <!-- What you will find, with icons -->
+    <section class="section features" aria-label="What you will find">
+      <div class="feat-grid">
+        <div class="feat"><span class="feat-ic"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8M9 3v8M6 11h3M7.5 11v10M16 21V3c-2 1.5-3 4-3 7s1 4 3 4"/></svg></span><h3>Food</h3><p>Nigerian home cooking and street snacks, from vendors in every city.</p></div>
+        <div class="feat"><span class="feat-ic"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3c-1 1.5-2.5 2.5-4 2.5S9 4.5 8 3z"/></svg></span><h3>Fashion</h3><p>Adire, ankara and everyday wear made and sold by the designers.</p></div>
+        <div class="feat"><span class="feat-ic"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span><h3>Music</h3><p>Live sets and a family-friendly atmosphere you can hear from the street.</p></div>
+        <div class="feat"><span class="feat-ic"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-1 2-2s-.6-1.4 0-2.4 1.6-.4 2.4-.4A3.6 3.6 0 0 0 21 12 9 9 0 0 0 12 3z"/><circle cx="7.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10" r="1"/></svg></span><h3>Crafts</h3><p>Jewellery, baskets and home goods from small businesses.</p></div>
+      </div>
+    </section>
+
+    <!-- Projects grid (Behance-style, staggered sizes) -->
+    <section id="markets" class="section" aria-label="Markets">
+      <div class="section-head">
+        <h2>The Summer Tour</h2>
+        <p>Six cities, one market. Each stop is a full day of food, fashion, music and makers.</p>
+      </div>
+      <div class="tour-map" role="list" aria-label="Summer Tour stops">
+        <img class="tour-bg" src="assets/illus/map.svg" alt="" aria-hidden="true">
+        <a class="stop" role="listitem" href="events.html" style="left:15%;top:61.5%"><span class="stop-pic"><img src="https://images.unsplash.com/photo-1774132008869-a82b2b7feba3?w=600&q=80&auto=format&fit=crop" alt="Street market in Brampton"></span><span class="stop-txt"><b>Brampton</b><small>May 30 · Free entry</small></span></a>
+        <a class="stop" role="listitem" href="events.html" style="left:37.5%;top:40.4%"><span class="stop-pic"><img src="https://images.unsplash.com/photo-1561070509-1eea70a5a7d3?w=600&q=80&auto=format&fit=crop" alt="Market vendors in Brandon"></span><span class="stop-txt"><b>Brandon</b><small>July 11 · Free entry</small></span></a>
+        <a class="stop" role="listitem" href="events.html" style="left:61.7%;top:45.4%"><span class="stop-pic"><img src="https://images.unsplash.com/photo-1650499311129-5dc75c1038e6?w=600&q=80&auto=format&fit=crop" alt="Market stalls in Winnipeg"></span><span class="stop-txt"><b>Winnipeg</b><small>Summer · The Forks</small></span></a>
+        <a class="stop" role="listitem" href="events.html" style="left:83%;top:36.9%"><span class="stop-pic"><img src="https://images.unsplash.com/photo-1697203767647-8d7d171d6216?w=600&q=80&auto=format&fit=crop" alt="Fruit stand in Edmonton"></span><span class="stop-txt"><b>Edmonton</b><small>Summer · Enugu lands</small></span></a>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="colour-block" aria-label="Come hungry">
+    <div class="wrap">
+      <div class="cb-kicker">Food · Fashion · Music</div>
+      <p class="cb-line">Come hungry. Leave with a bag full of adire.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- Video band: food -->
+    <section class="section" aria-label="Food">
+      <div class="band video-band">
+        <img src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?w=2000&q=80&auto=format&fit=crop" alt="Jollof rice with grilled fish and vegetables" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1">
+        <div class="text">
+          <div class="eyebrow" style="color:#CFE9DB">Food</div>
+          <h2 style="margin-top:12px">Food you cannot find anywhere else</h2>
+          <p>Spices, snacks and home cooking from vendors in every city on the tour.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Makers as creators (profile cards) -->
+    <section class="section" aria-label="Vendors">
+      <div class="section-head">
+        <h2>Makers</h2>
+        <a class="more" href="market-square.html">All vendors</a>
+      </div>
+      <div class="people">
+        <a class="person" href="market-square.html">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1611853904829-6d0f4034ce2f?w=900&q=80&auto=format&fit=crop" alt="Adire fashion"></div>
+          <div class="who"><img src="https://images.unsplash.com/photo-1751048053312-73c620d69557?w=160&q=80&auto=format&fit=crop" alt=""><div><b>Ade's Adire</b><span>Fashion · Brampton</span></div></div>
+        </a>
+        <a class="person" href="market-square.html">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1603496987674-79600a000f55?w=900&q=80&auto=format&fit=crop" alt="Jollof and chicken"></div>
+          <div class="who"><img src="https://images.unsplash.com/photo-1661332306744-70f9ed1a7f40?w=160&q=80&auto=format&fit=crop" alt=""><div><b>Mama Chioma's Kitchen</b><span>Food · Edmonton</span></div></div>
+        </a>
+        <a class="person" href="market-square.html">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1620619767323-b95a89183081?w=900&q=80&auto=format&fit=crop" alt="Beaded necklaces"></div>
+          <div class="who"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=160&q=80&auto=format&fit=crop" alt=""><div><b>Zuri Beads</b><span>Jewellery · Winnipeg</span></div></div>
+        </a>
+        <a class="person" href="market-square.html">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1751725154557-b10ab73f1564?w=900&q=80&auto=format&fit=crop" alt="Woven baskets"></div>
+          <div class="who"><img src="https://images.unsplash.com/photo-1751374858042-b8b9ff8480aa?w=160&q=80&auto=format&fit=crop" alt=""><div><b>Eko Crafts</b><span>Crafts · Hamilton</span></div></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Shop -->
+    <section class="section" aria-label="Market Square">
+      <div class="section-head">
+        <h2>Market Square</h2>
+        <a class="more" href="market-square.html">Browse everything</a>
+      </div>
+      <div class="shop">
+        <a href="product-chat.html">
+          <div class="frame" style="position:relative"><img src="https://images.unsplash.com/photo-1768212565424-efa3a3852b81?w=800&q=80&auto=format&fit=crop" alt="Colourful African fabric"><button class="saved" type="button" onclick="event.preventDefault()"></button></div>
+          <b>Hand-dyed adire fabric</b><span>Ade's Adire · Brampton · $28 CAD</span>
+        </a>
+        <a href="product-chat.html">
+          <div class="frame" style="position:relative"><img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80&auto=format&fit=crop" alt="House spice blend bowl"><button class="saved" type="button" onclick="event.preventDefault()"></button></div>
+          <b>House spice blend</b><span>Mama Chioma's Kitchen · $12 CAD</span>
+        </a>
+        <a href="product-chat.html">
+          <div class="frame" style="position:relative"><img src="https://images.unsplash.com/photo-1620619767323-b95a89183081?w=800&q=80&auto=format&fit=crop" alt="Beaded necklace set"><button class="saved" type="button" onclick="event.preventDefault()"></button></div>
+          <b>Beaded necklace set</b><span>Zuri Beads · Winnipeg · $40 CAD</span>
+        </a>
+        <a href="product-chat.html">
+          <div class="frame" style="position:relative"><img src="https://images.unsplash.com/photo-1618574760337-2750f6251d20?w=800&q=80&auto=format&fit=crop" alt="Yarn on a table"><button class="saved" type="button" onclick="event.preventDefault()"></button></div>
+          <b>Woven raffia basket</b><span>Eko Crafts · Hamilton · $35 CAD</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Gallery: mixed sizes -->
+    <section class="section" aria-label="Gallery">
+      <div class="works">
+        <a class="work s-8 h-wide" href="news.html">
+          <div class="frame"><img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=1600&q=80&auto=format&fit=crop" alt="Busy outdoor market"></div>
+          <div class="caption"><div><b>Gallery</b><span>Moments from the tour</span></div></div>
+        </a>
+        <a class="work s-4 h-wide" href="news.html">
+          <div class="frame"><img src="https://images.unsplash.com/photo-1660675133902-acd1b057f75d?w=900&q=80&auto=format&fit=crop" alt="People in traditional dress"></div>
+          <div class="caption"><div><b>Dress code: colour</b><span>Traditional wear on the street</span></div></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Summit -->
+    <section class="summit panel-green" aria-label="Annual summit">
+      <div class="summit-grid">
+        <div class="summit-photo"><img src="https://images.unsplash.com/photo-1660675134062-7d3bbb340608?w=1400&q=80&auto=format&fit=crop" alt="Drummers playing at a street festival"></div>
+        <div>
+          <div class="eyebrow" style="color:#CFE9DB">Annual summit</div>
+          <h2 style="margin-top:14px">The Naija Market Day Summit</h2>
+          <p>Talks and workshops for the community and vendors. Free for attendees. Vendors register for a stand.</p>
+          <div class="field-row" style="gap:12px"><a class="btn btn-ink" href="summit.html">Register to attend</a><a class="btn" href="summit.html">Vendor stand</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sell -->
+    <section id="sell" class="section sell-panel" aria-label="Sell with NMD">
+      <div class="sell">
+        <div class="frame"><img src="https://images.unsplash.com/photo-1769019401093-38f564d6408a?w=1200&q=80&auto=format&fit=crop" alt="Street food vendor"></div>
+        <div>
+          <div class="eyebrow">Sell with us</div>
+          <h2 style="font-size:clamp(30px,3.8vw,50px);font-weight:700;margin:14px 0 32px;letter-spacing:-.03em">Sell at Naija Market Day</h2>
+          <ol class="steps">
+            <li><i><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></i>List your products in the Market Square</li>
+            <li><i><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM4 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/></svg></i>Book a booth at a market near you</li>
+            <li><i><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></i>Chat with buyers and take order requests</li>
+            <li><i><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 17v4M14 20h3"/></svg></i>Run an ad and check in with a QR code</li>
+          </ol>
+          <img class="sub-ill" src="assets/illus/stall.svg" alt="" aria-hidden="true" style="margin:0 0 30px">
+          <a class="btn btn-ink" href="vendor-onboarding.html">Become a vendor</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter" aria-label="Newsletter">
+      <div class="inner">
+        <h2><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/></svg>Get market updates</h2>
+        <form class="field-row" data-toast="You are on the list. See you at the market!">
+          <label for="email" style="position:absolute;left:-9999px">Email address</label>
+          <input id="email" type="email" placeholder="Email address" required>
+          <button class="btn btn-ink" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+    <p class="credit">Photos from Unsplash contributors and videos from Pexels contributors. Prices and names are placeholders.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="logo-mark" style="background:var(--mint);color:var(--ink)">N</span>Naija Market Day</a>
+        <p style="line-height:1.6;margin:16px 0 18px;max-width:320px">The only travelling African market experience in North America. Free and open to the public.</p>
+        <a href="index.html" style="color:var(--mint);font-weight:600">@naijamarketday on Instagram</a>
+      </div>
+      <div><h4>Explore</h4><a href="events.html">Upcoming markets</a><a href="market-square.html">Market Square</a><a href="news.html">News and gallery</a><a href="summit.html">Summit</a></div>
+      <div><h4>Sellers</h4><a href="vendor-onboarding.html">Sell on NMD</a><a href="login.html">Vendor sign in</a><a href="vendor-booth.html">Book a booth</a><a href="vendor-ads.html">Advertise</a></div>
+      <div><h4>Help</h4><a href="contact.html">Contact</a><a href="contact.html">FAQ</a><a href="index.html">Terms</a><a href="index.html">Privacy</a></div>
+    </div>
+    <div class="foot-note"><span>Naija Market Day does not take payment for goods. Buyers and sellers arrange payment directly.</span><span><a href="login.html" style="display:inline;color:#8D9A94">Sign in</a> · <a href="messages.html" style="display:inline;color:#8D9A94">Messages</a></span></div>
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>

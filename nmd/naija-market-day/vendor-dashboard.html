@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vendor dashboard · Naija Market Day</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.stat .l{font-size:13px;color:var(--muted)}
+.stat .v{font-size:20px;font-weight:700;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
+.chip{padding:3px 12px;font-size:13px;font-weight:600;border-radius:999px}
+.ok{background:#E1F1E8;color:#145A3A}.wait{background:#FBEBCB;color:#7A4A0A}.no{background:#FADDD8;color:#8A2A1C}
+.pill{border-radius:999px;padding:10px 20px;font-weight:600;font-size:15px}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Vendor sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD Vendor</a>
+    <a href="#overview" class="on">Overview</a>
+    <a href="vendor-product-form.html">Products</a>
+    <a href="messages.html" style="display:flex;justify-content:space-between">Chats and orders <span style="background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px">3</span></a>
+    <a href="#events">Events</a>
+    <a href="vendor-booth.html">Booth and payments</a>
+    <a href="#checkin">QR check-in</a>
+    <a href="vendor-ads.html">Ads</a>
+    <a href="vendor-onboarding.html">Onboarding</a>
+    <a href="market-square.html" style="margin-top:auto;font-size:14px;color:var(--muted)">View my listings on the site</a>
+    <a href="logged-out.html" style="color:#8A2A1C">Log out</a>
+  </nav>
+
+  <main class="main">
+    <header id="overview">
+      <h1 style="margin:0;font-size:30px;letter-spacing:-.02em">Welcome, [Vendor name]</h1>
+      <div style="margin-top:16px;border:1px solid #E8C98F;background:#FFF7E6;border-radius:16px;padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:600;color:#7A4A0A">Regulatory information needed</div><div style="font-size:14px;color:var(--muted);margin-top:2px">You can list products once NMD has approved your regulatory documents.</div></div>
+        <a href="vendor-onboarding.html" style="background:var(--ink);color:#fff;border-radius:999px;padding:11px 20px;font-weight:600;font-size:15px">Upload documents</a>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <div class="card stat"><div class="l">Next market</div><div class="v">[City] · [date]</div><div style="font-size:14px;margin-top:4px;color:var(--muted)">Booth [number]</div></div>
+      <div class="card stat"><div class="l">Booth fee</div><div class="v">[amount]</div><div style="font-size:14px;margin-top:4px;color:#7A4A0A;font-weight:600">Awaiting payment</div></div>
+      <div class="card stat"><div class="l">Unread chats</div><div class="v">3</div><a href="messages.html" style="font-size:14px;margin-top:4px;display:inline-block;color:var(--accent);font-weight:600">Open inbox</a></div>
+      <div class="card stat"><div class="l">Listings live</div><div class="v">[count]</div><div style="font-size:14px;margin-top:4px;color:var(--muted)">[count] awaiting review</div></div>
+    </section>
+
+    <section class="card" aria-label="Products">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px">
+        <h2 style="margin:0;font-size:20px">Products</h2>
+        <a href="vendor-product-form.html" class="pill" style="background:var(--accent);color:#fff">Add product</a>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:500">Hand-dyed adire fabric</td><td style="color:var(--muted)">Clothing</td><td>[price]</td><td><span class="chip ok">Live</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
+            <tr><td style="font-weight:500">Ankara tote bag</td><td style="color:var(--muted)">Clothing</td><td>[price]</td><td><span class="chip wait">Pending review</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
+            <tr><td style="font-weight:500">Beaded necklace set</td><td style="color:var(--muted)">Jewellery</td><td>[price]</td><td><span class="chip no">Changes requested</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section style="display:flex;flex-wrap:wrap;gap:16px">
+      <div class="card" style="flex:1 1 320px">
+        <h2 style="margin:0 0 14px;font-size:20px">Booth and payments</h2>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:15px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Market</span><span>[City] · [date]</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Booth</span><span>[number]</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Fee</span><span>[amount]</span></div>
+        </div>
+        <a href="vendor-booth.html" class="pill" style="display:inline-block;margin-top:16px;background:var(--accent);color:#fff">Pay booth fee</a>
+      </div>
+      <div id="checkin" class="card" style="flex:1 1 260px">
+        <h2 style="margin:0 0 14px;font-size:20px">QR check-in</h2>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div aria-hidden="true" style="width:112px;height:112px;border-radius:8px;background:repeating-conic-gradient(#111816 0 25%,#fff 0 50%) 0 0/22px 22px;border:1px solid var(--line);flex:none"></div>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:var(--muted)">Show this code to NMD staff when you arrive at [City] on [date].</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="events" class="card">
+      <h2 style="margin:0 0 6px;font-size:20px">Events</h2>
+      <p style="margin:0;color:var(--muted);font-size:14px">Submit a vendor event. It appears on the Markets page once the NMD team approves it.</p>
+    </section>
+  </main>
+</div>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

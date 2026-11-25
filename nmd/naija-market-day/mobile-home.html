@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naija Market Day · Mobile home</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f4f3;font-family:Inter,system-ui,sans-serif;color:#111816;display:flex;justify-content:center}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.screen{width:100%;max-width:390px;height:100vh;max-height:844px;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+.body{flex:1;padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.ad{position:relative;height:56px;border-radius:14px;overflow:hidden;color:#fff;background:#111816;flex:none}
+.ad img{position:absolute;inset:0}
+.ad .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,16,.85),rgba(10,20,16,.35))}
+.ad .inner{position:relative;display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{border:1px solid #E6EAE8;border-radius:14px;overflow:hidden}
+.card img{height:96px}
+nav.tabs{flex:none;height:72px;border-top:1px solid #E6EAE8;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;text-align:center;font-size:11px;font-weight:500;color:#5F6B66}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:3px}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="screen">
+  <div class="body">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px"><span style="width:32px;height:32px;border-radius:10px;background:#0F6B4A;color:#fff;display:flex;align-items:center;justify-content:center">N</span>Naija Market Day</div>
+      <a href="#" aria-label="Notifications" style="width:40px;height:40px;border:1px solid #E6EAE8;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a>
+    </div>
+
+    <form onsubmit="event.preventDefault()"><label for="q" style="position:absolute;left:-9999px">Search</label><input id="q" type="search" placeholder="Search products, vendors or markets" style="width:100%;padding:13px 16px;border:1px solid #D5DBD8;border-radius:999px;font-size:15px;background:#F6F8F7;font-family:inherit"></form>
+
+    <a class="ad" href="market-square.html" aria-label="Advertisement: Adire season is here">
+      <img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=900&q=80&auto=format&fit=crop" alt="" aria-hidden="true">
+      <div class="shade"></div>
+      <div class="inner"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.85">Ad · [Vendor name]</div><div style="font-size:14px;font-weight:700;margin-top:2px">Adire season is here</div></div><span style="background:#fff;color:#111816;border-radius:999px;padding:7px 12px;font-weight:600;font-size:14px">Shop now</span></div>
+    </a>
+
+    <div style="background:#0F3D2C;color:#fff;border-radius:20px;padding:20px;flex:none">
+      <div style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9BD7B8">Next market</div>
+      <div style="font-size:26px;font-weight:700;line-height:1.1;letter-spacing:-.02em;margin:8px 0 14px">[City] Market Day<br>[date]</div>
+      <div style="display:flex;gap:8px;font-size:15px;font-weight:600">
+        <a href="events.html" style="flex:1;text-align:center;background:#fff;color:#0F3D2C;padding:12px 0;border-radius:999px">Details</a>
+        <a href="market-square.html" style="flex:1;text-align:center;border:1px solid #6FA88C;padding:11px 0;border-radius:999px">Shop</a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;overflow-x:auto;white-space:nowrap;flex:none">
+      <a href="market-square.html" style="border:1px solid #D5DBD8;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500">Clothing</a>
+      <a href="market-square.html" style="border:1px solid #D5DBD8;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500">Crafts</a>
+      <a href="market-square.html" style="border:1px solid #D5DBD8;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500">Food</a>
+      <a href="market-square.html" style="border:1px solid #D5DBD8;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500">Jewellery</a>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex:none"><div style="font-size:18px;font-weight:700">Fresh in the Market Square</div><a href="market-square.html" style="font-size:14px;font-weight:600;color:#0F6B4A">See all</a></div>
+    <div class="grid2">
+      <a class="card" href="product-chat.html"><img src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?w=600&q=80&auto=format&fit=crop" alt=""><div style="padding:10px"><div style="font-size:14px;font-weight:600">Jollof rice meal kit</div><div style="font-size:12px;color:#5F6B66;margin-top:2px">[Vendor name] · [City]</div><div style="font-size:14px;font-weight:700;margin-top:6px">[price]</div></div></a>
+      <a class="card" href="product-chat.html"><img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=600&q=80&auto=format&fit=crop" alt=""><div style="padding:10px"><div style="font-size:14px;font-weight:600">Fresh produce box</div><div style="font-size:12px;color:#5F6B66;margin-top:2px">[Vendor name] · [City]</div><div style="font-size:14px;font-weight:700;margin-top:6px">[price]</div></div></a>
+    </div>
+  </div>
+
+  <nav class="tabs" aria-label="Primary">
+    <a href="mobile-home.html" style="color:#0F6B4A;font-weight:600"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="market-square.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Browse</a>
+    <a href="vendor-onboarding.html" aria-label="Add a product" style="margin-top:-18px"><span style="width:52px;height:52px;border-radius:50%;background:#0F6B4A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;line-height:1">+</span><span>Sell</span></a>
+    <a href="messages.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg>Messages</a>
+    <a href="login.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account</a>
+  </nav>
+</div>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

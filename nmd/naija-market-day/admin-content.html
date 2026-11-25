@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News and events · Naija Market Day admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--accent:#0F6B4A;--ink:#111816;--muted:#5F6B66;--line:#E6EAE8}
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8F7;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.shell{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 240px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side a{padding:10px 12px;font-size:15px;border-radius:10px}
+.side a.on{background:#EEF4F0;color:var(--accent);font-weight:600}
+.main{flex:999 1 600px;min-width:0;padding:32px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
+.chip{padding:3px 12px;font-size:13px;font-weight:600;border-radius:999px}
+.ok{background:#E1F1E8;color:#145A3A}.wait{background:#FBEBCB;color:#7A4A0A}
+.tab{border-radius:999px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;background:#fff;border:1px solid #D5DBD8}
+.tab[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.act{background:#fff;border:1px solid #D5DBD8;border-radius:999px;padding:7px 16px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+</style>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Admin sections">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-approvals.html">Approvals</a>
+    <a href="admin-maps.html">Booth map</a>
+    <a href="admin-payments.html">Payments</a>
+    <a href="admin-emails.html">Vendor emails</a>
+    <a href="admin-ads.html">Ads</a>
+    <a href="admin-content.html" class="on">News and events</a>
+    <a href="admin-chats.html">Chats and support</a>
+    <a href="admin-roles.html">Roles and permissions</a>
+    <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--line)"><a href="logged-out.html" style="color:#8A2A1C">Log out</a></div>
+  </nav>
+  <main class="main">
+    <header>
+      <h1 style="margin:0;font-size:30px;letter-spacing:-.02em">News, events and gallery</h1>
+      <p style="margin:4px 0 0;color:var(--muted);font-size:15px">Write, import and publish. NMD events show first on the public site.</p>
+    </header>
+    <div role="group" aria-label="Content type" id="tabs" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="tab" aria-pressed="true" data-t="News">News</button>
+      <button class="tab" aria-pressed="false" data-t="Events">Events</button>
+      <button class="tab" aria-pressed="false" data-t="Gallery">Gallery</button>
+    </div>
+    <div style="background:#EEF4F0;border:1px solid #CFE3D8;border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.5"><b>Moving from the old site:</b> existing news, gallery photos and events are being imported. Review them here before they go live.</div>
+    <section class="card">
+      <table>
+        <thead><tr><th>Title</th><th>Source</th><th>Updated</th><th>Status</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+<script>
+var data = {
+  News: [['NMD Summer Tour 2026 takes off in Brampton', 'Old site', 'May 2026', true], ['Naija Market Day in the media', 'Old site', 'Feb 2026', true], ['Early bird vendor registration', 'New', 'Mar 2026', false]],
+  Events: [['Brampton Market Day', 'Old site', 'May 30', true], ['From Benin to Brandon', 'Old site', 'Jul 11', true], ['Summit registration opens', 'New', 'Draft', false]],
+  Gallery: [['Brampton 2024 album (84 photos)', 'Old site', 'Jul 2024', true], ['Winnipeg 2025 album (61 photos)', 'Old site', 'Aug 2025', false], ['Summer Tour 2026 launch (40 photos)', 'Old site', 'Jan 2026', false]]
+};
+var tab = 'News';
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function render() {
+  document.getElementById('rows').innerHTML = data[tab].map(function (r, i) {
+    return '<tr><td style="font-weight:600">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td>' +
+      '<td><span class="chip ' + (r[3] ? 'ok' : 'wait') + '">' + (r[3] ? 'Published' : 'Draft') + '</span></td>' +
+      '<td style="text-align:right"><button class="act" data-i="' + i + '">' + (r[3] ? 'Unpublish' : 'Publish') + '</button></td></tr>';
+  }).join('');
+}
+document.getElementById('tabs').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-t]'); if (!b) return;
+  tab = b.getAttribute('data-t');
+  document.querySelectorAll('[data-t]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  render();
+});
+document.getElementById('rows').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-i]'); if (!b) return;
+  var i = Number(b.getAttribute('data-i')); data[tab][i][3] = !data[tab][i][3]; render();
+});
+render();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

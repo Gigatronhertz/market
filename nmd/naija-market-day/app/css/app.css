@@ -293,3 +293,13 @@ form.inline{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:flex-end}
 form.inline>*{flex:1 1 170px;margin:0}
 form.inline>.btn,form.inline>a.btn{flex:0 0 auto}
 form.inline label{margin-bottom:6px}
+/* Phone portals: the sidebar becomes one tidy row of links, with sign-out kept in view. */
+@media (max-width:900px){
+  .side>div{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .side>div>.sect{display:none}
+  .side a{display:inline-flex;gap:6px}
+  .side .who{display:flex;align-items:center;gap:10px;margin:0 0 0 auto;padding:0;border:0}
+  .side .who>div{display:none}
+  .side .who .btn{margin-top:0;width:auto}
+}
+@media (max-width:600px){.kpi{grid-template-columns:1fr 1fr}.kpi .n{font-size:24px}}

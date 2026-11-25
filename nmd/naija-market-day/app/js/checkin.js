@@ -82,7 +82,8 @@
   // ---------- camera scanning (uses the browser's barcode detector where available) ----------
   async function startCamera(videoEl) {
     if (!('BarcodeDetector' in window)) {
-      videoEl.replaceWith(h('div', { class: 'alert warn', id: 'no-camera' }, 'This browser cannot scan QR codes with the camera. Type or paste the code below, or search by name.'));
+      const frame = videoEl.closest('.big-scan') || videoEl;
+      frame.replaceWith(h('div', { class: 'alert warn', id: 'no-camera' }, 'This browser cannot scan QR codes with the camera. Type or paste the code below, or search by name.'));
       return;
     }
     try {
@@ -93,7 +94,8 @@
       scanning = true;
       tick(videoEl);
     } catch (err) {
-      videoEl.replaceWith(h('div', { class: 'alert warn' }, 'The camera is not available (' + (err.name || 'error') + '). Allow camera access, or type the code below.'));
+      const frame = videoEl.closest('.big-scan') || videoEl;
+      frame.replaceWith(h('div', { class: 'alert warn' }, 'The camera is not available (' + (err.name || 'error') + '). Allow camera access, or type the code below.'));
     }
   }
   async function tick(videoEl) {

@@ -24,7 +24,7 @@ input,select{font-family:inherit;font-size:15px}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="market-square">
 
 <header class="site-header">
   <div class="wrap bar">
@@ -59,37 +59,41 @@ input,select{font-family:inherit;font-size:15px}
   </div>
 
   <div role="group" aria-label="Quick filters" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px">
-    <button class="chip" aria-pressed="true">All</button>
-    <button class="chip" aria-pressed="false">Clothing</button>
-    <button class="chip" aria-pressed="false">Crafts</button>
-    <button class="chip" aria-pressed="false">Food</button>
-    <button class="chip" aria-pressed="false">Jewellery</button>
-    <button class="chip" aria-pressed="false">Beauty</button>
+    <button class="chip" type="button" data-action="chip" data-cat="" aria-pressed="true">All</button>
+    <button class="chip" type="button" data-action="chip" data-cat="Clothing" aria-pressed="false">Clothing</button>
+    <button class="chip" type="button" data-action="chip" data-cat="Crafts" aria-pressed="false">Crafts</button>
+    <button class="chip" type="button" data-action="chip" data-cat="Food" aria-pressed="false">Food</button>
+    <button class="chip" type="button" data-action="chip" data-cat="Jewellery" aria-pressed="false">Jewellery</button>
+    <button class="chip" type="button" data-action="chip" data-cat="Beauty" aria-pressed="false">Beauty</button>
   </div>
 
   <div class="layout">
     <aside class="filters" aria-label="Filters">
       <div style="font-weight:700;font-size:16px;margin-bottom:16px">Filters</div>
       <label for="city" style="font-size:13px;font-weight:600;color:var(--muted)">City</label>
-      <select id="city" style="width:100%;padding:10px;border:1px solid #D5DBD8;border-radius:10px;background:#fff;margin:8px 0 20px"><option>All cities</option><option>Brampton</option><option>Edmonton</option><option>Winnipeg</option></select>
-      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:8px"><input type="checkbox"> New this week</label>
-      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:20px"><input type="checkbox"> Vendors at the next market</label>
+      <select id="city" name="city" style="width:100%;padding:10px;border:1px solid #D5DBD8;border-radius:10px;background:#fff;margin:8px 0 20px"><option>All cities</option><option>Brampton</option><option>Edmonton</option><option>Winnipeg</option></select>
+      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:8px"><input type="checkbox" id="f-new" name="new"> New this week</label>
+      <label style="display:flex;gap:8px;align-items:center;font-size:15px;margin-bottom:20px"><input type="checkbox" id="f-upcoming" name="upcoming"> Vendors at the next market</label>
       <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px">Price (CAD)</div>
       <div style="display:flex;gap:8px">
-        <label for="min" style="position:absolute;left:-9999px">Minimum price</label><input id="min" type="number" placeholder="Min" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
-        <label for="max" style="position:absolute;left:-9999px">Maximum price</label><input id="max" type="number" placeholder="Max" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
+        <label for="min" style="position:absolute;left:-9999px">Minimum price</label><input id="min" name="min" type="number" placeholder="Min" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
+        <label for="max" style="position:absolute;left:-9999px">Maximum price</label><input id="max" name="max" type="number" placeholder="Max" style="width:50%;padding:10px;border:1px solid #D5DBD8;border-radius:10px">
       </div>
     </aside>
 
     <section style="flex:999 1 520px;min-width:0">
-      <div style="font-size:14px;color:var(--muted);margin-bottom:16px">Showing 6 listings</div>
-      <div class="grid">
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=800&q=80&auto=format&fit=crop" alt="Market stalls with vendors and shoppers"></div><div style="padding:14px"><div style="font-weight:600">Market stall finds</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?w=800&q=80&auto=format&fit=crop" alt="Jollof rice served with grilled fish and vegetables"></div><div style="padding:14px"><div style="font-weight:600">Jollof rice meal kit</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1751048053312-73c620d69557?w=800&q=80&auto=format&fit=crop" alt="Person in traditional African attire"></div><div style="padding:14px"><div style="font-weight:600">Traditional attire</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=800&q=80&auto=format&fit=crop" alt="Woman in a colorful dress"></div><div style="padding:14px"><div style="font-weight:600">Colourful dress</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=800&q=80&auto=format&fit=crop" alt="Woman in a red and white floral dress"></div><div style="padding:14px"><div style="font-weight:600">Floral wrap dress</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
-        <a class="card" href="#"><div style="height:170px"><img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=800&q=80&auto=format&fit=crop" alt="Man in front of a fruit stand"></div><div style="padding:14px"><div style="font-weight:600">Fresh produce box</div><div style="font-size:14px;color:var(--muted);margin-top:2px">[Vendor name] · [City]</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700">[price]</span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div></div></a>
+      <div id="count" style="font-size:14px;color:var(--muted);margin-bottom:16px">Loading listings...</div>
+      <div class="grid" data-list="listings" data-empty="No products match these filters yet.">
+        <template>
+          <a class="card" data-href="product-chat.html?listing={id}" style="color:inherit">
+            <div style="height:170px"><img data-src="photo" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div style="padding:14px">
+              <div style="font-weight:600" data-f="name"></div>
+              <div style="font-size:14px;color:var(--muted);margin-top:2px" data-f="vendor_line"></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-weight:700" data-f="price_text"></span><span style="border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600">Chat</span></div>
+            </div>
+          </a>
+        </template>
       </div>
     </section>
   </div>
@@ -112,5 +116,59 @@ input,select{font-family:inherit;font-size:15px}
 </footer>
 
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Market Square: browse live listings, filter them, and open a chat with the seller.
+(function () {
+  var cat = '';
+  function money(c) { return c == null ? '' : '$' + (Number(c) / 100).toFixed(2); }
+  function passes(item) {
+    var city = document.getElementById('city').value;
+    var min = parseFloat(document.getElementById('min').value), max = parseFloat(document.getElementById('max').value);
+    var price = (item.sale_price_cents || item.price_cents) / 100;
+    if (cat && (item.category || '').toLowerCase().indexOf(cat.toLowerCase()) < 0) return false;
+    if (city && city !== 'All cities' && (item.vendor_city || '').toLowerCase() !== city.toLowerCase()) return false;
+    if (!isNaN(min) && price < min) return false;
+    if (!isNaN(max) && price > max) return false;
+    if (document.getElementById('f-new').checked) {
+      if (!item.created_at || (Date.now() - new Date(item.created_at).getTime()) > 7 * 86400000) return false;
+    }
+    return true;
+  }
+  function setCount(n) { var el = document.getElementById('count'); if (el) el.textContent = 'Showing ' + n + ' listing' + (n === 1 ? '' : 's'); }
+  nmdPages['market-square'] = {
+    lists: {
+      listings: {
+        path: function () { return '/marketplace/listings' + (document.getElementById('f-upcoming').checked ? '?upcoming=1' : ''); },
+        map: function (rows) {
+          var kept = rows.filter(passes);
+          setCount(kept.length);
+          return kept.map(function (l) {
+            return {
+              id: l.id, name: l.name, category: l.category, photo: l.photo,
+              vendor_line: (l.vendor_name || '') + (l.vendor_city ? ' · ' + l.vendor_city : ''),
+              price_text: l.sale_price_cents ? money(l.sale_price_cents) + ' (was ' + money(l.price_cents) + ')' : money(l.price_cents),
+            };
+          });
+        },
+      },
+    },
+    init: function () {
+      document.querySelectorAll('[data-action=chip]').forEach(function () {});
+      ['city', 'min', 'max', 'f-new', 'f-upcoming'].forEach(function (id) {
+        var el = document.getElementById(id);
+        el.addEventListener(el.type === 'number' || el.type === 'text' ? 'input' : 'change', function () { nmd.reload(); });
+      });
+    },
+    actions: {
+      chip: function (el) {
+        cat = el.getAttribute('data-cat') || '';
+        document.querySelectorAll('[data-action=chip]').forEach(function (c) { c.setAttribute('aria-pressed', String(c === el)); });
+        nmd.reload();
+      },
+    },
+  };
+})();
+</script>
 </body>
 </html>

@@ -55,6 +55,7 @@
 
   // Forms confirm instead of doing nothing
   document.querySelectorAll('form').forEach(function (f) {
+    if (f.hasAttribute('data-api')) return;
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       window.nmdToast(f.getAttribute('data-toast') || 'Thanks, we have got it.');

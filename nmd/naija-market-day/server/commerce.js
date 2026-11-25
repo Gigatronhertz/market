@@ -105,13 +105,18 @@ function subscriptionActive(businessId) {
   return !!s && s.renews_at > nowIso() ? s : null;
 }
 
-function listingsPublic({ q = '', category = '', business_id = null } = {}) {
+// Listings from businesses with an active subscription. `upcoming` keeps only vendors approved for a market that has not happened yet.
+function listingsPublic({ q = '', category = '', business_id = null, upcoming = false } = {}) {
   const term = `%${str(q, 100).toLowerCase()}%`;
+  const today = todayYmd();
   const rows = db.all(
-    `SELECT l.*, b.name AS vendor_name FROM listings l JOIN businesses b ON b.id = l.business_id
+    `SELECT l.*, b.name AS vendor_name, b.city AS vendor_city FROM listings l JOIN businesses b ON b.id = l.business_id
      WHERE l.hidden = 0 AND (LOWER(l.name) LIKE ?) AND (? = '' OR l.category = ?) AND (? IS NULL OR l.business_id = ?)
+       AND (? = 0 OR EXISTS (SELECT 1 FROM applications a JOIN markets m ON m.id = a.market_id
+             WHERE a.business_id = l.business_id AND a.status = 'approved' AND m.date >= ?))
      ORDER BY l.updated_at DESC LIMIT 200`,
-    term, str(category, 40), str(category, 40), business_id ? int(business_id) : null, business_id ? int(business_id) : null
+    term, str(category, 40), str(category, 40), business_id ? int(business_id) : null, business_id ? int(business_id) : null,
+    upcoming ? 1 : 0, today
   );
   return rows.filter((l) => subscriptionActive(l.business_id)).map(listingCard);
 }
@@ -126,7 +131,10 @@ function listingCard(l) {
     sale_price_cents: l.sale_price_cents,
     photo: photos[0] || null,
     vendor_name: l.vendor_name,
+    vendor_city: l.vendor_city || '',
     business_id: l.business_id,
+    description: l.description || '',
+    created_at: l.created_at || '',
   };
 }
 

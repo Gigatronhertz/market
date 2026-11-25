@@ -29,7 +29,7 @@ label.f input{padding:12px 14px;border:1px solid var(--line);border-radius:12px;
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="login">
 <div class="split">
   <div class="hero">
     <!-- Real photo: man in embroidered shirt, Boubacar Mohamed Touré on Unsplash -->
@@ -54,20 +54,20 @@ label.f input{padding:12px 14px;border:1px solid var(--line);border-radius:12px;
       <p id="sub" style="margin:6px 0 22px;color:var(--muted);font-size:15px">Sign in to continue.</p>
 
       <div class="roles" role="group" aria-label="I am a">
-        <button type="button" aria-pressed="true" onclick="role('buyer')">I want to buy</button>
-        <button type="button" aria-pressed="false" onclick="role('vendor')">I want to sell</button>
+        <button type="button" aria-pressed="true" onclick="chooseRole('buyer')">I want to buy</button>
+        <button type="button" aria-pressed="false" onclick="chooseRole('vendor')">I want to sell</button>
       </div>
 
-      <form onsubmit="event.preventDefault()">
-        <label id="name-field" class="f" style="display:none">Full name<input type="text" placeholder="Your name"></label>
-        <label class="f">Email<input type="email" placeholder="you@example.com"></label>
-        <label class="f">Password<input type="password" placeholder="At least 8 characters"></label>
-        <div id="keep" style="display:flex;justify-content:space-between;font-size:14px;margin:4px 0 0"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked> Keep me signed in</label><a href="#" style="color:var(--accent);font-weight:600">Forgot password?</a></div>
+      <form data-api="auth">
+        <label id="name-field" class="f" style="display:none">Full name<input type="text" name="name" placeholder="Your name"></label>
+        <label class="f">Email<input type="email" name="email" required placeholder="you@example.com"></label>
+        <label class="f">Password<input type="password" name="password" placeholder="At least 8 characters"></label>
+        <div id="keep" style="display:flex;justify-content:space-between;font-size:14px;margin:4px 0 0"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked> Keep me signed in</label><a href="#" data-action="forgot" style="color:var(--accent);font-weight:600">Forgot password?</a></div>
         <button id="cta" class="btn" type="submit" style="width:100%;border:0;cursor:pointer;font-family:inherit">Sign in</button>
       </form>
 
       <div style="display:flex;align-items:center;gap:12px;margin:20px 0;color:#8A948F;font-size:13px"><span style="flex:1;height:1px;background:#E6EAE8"></span>or<span style="flex:1;height:1px;background:#E6EAE8"></span></div>
-      <a class="btn-ghost" href="#">Continue with Google</a>
+      <a class="btn-ghost" href="#" data-action="google">Continue with Google</a>
       <p id="note" style="font-size:13px;color:var(--muted);margin:20px 0 0;line-height:1.5">You can browse the Market Square without an account. Chat needs one.</p>
     </div>
   </div>
@@ -93,8 +93,47 @@ function render() {
     : 'You can browse the Market Square without an account. Chat needs one.';
 }
 function mode(m) { state.mode = m; setPressed('.seg button', m === 'in' ? 0 : 1); render(); }
-function role(r) { state.role = r; setPressed('.roles button', r === 'buyer' ? 0 : 1); render(); }
+function chooseRole(r) { state.role = r; setPressed('.roles button', r === 'buyer' ? 0 : 1); render(); }
 </script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Sign-in page behaviour: follows the page's own mode and role choices.
+nmdPages.login = {
+  forms: {
+    auth: function (v) {
+      var a = nmd.api;
+      function safeNext() { var n = new URLSearchParams(location.search).get('next'); return n && /^[a-z0-9-]+\.html(\?[^\s]*)?$/i.test(n) ? n : ''; }
+      if (state.mode === 'up') {
+        if (state.role === 'vendor') {
+          // Vendor accounts are created after the first paid market application (requirements VEN-01).
+          window.location.href = 'vendor-onboarding.html?email=' + encodeURIComponent(v.email || '');
+          return 'Start your application first. Your vendor account is created after your first paid booth.';
+        }
+        return a('/auth/buyer/signup', { method: 'POST', body: { name: v.name, email: v.email, password: v.password, marketing_consent: true } })
+          .then(function () { window.location.href = 'market-square.html'; return 'Account created. Welcome!'; });
+      }
+      var portal = state.role === 'vendor' ? 'vendor' : 'buyer';
+      return a('/auth/login', { method: 'POST', body: { email: v.email, password: v.password, portal: portal } })
+        .then(function (r) {
+          var roles = (r.user && r.user.roles) || [];
+          var next = new URLSearchParams(location.search).get('next');
+          var safe = next && /^[a-z0-9-]+\.html(\?[^\s]*)?$/i.test(next);
+          window.location.href = safe ? next : (roles.indexOf('vendor') >= 0 && portal === 'vendor' ? 'vendor-dashboard.html' : 'market-square.html');
+          return 'Signed in';
+        });
+    },
+  },
+  actions: {
+    forgot: function () {
+      var email = document.querySelector('input[name=email]').value;
+      if (!email) { nmdToast('Type your email first, then tap Forgot password.', true); return; }
+      return nmd.api('/auth/password/forgot', { method: 'POST', body: { email: email } })
+        .then(function () { return 'If that email has an account, a reset link is on its way.'; });
+    },
+    google: function () { return 'Google sign-in is not connected yet. Use your email and password.'; },
+  },
+};
+</script>
 </body>
 </html>

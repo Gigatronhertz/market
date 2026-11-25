@@ -21,7 +21,7 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="product-chat">
 <header class="site-header">
   <div class="wrap bar">
     <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
@@ -40,20 +40,20 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 
 
 <main class="wrap" style="padding-top:24px;padding-bottom:56px">
-  <div style="font-size:14px;color:var(--muted)">Market Square / Clothing / Hand-dyed adire fabric</div>
+  <div id="p-crumb" style="font-size:14px;color:var(--muted)">Market Square</div>
   <div class="layout">
     <section style="flex:999 1 480px;min-width:0">
-      <img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=1400&q=80&auto=format&fit=crop" alt="Hand-dyed adire fabric" style="height:400px;border-radius:10px">
+      <img id="p-main" src="" alt="" style="height:400px;width:100%;object-fit:cover;border-radius:10px">
       <div style="display:flex;gap:10px;margin-top:12px">
         <div class="thumb"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=300&q=80&auto=format&fit=crop" alt=""></div>
         <div class="thumb"><img src="https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=300&q=80&auto=format&fit=crop" alt=""></div>
         <div class="thumb"><img src="https://images.unsplash.com/photo-1661332306744-70f9ed1a7f40?w=300&q=80&auto=format&fit=crop" alt=""></div>
       </div>
-      <h1 style="margin:24px 0 6px;font-size:36px;letter-spacing:-.02em;line-height:1.1">Hand-dyed adire fabric</h1>
-      <div style="font-size:24px;font-weight:700">[price]</div>
-      <p style="font-size:17px;line-height:1.6;color:#3B4642;margin:16px 0 0">[Product description written by the vendor: materials, size, colours and how long an order takes.]</p>
+      <h1 id="p-name" style="margin:24px 0 6px;font-size:36px;letter-spacing:-.02em;line-height:1.1">Loading...</h1>
+      <div id="p-price" style="font-size:24px;font-weight:700"></div>
+      <p id="p-desc" style="font-size:17px;line-height:1.6;color:#3B4642;margin:16px 0 0"></p>
       <div style="margin-top:28px;border:1px solid var(--line);border-radius:8px;padding:20px">
-        <div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:50%;background:#EDF1EF"></div><div><div style="font-weight:600;font-size:17px">[Vendor name]</div><div style="font-size:14px;color:var(--muted)">[City] · Approved vendor</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:50%;background:#EDF1EF"></div><div><div id="p-vendor" style="font-weight:600;font-size:17px"></div><div id="p-vcity" style="font-size:14px;color:var(--muted)"></div></div></div>
       </div>
       <p style="font-size:14px;color:var(--muted);margin-top:12px">Payment is arranged with the vendor. Naija Market Day does not take payment or hold funds.</p>
     </section>
@@ -61,24 +61,24 @@ img{display:block;width:100%;height:100%;object-fit:cover}
     <aside class="chat" aria-label="Chat with vendor">
       <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px">
         <div style="width:40px;height:40px;border-radius:50%;background:#EDF1EF"></div>
-        <div><div style="font-weight:600">[Vendor name]</div><div style="font-size:13px;color:var(--muted)">Replies within [time]</div></div>
+        <div><div id="c-vendor" style="font-weight:600"></div><div id="c-reply" style="font-size:13px;color:var(--muted)"></div></div>
       </div>
       <div id="gate" style="padding:28px 20px;display:flex;flex-direction:column;gap:12px">
         <div style="font-size:20px;font-weight:700">Sign in to chat with this vendor</div>
         <p style="margin:0;font-size:15px;line-height:1.5;color:var(--muted)">A free buyer account lets you message vendors and send order requests. Browsing stays open to everyone.</p>
-        <a href="login.html" style="background:var(--accent);color:#fff;text-align:center;padding:14px 20px;border-radius:6px;font-weight:600">Sign in or create account</a>
+        <a id="gate-link" href="login.html" style="background:var(--accent);color:#fff;text-align:center;padding:14px 20px;border-radius:6px;font-weight:600">Sign in or create account</a>
       </div>
       <div id="chat" style="display:none;flex:1;flex-direction:column">
         <div id="log" role="log" aria-live="polite" style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:340px;background:#F8FAF9">
-          <div class="bubble them">Hello! Thanks for your interest in the adire fabric.</div>
+          <div class="bubble them">Loading the conversation...</div>
         </div>
         <div style="border-top:1px solid var(--line);padding:12px 16px;display:flex;flex-direction:column;gap:8px">
-          <form id="send" style="display:flex;gap:8px">
+          <form id="send" data-api="send" style="display:flex;gap:8px">
             <label for="msg" style="position:absolute;left:-9999px">Message</label>
-            <input id="msg" type="text" placeholder="Write a message" style="flex:1;padding:12px 16px;border:1px solid #D5DBD8;border-radius:6px;font-size:15px;min-width:0;font-family:inherit">
+            <input id="msg" name="msg" type="text" placeholder="Write a message" style="flex:1;padding:12px 16px;border:1px solid #D5DBD8;border-radius:6px;font-size:15px;min-width:0;font-family:inherit">
             <button type="submit" style="background:var(--accent);color:#fff;border:0;border-radius:6px;padding:12px 20px;font-weight:600;cursor:pointer;font-family:inherit">Send</button>
           </form>
-          <button id="req" type="button" style="background:#fff;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:11px;font-weight:600;cursor:pointer;font-family:inherit">Send an order request</button>
+          <button id="req" type="button" data-action="orderRequest" style="background:#fff;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:11px;font-weight:600;cursor:pointer;font-family:inherit">Send an order request</button>
         </div>
       </div>
     </aside>
@@ -101,32 +101,122 @@ img{display:block;width:100%;height:100%;object-fit:cover}
   </div>
 </footer>
 
+<script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
 <script>
-// Demo only: the page shows the signed-in chat view when you click "Sign in" in the card above. Messages are not stored.
+// Product chat: the listing, the seller chat, and order requests. Uses the live API.
 (function () {
   var params = new URLSearchParams(location.search);
-  if (params.get('signed') === '1') {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('chat').style.display = 'flex';
+  var listingId = params.get('listing');
+  var listing = null, chatId = null, me = null, seen = 0, timer = null;
+  function money(c) { return c == null ? '' : '$' + (Number(c) / 100).toFixed(2); }
+  function $(id) { return document.getElementById(id); }
+  function nextHere() { return 'product-chat.html?listing=' + encodeURIComponent(listingId); }
+
+  function renderListing() {
+    $('p-crumb').textContent = 'Market Square / ' + (listing.category || 'Products') + ' / ' + listing.name;
+    $('p-name').textContent = listing.name;
+    $('p-price').innerHTML = '';
+    if (listing.sale_price_cents) {
+      var was = document.createElement('s'); was.style.color = '#8A948F'; was.textContent = money(listing.price_cents);
+      $('p-price').appendChild(was); $('p-price').appendChild(document.createTextNode(' ' + money(listing.sale_price_cents)));
+    } else { $('p-price').textContent = money(listing.price_cents); }
+    $('p-desc').textContent = listing.description || 'The seller has not added a description yet.';
+    $('p-vendor').textContent = listing.vendor_name || '';
+    $('p-vcity').textContent = (listing.vendor_city ? listing.vendor_city + ' · ' : '') + 'Approved vendor';
+    $('c-vendor').textContent = listing.vendor_name || '';
+    $('c-reply').textContent = 'Replies within the time shown in your conversation';
+    if (listing.photos && listing.photos.length) {
+      $('p-main').src = listing.photos[0]; $('p-main').alt = listing.name;
+      document.querySelectorAll('.thumb img').forEach(function (img, i) {
+        if (listing.photos[i]) img.src = listing.photos[i]; else img.parentNode.style.display = 'none';
+      });
+    } else { $('p-main').style.display = 'none'; document.querySelectorAll('.thumb').forEach(function (t) { t.style.display = 'none'; }); }
   }
-  var log = document.getElementById('log');
-  document.getElementById('send').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var input = document.getElementById('msg');
-    var text = input.value.trim();
-    if (!text) return;
+
+  function bubble(m) {
     var b = document.createElement('div');
-    b.className = 'bubble me';
-    b.textContent = text;
-    log.appendChild(b);
-    input.value = '';
-  });
-  document.getElementById('req').addEventListener('click', function () {
-    var b = document.createElement('div');
-    b.style.cssText = 'align-self:center;border:1px solid #0F6B4A;border-radius:8px;padding:10px 14px;font-size:14px;background:#fff';
-    b.textContent = 'Order request sent. Payment is arranged with the seller.';
-    log.appendChild(b);
-  });
+    b.className = 'bubble ' + (m.sender_role === 'buyer' ? 'me' : 'them');
+    b.style.whiteSpace = 'pre-wrap';
+    b.textContent = m.body;
+    if (m.payment_link) { var a = document.createElement('a'); a.href = m.payment_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open the seller payment link'; a.style.cssText = 'display:block;margin-top:8px;font-weight:600'; b.appendChild(a); }
+    return b;
+  }
+
+  function showChat(messages) {
+    var log = $('log');
+    log.innerHTML = '';
+    if (!messages.length) { var p = document.createElement('div'); p.className = 'bubble them'; p.textContent = 'Say hello and ask about this item. The seller usually replies within 24 hours.'; log.appendChild(p); }
+    messages.forEach(function (m) { log.appendChild(bubble(m)); });
+    seen = messages.length;
+    log.scrollTop = log.scrollHeight;
+  }
+
+  // Find this buyer's chat with the seller, if one exists.
+  function findChat() {
+    return nmd.api('/buyer/chats').then(function (rows) {
+      var c = rows.filter(function (r) { return r.business_id === listing.business_id; })[0];
+      if (c) { chatId = c.id; return nmd.api('/buyer/chats/' + c.id); }
+      return null;
+    });
+  }
+
+  // Start the conversation: put this item in the cart and send it to the seller (one seller at a time).
+  function ensureChat() {
+    if (chatId) return Promise.resolve(chatId);
+    var text = 'Hi, I would like to know more about: ' + listing.name + '.';
+    if (!confirm('Before you chat with ' + listing.vendor_name + ':\n\nNaija Market Day is not liable for transactions between buyers and vendors. Payment is arranged with the vendor.\n\nContinue?')) {
+      return Promise.reject(new Error('Chat cancelled. Accept the disclaimer to start.'));
+    }
+    return nmd.api('/buyer/cart', { method: 'POST', body: { listing_id: listing.id, qty: 1 } })
+      .then(function () { return nmd.api('/buyer/cart/proceed', { method: 'POST', body: { business_id: listing.business_id, acknowledged: true } }); })
+      .then(function (r) { chatId = r.chat_id; return chatId; });
+  }
+
+  function refresh() {
+    if (!chatId) return;
+    nmd.api('/buyer/chats/' + chatId).then(function (c) {
+      if (c.messages.length !== seen) showChat(c.messages);
+    }).catch(function () {});
+  }
+
+  function setAuthed(on) {
+    $('gate').style.display = on ? 'none' : 'flex';
+    $('chat').style.display = on ? 'flex' : 'none';
+  }
+
+  nmdPages['product-chat'] = {
+    init: function () {
+      $('gate-link').href = 'login.html?next=' + encodeURIComponent(nextHere());
+      if (!listingId) { $('p-name').textContent = 'This product was not found.'; return; }
+      nmd.api('/marketplace/listings/' + encodeURIComponent(listingId)).then(function (l) {
+        listing = l; renderListing();
+        return nmd.me();
+      }).then(function (user) {
+        me = user;
+        if (!user || (user.roles || []).indexOf('buyer') < 0) { setAuthed(false); return; }
+        setAuthed(true);
+        return findChat().then(function (c) {
+          if (c) showChat(c.messages); else showChat([]);
+          timer = setInterval(refresh, 8000);
+        });
+      }).catch(function (err) { nmdToast(err.message, true); });
+    },
+    forms: {
+      send: function (v) {
+        var text = (v.msg || '').trim();
+        if (!text) return;
+        return ensureChat().then(function (id) {
+          return nmd.api('/buyer/chats/' + id + '/messages', { method: 'POST', body: { body: text } });
+        }).then(function () { $('msg').value = ''; refresh(); return 'Sent'; });
+      },
+    },
+    actions: {
+      orderRequest: function () {
+        return ensureChat().then(function () { refresh(); return 'Order request sent. The seller will reply in your chat.'; });
+      },
+    },
+  };
 })();
 </script>
 <script src="assets/site.js" defer></script>

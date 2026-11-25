@@ -27,7 +27,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="onboarding">
 <div class="shell">
   <nav class="side" aria-label="Vendor sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -49,30 +49,203 @@ a{color:inherit;text-decoration:none}
 
     <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
       <ol class="card" style="list-style:none;margin:0;flex:0 0 250px;display:flex;flex-direction:column;gap:14px;padding:20px">
-        <li class="step"><span class="dot cur">1</span>Business details</li>
-        <li class="step"><span class="dot">2</span>Regulatory documents</li>
-        <li class="step"><span class="dot">3</span>Payments and contact</li>
-        <li class="step"><span class="dot">4</span>Review and submit</li>
+        <li class="step" data-step-dot="1"><span class="dot cur">1</span>Business details</li>
+        <li class="step" data-step-dot="2"><span class="dot">2</span>Regulatory documents</li>
+        <li class="step" data-step-dot="3"><span class="dot">3</span>Payments and contact</li>
+        <li class="step" data-step-dot="4"><span class="dot">4</span>Review and submit</li>
       </ol>
 
-      <section class="card" style="flex:1 1 520px;min-width:0">
-        <h2 style="margin:0 0 16px;font-size:22px">Tell us about your business</h2>
-        <div class="grid">
-          <label class="field">Business name<input type="text" placeholder="[Business name]"></label>
-          <label class="field">Category<select><option>Fashion and textiles</option><option>Food and drink</option><option>Jewellery</option><option>Crafts and home</option><option>Beauty</option><option>Music and arts</option></select></label>
-          <label class="field">City<input type="text" placeholder="[City]"></label>
-          <label class="field">Instagram<input type="text" placeholder="@yourshop"></label>
-        </div>
-        <div style="margin-top:16px"><label class="field">About your business<textarea rows="4" placeholder="What do you make or sell?"></textarea></label></div>
+      <div class="card" style="flex:1 1 520px;min-width:0">
+        <div id="step-error" class="nmd-alert" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:12px;background:#FBEAE6;color:#8A2A1C;font-size:14px"></div>
 
-        <div style="display:flex;justify-content:space-between;margin-top:28px">
-          <button class="btn" style="background:#fff;border:1px solid #D5DBD8;color:var(--ink)" type="button">Back</button>
-          <button class="btn" style="background:var(--accent);color:#fff" type="button">Continue</button>
+        <!-- Step 1: business details. Starts the application for the market you choose. -->
+        <form class="nmd-step" data-step="1" data-api="step1">
+          <h2 style="margin:0 0 16px;font-size:22px">Tell us about your business</h2>
+          <div class="grid">
+            <label class="field">Market you want to trade at<select name="market_id" required><option value="">Loading markets...</option></select></label>
+            <label class="field">Your email<input type="email" name="email" required placeholder="you@business.com"></label>
+            <label class="field">Your name<input type="text" name="contact_person" required placeholder="Your full name"></label>
+            <label class="field">Phone<input type="tel" name="phone" required placeholder="(555) 555-5555"></label>
+            <label class="field">Business name<input type="text" name="business" required placeholder="Your business name"></label>
+            <label class="field">Category<select name="category"><option value="general">Fashion and textiles</option><option value="food">Food and drink</option><option value="general">Jewellery</option><option value="general">Crafts and home</option><option value="general">Beauty</option><option value="general">Music and arts</option></select></label>
+            <label class="field">City<input type="text" name="city" required placeholder="City"></label>
+            <label class="field">Instagram<input type="text" name="instagram" placeholder="@yourshop"></label>
+          </div>
+          <div style="margin-top:16px"><label class="field">About your business<textarea rows="4" name="about" placeholder="What do you make or sell?"></textarea></label></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:28px"><button class="btn" style="background:var(--accent);color:#fff;border:0;cursor:pointer" type="submit">Continue</button></div>
+        </form>
+
+        <!-- Step 2: regulatory documents. Food sellers need a city food certificate. -->
+        <form class="nmd-step" data-step="2" data-api="step2" hidden>
+          <h2 style="margin:0 0 16px;font-size:22px">Regulatory documents</h2>
+          <p style="color:var(--muted);font-size:14px;margin:0 0 16px">Food sellers must upload a valid city food certificate. Other sellers can skip this step.</p>
+          <label class="field">Certificate (PDF or image)<input type="file" name="doc" accept="application/pdf,image/png,image/jpeg,image/webp"></label>
+          <label class="field">Certificate expiry date<input type="date" name="expires_on"></label>
+          <div style="display:flex;justify-content:space-between;margin-top:28px">
+            <button class="btn" style="background:#fff;border:1px solid #D5DBD8;color:var(--ink)" type="button" data-action="back">Back</button>
+            <button class="btn" style="background:var(--accent);color:#fff;border:0;cursor:pointer" type="submit">Continue</button>
+          </div>
+        </form>
+
+        <!-- Step 3: booth, terms and payment. -->
+        <form class="nmd-step" data-step="3" data-api="step3" hidden>
+          <h2 style="margin:0 0 16px;font-size:22px">Booth and payment</h2>
+          <label class="field">Booth<select name="booth_id" required><option value="">Loading booths...</option></select></label>
+          <p class="nmd-price" style="font-size:15px;margin:6px 0 14px"></p>
+          <label class="field" style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="accepted" required style="margin-top:4px"> <span>I accept the event terms. Booth fees are non-refundable after payment unless we decline your application.</span></label>
+          <div class="nmd-terms" style="font-size:13px;color:var(--muted);white-space:pre-wrap;margin-bottom:14px"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:28px">
+            <button class="btn" style="background:#fff;border:1px solid #D5DBD8;color:var(--ink)" type="button" data-action="back">Back</button>
+            <button class="btn" style="background:var(--accent);color:#fff;border:0;cursor:pointer" type="submit">Pay booth fee</button>
+          </div>
+        </form>
+
+        <!-- Step 4: review. -->
+        <div class="nmd-step" data-step="4" hidden>
+          <h2 style="margin:0 0 16px;font-size:22px">Review and submit</h2>
+          <dl class="nmd-summary" style="display:grid;grid-template-columns:160px 1fr;gap:8px 14px;font-size:15px"></dl>
+          <p style="color:var(--muted);font-size:14px;margin:16px 0 0">We review every application before the booth is confirmed. We email you when there is an update. If this is your first market, we also email a link to set your vendor password.</p>
+          <div style="display:flex;justify-content:flex-end;margin-top:28px"><button class="btn" style="background:var(--accent);color:#fff;border:0;cursor:pointer" type="button" data-action="finish">Go to my dashboard</button></div>
         </div>
-      </section>
+      </div>
     </div>
   </main>
 </div>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Sell flow: four steps that create and complete a market application (see VEN-01 to VEN-23).
+(function () {
+  var TOKEN_KEY = 'nmd-apply-token', ID_KEY = 'nmd-apply-id';
+  var cur = 1, app = null, booths = [];
+  function token() { try { return sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function call(path, opts) {
+    opts = opts || {};
+    var h = { 'Content-Type': 'application/json' };
+    if (token()) h['x-apply-token'] = token();
+    return fetch('/api' + path, { method: opts.method || 'GET', headers: h, credentials: 'same-origin',
+      body: opts.method && opts.method !== 'GET' ? JSON.stringify(opts.body || {}) : undefined })
+      .then(function (r) { return r.text().then(function (t) { var d = t ? JSON.parse(t) : null; if (!r.ok) { var e = new Error((d && d.error) || 'Something went wrong.'); e.status = r.status; throw e; } return d; }); });
+  }
+  function showStep(n) {
+    cur = n;
+    document.querySelectorAll('.nmd-step').forEach(function (el) { el.hidden = Number(el.getAttribute('data-step')) !== n; });
+    document.querySelectorAll('[data-step-dot]').forEach(function (li) {
+      var k = Number(li.getAttribute('data-step-dot'));
+      li.querySelector('.dot').classList.toggle('cur', k === n);
+    });
+    setError('');
+  }
+  function setError(msg) { var el = document.getElementById('step-error'); el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; }
+  function fail(err) { setError(err.message); nmdToast(err.message, true); }
+  function categoryFor(v) { return v === 'food' ? 'premium' : 'general'; }
+
+  function loadMarkets() {
+    nmd.api('/markets').then(function (rows) {
+      var sel = document.querySelector('select[name=market_id]');
+      var open = rows.filter(function (m) { return m.effective_status === 'published'; });
+      sel.innerHTML = '';
+      if (!open.length) { sel.innerHTML = '<option value="">No markets are open for applications yet</option>'; return; }
+      open.forEach(function (m) { var o = document.createElement('option'); o.value = m.id; o.textContent = m.name + ' (' + m.city + ', ' + nmd.fmtDate(m.date) + ')'; sel.appendChild(o); });
+    }).catch(fail);
+    var qEmail = new URLSearchParams(location.search).get('email');
+    if (qEmail) document.querySelector('input[name=email]').value = qEmail;
+    nmd.me().then(function (u) {
+      if (u) { var e = document.querySelector('input[name=email]'); e.value = u.email; e.readOnly = true; }
+    });
+  }
+
+  function loadBooths() {
+    return call('/apply/' + app.id + '/booths').then(function (rows) {
+      booths = rows;
+      var sel = document.querySelector('select[name=booth_id]');
+      sel.innerHTML = '<option value="">Choose a booth</option>';
+      rows.filter(function (b) { return b.status === 'available' || (app.booth && app.booth.id === b.id); }).forEach(function (b) {
+        var o = document.createElement('option'); o.value = b.id; o.textContent = 'Booth ' + b.number + ' · ' + b.tier + ' · ' + nmd.money(b.price_cents);
+        if (app.booth && app.booth.id === b.id) o.selected = true;
+        sel.appendChild(o);
+      });
+      document.querySelector('select[name=booth_id]').onchange = function () {
+        var b = booths.filter(function (x) { return String(x.id) === this.value; }, this)[0];
+        document.querySelector('.nmd-price').textContent = b ? 'Booth fee: ' + nmd.money(b.price_cents) : '';
+      };
+      var terms = app.market && app.market.terms ? app.market.terms : 'Terms will be posted before applications close.';
+      document.querySelector('.nmd-terms').textContent = terms;
+    });
+  }
+
+  function summary() {
+    var b = app.business || {};
+    var rows = [
+      ['Market', app.market ? app.market.name + ' · ' + nmd.fmtDate(app.market.date) : ''],
+      ['Business', b.name || ''], ['Contact', b.contact_person || ''], ['City', b.city || ''],
+      ['Booth', app.booth ? app.booth.number + ' (' + app.booth.tier + ')' : 'Not chosen'],
+      ['Fee', app.booth ? nmd.money(app.booth.price_cents) : ''],
+      ['Status', app.payment_status === 'paid' ? 'Paid. Under review' : 'Not paid yet'],
+    ];
+    var dl = document.querySelector('.nmd-summary');
+    dl.innerHTML = '';
+    rows.forEach(function (r) { var dt = document.createElement('dt'); dt.style.color = 'var(--muted)'; dt.textContent = r[0]; var dd = document.createElement('dd'); dd.style.margin = '0'; dd.textContent = r[1]; dl.appendChild(dt); dl.appendChild(dd); });
+  }
+
+  nmdPages.onboarding = {
+    init: function () { loadMarkets(); },
+    forms: {
+      step1: function (v) {
+        var start = app ? Promise.resolve({ application: app }) : call('/apply/start', { method: 'POST', body: { market_id: Number(v.market_id), email: v.email } });
+        return start.then(function (r) {
+          if (r.needs_sign_in) {
+            location.href = 'login.html?as=vendor&email=' + encodeURIComponent(v.email);
+            throw new Error('This email already has an account. Sign in to continue your application.');
+          }
+          if (r.token) { sessionStorage.setItem(TOKEN_KEY, r.token); }
+          var a = r.application || r.app;
+          app = a;
+          var id = a.id;
+          return call('/apply/' + id, { method: 'PUT', body: {
+            business: { name: v.business, category: v.category, contact_person: v.contact_person, phone: v.phone, city: v.city, website: '', description: v.about + (v.instagram ? '\nInstagram: ' + v.instagram : '') },
+            complete_step: 'details' } })
+          .then(function () {
+            return call('/apply/' + id, { method: 'PUT', body: {
+              category: categoryFor(v.category),
+              answers: { is_food: v.category === 'food', what_you_sell: v.about || 'Products and crafts' },
+              complete_step: 'category' } });
+          })
+          .then(function (updated) { app = updated; showStep(2); return 'Business saved.'; });
+        });
+      },
+      step2: function (v, form) {
+        var file = form.querySelector('input[name=doc]').files[0];
+        var food = app && app.answers && app.answers.is_food;
+        if (!file) {
+          if (food) throw new Error('Food sellers must upload a city food certificate.');
+          showStep(3); loadBooths(); return 'Skipped. Continue to booth and payment.';
+        }
+        if (file.size > 8 * 1024 * 1024) throw new Error('That file is over 8 MB.');
+        return new Promise(function (res, rej) {
+          var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsDataURL(file);
+        }).then(function (data_url) {
+          return call('/apply/' + app.id + '/documents', { method: 'POST', body: { kind: 'food_certificate', filename: file.name, data_url: data_url, expires_on: v.expires_on || null } });
+        }).then(function () { showStep(3); return loadBooths().then(function () { return 'Document uploaded.'; }); });
+      },
+      step3: function (v) {
+        if (!v.booth_id) throw new Error('Choose a booth.');
+        var holdBooth = call('/apply/' + app.id + '/booth', { method: 'POST', body: { booth_id: Number(v.booth_id) } });
+        return holdBooth
+          .then(function (a) { app = a; return call('/apply/' + app.id + '/terms', { method: 'POST', body: { accepted: true } }); })
+          .then(function (a) { app = a; return call('/apply/' + app.id + '/pay', { method: 'POST', body: {} }); })
+          .then(function (r) {
+            if (r.redirect) { location.href = r.redirect; return 'Opening secure payment...'; }
+            return call('/apply/' + app.id).then(function (a) { app = a; summary(); showStep(4); return 'Booth fee paid. Your application is under review.'; });
+          });
+      },
+    },
+    actions: {
+      back: function () { showStep(Math.max(1, cur - 1)); },
+      finish: function () { location.href = 'vendor-dashboard.html'; },
+    },
+  };
+})();
+</script>
 </body>
 </html>

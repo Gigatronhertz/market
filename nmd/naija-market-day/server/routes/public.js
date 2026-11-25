@@ -50,7 +50,7 @@ router.get('/directory/markets', wrap(async (req, res) => res.json(commerce.dire
 router.get('/directory/markets/:id/vendors', wrap(async (req, res) => res.json(commerce.directoryVendors(req.params.id, { q: req.query.q, category: req.query.category }))));
 router.get('/directory/vendors/:businessId', wrap(async (req, res) => res.json(commerce.vendorProfile(req.params.businessId))));
 
-router.get('/marketplace/listings', wrap(async (req, res) => res.json(commerce.listingsPublic({ q: req.query.q, category: req.query.category, business_id: req.query.business_id }))));
+router.get('/marketplace/listings', wrap(async (req, res) => res.json(commerce.listingsPublic({ q: req.query.q, category: req.query.category, business_id: req.query.business_id, upcoming: req.query.upcoming === '1' }))));
 router.get('/marketplace/listings/:id', wrap(async (req, res) => res.json(commerce.listingDetail(req.params.id))));
 
 router.get('/settings/public', wrap(async (_req, res) => res.json({

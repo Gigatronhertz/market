@@ -101,12 +101,25 @@
     ], chats, { empty: 'No chats yet. Add items to your cart and proceed with a vendor.' }));
   }
 
+  // Renders the messages list. Used on load and by the live refresh.
+  const bubbles = (c) => c.messages.map((m) => h('div', { class: 'bubble ' + (m.sender_role === 'buyer' ? 'me' : '') },
+    h('div', { class: 'meta' }, (m.sender_role === 'buyer' ? 'You' : c.business_name) + ' · ' + fmtDateTime(m.created_at)),
+    m.body,
+    m.payment_link ? h('div', { style: 'margin-top:8px' }, h('a', { href: m.payment_link, rel: 'noopener', target: '_blank', class: 'btn small-btn' }, 'Open payment link')) : null));
+
   async function thread(id) {
     const c = await api('/buyer/chats/' + id);
-    const log = h('div', { class: 'chat', 'aria-live': 'polite' }, c.messages.map((m) => h('div', { class: 'bubble ' + (m.sender_role === 'buyer' ? 'me' : '') },
-      h('div', { class: 'meta' }, (m.sender_role === 'buyer' ? 'You' : c.business_name) + ' · ' + fmtDateTime(m.created_at)),
-      m.body,
-      m.payment_link ? h('div', { style: 'margin-top:8px' }, h('a', { href: m.payment_link, rel: 'noopener', target: '_blank', class: 'btn small-btn' }, 'Open payment link')) : null)));
+    const log = h('div', { class: 'chat', 'aria-live': 'polite' }, bubbles(c));
+    // Live: new vendor replies appear without reloading. Only new messages animate in.
+    let seen = c.messages.length;
+    window.UI.poll(async () => {
+      if (!document.body.contains(log)) return;
+      const fresh = await api('/buyer/chats/' + id).catch(() => null);
+      if (!fresh || fresh.messages.length === seen) return;
+      seen = fresh.messages.length;
+      log.replaceChildren(...bubbles(fresh));
+      log.lastElementChild && log.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 8000);
     const input = h('textarea', { rows: 2, 'aria-label': 'Message', placeholder: 'Write a message…' });
     return frame('Chat with ' + c.business_name,
       h('p', null, h('a', { href: '#/messages' }, '← Messages')),

@@ -43,8 +43,8 @@
       ['Marketplace', d.subscription.active ? (d.subscription.status === 'trial' ? 'Free period' : 'Active') : 'Not subscribed', '#/marketplace'],
     ];
     const next = d.next_market;
-    return frame('Dashboard',
-      h('div', { class: 'grid grid-3' }, cards.map(([label, n, href]) => h('a', { class: 'card kpi', href, style: 'color:inherit;text-decoration:none' }, h('div', { class: 'n' }, String(n)), h('div', { class: 'l' }, label)))),
+    return frame('Welcome, ' + ((me && me.name) || 'vendor'),
+      h('div', { class: 'kpi' }, cards.map(([label, n, href]) => h('a', { class: 'card lift', href, style: 'color:inherit;text-decoration:none' }, h('div', { class: 'n', 'data-count': typeof n === 'number' ? n : null }, String(n)), h('div', { class: 'l' }, label)))),
       h('div', { class: 'grid grid-2', style: 'margin-top:16px' },
         h('div', { class: 'card' }, h('h3', null, 'Next market'),
           next ? h('div', null, h('strong', null, next.name), h('div', { class: 'muted' }, `${next.city} · ${fmtDate(next.date)}`), h('div', null, 'Booth ', h('strong', null, next.booth || 'to be confirmed')), h('a', { href: '#/applications/' + next.application_id }, 'View my QR code'))
@@ -54,6 +54,20 @@
             h('a', { class: 'btn ghost block', href: '#/markets' }, 'Apply to a market'),
             h('a', { class: 'btn ghost block', href: '#/businesses' }, 'Manage my businesses'),
             h('a', { class: 'btn ghost block', href: '#/marketplace' }, 'Marketplace and listings')))));
+  }
+
+  // QR check-in (VEN-26): every approved booking with its QR code, ready to show at the entrance.
+  async function qrPage() {
+    const rows = (await api('/vendor/applications' + bizQuery())).filter((a) => a.status === 'approved');
+    const cards = await Promise.all(rows.map(async (a) => {
+      const d = await api('/vendor/applications/' + a.id + '/qr').catch(() => null);
+      return h('div', { class: 'card lift stack', style: 'text-align:center' },
+        h('div', { class: 'spread' }, h('strong', null, a.market_name), badge(a.attendance)),
+        d ? h('img', { class: 'qr', src: d.qr_data_url, alt: 'QR for ' + a.market_name }) : h('div', { class: 'muted' }, 'QR not ready yet'),
+        h('div', { class: 'small muted' }, (a.business || '') + (a.booth ? ' · booth ' + a.booth : '')));
+    }));
+    return frame('QR check-in', h('p', { class: 'muted' }, 'Show this code at the entrance. Staff scan it on arrival and check you out when you leave.'),
+      cards.length ? h('div', { class: 'grid grid-cards' }, cards) : h('div', { class: 'card empty-state' }, 'No approved bookings yet. Your QR code appears here once an application is approved.'));
   }
 
   // ---------- markets (VEN-10): apply from here ----------
@@ -309,25 +323,29 @@
   }
 
   // ---------- shell and routing ----------
+  // Labels follow vendor-dashboard.html: Overview, Products, Chats and orders, Events, Booth and payments, QR check-in.
   const sections = () => [
     { items: [
-      { label: 'Dashboard', href: '#/', match: (hh) => hh === '' || hh === '#' || hh === '#/' },
-      { label: 'Markets', href: '#/markets' },
-      { label: 'My applications', href: '#/applications', match: (hh) => hh.startsWith('#/applications') },
-      { label: 'Messages', href: '#/messages', match: (hh) => hh.startsWith('#/messages') },
-      { label: 'Marketplace', href: '#/marketplace' },
+      { label: 'Overview', href: '#/', match: (x) => x === '' || x === '#' || x === '#/' },
+      { label: 'Products', href: '#/marketplace' },
+      { label: 'Chats and orders', href: '#/messages', match: (x) => x.startsWith('#/messages'), count: unreadCount || null },
+      { label: 'Events', href: '#/markets', match: (x) => x.startsWith('#/markets') },
+      { label: 'Booth and payments', href: '#/applications', match: (x) => x.startsWith('#/applications') && !x.includes('/qr') },
+      { label: 'QR check-in', href: '#/qr' },
     ] },
     { title: 'Account', items: [
       { label: 'My businesses', href: '#/businesses' },
-      { label: 'Notifications', href: '#/notifications', count: unreadCount || null },
+      { label: 'Notifications', href: '#/notifications', count: unreadBell || null },
       { label: 'Receipts', href: '#/receipts' },
       { label: 'Resources', href: '#/resources' },
     ] },
   ];
+  let unreadBell = 0;
   let unreadCount = 0;
 
   const routes = [
     [/^#?\/?$/, () => dashboard()],
+    [/^#\/qr\/?$/, () => qrPage()],
     [/^#\/markets\/?$/, () => markets()],
     [/^#\/applications\/?$/, () => applications()],
     [/^#\/applications\/(\d+)$/, (m) => applicationDetail(m[1])],
@@ -358,7 +376,8 @@
     businesses = await api('/vendor/businesses').catch(() => []);
     try { selectedBiz = Number(sessionStorage.getItem(BIZ_KEY)) || null; } catch { selectedBiz = null; }
     if (selectedBiz && !businesses.some((b) => b.id === selectedBiz)) selectedBiz = null;
-    unreadCount = (await api('/vendor/notifications').catch(() => ({ unread: 0 }))).unread;
+    unreadCount = (await api('/vendor/dashboard').catch(() => ({ unread_messages: 0 }))).unread_messages;
+    unreadBell = (await api('/vendor/notifications').catch(() => ({ unread: 0 }))).unread;
 
     // VEN-07: on phones, say the portal is best on a computer or tablet. The vendor can still continue.
     let dismissed = false;
@@ -370,13 +389,22 @@
       document.body.insertBefore(note, document.body.firstChild);
     }
     const main = h('main', { class: 'main', id: 'main', tabindex: '-1' });
-    const side = shell({ brand: 'Vendor', sections: sections(), user: me, onSignOut: async () => {
+    const build = () => shell({ brand: 'Vendor', sections: sections(), user: me, onSignOut: async () => {
       await api('/auth/logout', { method: 'POST' }).catch(() => {});
       location.href = '/app/login.html?as=vendor';
     } });
+    const side = build();
     root.replaceChildren(side.root);
     const outlet = side.main;
     renderRoute = window.UI.router(outlet, routes, '#/');
+    // Live: unread chats and notifications update the sidebar every 30 seconds without a page reload.
+    window.UI.poll(async () => {
+      unreadCount = (await api('/vendor/dashboard').catch(() => ({ unread_messages: unreadCount }))).unread_messages;
+      unreadBell = (await api('/vendor/notifications').catch(() => ({ unread: unreadBell }))).unread;
+      const fresh = build().root.querySelector('.side');
+      const old = root.querySelector('.side');
+      if (old) old.replaceWith(fresh);
+    }, 30000);
   }
   boot();
 })();

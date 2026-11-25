@@ -63,7 +63,7 @@
 
   function stepBar(current) {
     const idx = STEP_LABELS.findIndex(([k]) => k === current);
-    return h('div', { class: 'steps', 'aria-label': 'Application steps' }, STEP_LABELS.map(([k, label], i) =>
+    return h('div', { class: 'wizard-steps', 'aria-label': 'Application steps' }, STEP_LABELS.map(([k, label], i) =>
       h('span', { class: i === idx ? 'on' : i < idx ? 'done' : '' }, `${i + 1}. ${label}`)));
   }
 
@@ -128,7 +128,7 @@
 
   // Step 3: booth picker (VEN-17 to VEN-20). Taken booths are greyed out; the price shows once selected.
   async function boothStep() {
-    const booths = await call(appPath('/booths'));
+    let booths = await call(appPath('/booths'));
     const market = app.market;
     const grid = h('div', { class: 'booth-grid', role: 'radiogroup', 'aria-label': 'Booths' });
     const info = h('div', { class: 'alert', role: 'status' });
@@ -156,6 +156,14 @@
         h('div', { class: 'small muted' }, b.status === 'available' ? 'Available' : b.status === 'held' ? 'Held' : b.status === 'confirmed' || b.status === 'paid' ? 'Taken' : b.status))));
     };
     draw();
+    // Live booth map: booths taken by other vendors grey out while this applicant is choosing.
+    const stopLive = window.UI.poll(async () => {
+      if (!document.body.contains(grid)) { stopLive(); return; }
+      const fresh = await call(appPath('/booths')).catch(() => null);
+      if (!fresh) return;
+      const changed = JSON.stringify(fresh.map((b) => b.status)) !== JSON.stringify(booths.map((b) => b.status));
+      if (changed) { booths = fresh; draw(); }
+    }, 10000);
     const fullTiers = tiers.filter((t) => !booths.some((b) => b.tier === t && b.status === 'available'));
     const waitlist = fullTiers.length ? h('div', { class: 'card tint', style: 'margin-top:14px' },
       h('h3', null, 'Wanted tier is taken?'),

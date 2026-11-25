@@ -4,7 +4,9 @@
   const { h, api, money, fmtDate, badge, toast, alertBox, table, formFields, onSubmit, router, siteHeader, footer, loadDisclaimer, timeAgo, escapeForAttr } = window.UI;
 
   const root = document.getElementById('root');
-  const page = (active, ...children) => h('div', null, siteHeader(active), h('main', { class: 'wrap', style: 'padding-top:28px;padding-bottom:40px', id: 'outlet' }, children), footer());
+  const page = (active, ...children) => h('div', null, siteHeader(active), h('main', { class: 'wrap', id: 'outlet', style: 'padding-bottom:20px' }, children), footer(), newsletterPrompt());
+  const HERO_IMG = 'https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=2000&q=80&auto=format&fit=crop';
+  const FEATURES = [['utensils', 'Food', 'Nigerian home cooking and street snacks, from vendors in every city.'], ['shirt', 'Fashion', 'Adire, ankara and everyday wear made and sold by the designers.'], ['music', 'Music', 'Live sets and a family-friendly atmosphere you can hear from the street.'], ['store', 'Small business', 'Booths for local makers, with a directory you can keep after the day ends.']];
 
   async function bannerSlot(location, city) {
     const list = await api('/banners?location=' + location + (city ? '&city=' + encodeURIComponent(city) : '')).catch(() => []);
@@ -23,38 +25,63 @@
     return link;
   }
 
-  function marketCard(m) {
-    return h('a', { class: 'card grid-card', href: '#/markets/' + m.id, style: 'color:inherit;text-decoration:none' },
-      h('div', { class: 'row', style: 'justify-content:space-between' }, h('span', { class: 'muted small' }, m.city), badge(m.effective_status)),
-      h('h3', null, m.name),
-      h('div', null, fmtDate(m.date) + (m.start_time ? ' · ' + m.start_time : '')),
-      h('div', { class: 'muted small' }, m.venue),
-      m.applications_open ? h('span', { class: 'badge ok', style: 'align-self:flex-start' }, 'Vendor applications open') : null);
+  function marketWork(m, wide = false) {
+    const frame = h('div', { class: 'frame' },
+      m.flyer_url ? h('img', { src: m.flyer_url, alt: m.name, loading: 'lazy' }) : h('div', { style: 'height:100%;background:linear-gradient(135deg,#0B2E22,#0F6B4A 60%,#8EE0B0)' }),
+      h('span', { class: 'tag' }, badge(m.effective_status)));
+    return h('a', { class: 'work-app' + (wide ? ' wide' : ''), href: '#/markets/' + m.id },
+      frame,
+      h('div', { class: 'caption' },
+        h('div', null, h('b', null, m.name), h('span', null, `${m.city} · ${fmtDate(m.date)}${m.start_time ? ' · ' + m.start_time : ''}`)),
+        h('span', { class: 'by' }, m.venue || '')));
   }
+  function marketCard(m) { return marketWork(m, false); }
 
   // ---------- home ----------
   async function home() {
     const [markets, sponsors] = await Promise.all([api('/markets'), api('/sponsors').catch(() => [])]);
     const upcoming = markets.filter((m) => m.effective_status === 'published');
     const next = upcoming[0];
-    const hero = h('section', { class: 'hero', style: 'margin:-28px -16px 0' },
-      h('div', { class: 'wrap' },
-        h('p', { class: 'small', style: 'letter-spacing:.08em;text-transform:uppercase;color:var(--mint)' }, 'Next market'),
-        next
-          ? h('div', null,
-              h('h1', null, next.name),
-              h('p', null, `${next.city} · ${fmtDate(next.date)}${next.start_time ? ' · ' + next.start_time : ''}${next.venue ? ' · ' + next.venue : ''}`),
-              h('div', { class: 'row' },
-                h('a', { class: 'btn', href: '#/markets/' + next.id + '/register' }, 'Register as guest'),
-                h('a', { class: 'btn ghost', href: '#/markets/' + next.id + '/apply' }, 'Apply as vendor')))
-          : h('div', null, h('h1', null, 'Our next market is coming soon'), h('p', null, 'Check back for dates and vendor applications.'))));
+    const title = next ? next.name : 'Come experience the best of African market';
+    const words = title.split(' ').map((w, i) => h('span', { class: 'word', style: `animation-delay:${0.15 + i * 0.09}s` }, w));
+    const hero = h('section', { class: 'hero-app', 'aria-label': 'Welcome' },
+      h('img', { class: 'poster', src: HERO_IMG, alt: '' }),
+      h('div', { class: 'wrap hero-copy' },
+        h('div', { class: 'eyebrow-light' }, next ? `${next.city} · ${fmtDate(next.date)}` : 'Brampton · Edmonton · Winnipeg · Online'),
+        h('h1', { style: 'margin-top:16px' }, words),
+        h('div', { class: 'hero-meta' },
+          h('p', null, 'The travelling African market in North America. Food, fashion, music and small businesses, free to attend.'),
+          h('div', { class: 'actions' },
+            h('a', { class: 'btn btn-ink', href: next ? '#/markets/' + next.id + '/register' : '#/markets' }, 'Register as guest'),
+            h('a', { class: 'btn', href: next ? '#/markets/' + next.id + '/apply' : '#/markets' }, 'Apply as vendor')))));
     const banner = await bannerSlot('home');
     const sponsorStrip = sponsors.length ? h('div', { class: 'sponsors', 'aria-label': 'Sponsors' }, sponsors.map((s) => h('a', { href: s.link || '#', rel: 'sponsored noopener' }, h('img', { src: s.logo_url, alt: s.name })))) : null;
-    const newsletter = newsletterPrompt();
-    return page('#/', hero, banner, sponsorStrip,
-      h('section', { style: 'margin-top:28px' }, h('div', { class: 'spread' }, h('h2', null, 'Upcoming markets'), h('a', { href: '#/markets' }, 'See all')),
-        upcoming.length ? h('div', { class: 'grid grid-cards' }, upcoming.slice(0, 3).map(marketCard)) : h('p', { class: 'muted' }, 'No upcoming markets are published yet.')),
-      newsletter);
+    return page('#/', hero,
+      h('section', { class: 'intro section', 'aria-label': 'Introduction' },
+        h('p', { class: 'lede' }, 'Traditional clothing, handmade crafts and Nigerian food, brought to a new city every summer by the people who make them.'),
+        h('aside', { class: 'next' }, 'Next market', h('b', null, next ? `${next.city}, ${fmtDate(next.date)}` : 'Dates coming soon'), next ? next.name + '. Free entry.' : 'Check back for the next date.')),
+      h('section', { class: 'section features', 'aria-label': 'What you will find' },
+        h('div', { class: 'feat-grid' }, FEATURES.map(([ic, t, d]) => h('div', { class: 'feat' }, h('span', { class: 'feat-ic' }, window.UI.icon(ic)), h('h3', null, t), h('p', null, d))))),
+      banner,
+      sponsorStrip,
+      h('section', { class: 'section', 'aria-label': 'Upcoming markets' },
+        h('div', { class: 'section-head' }, h('h2', null, 'Upcoming markets'), h('p', null, 'Register as a guest, or apply to trade at a market.')),
+        upcoming.length ? h('div', { class: 'works-app' }, upcoming.slice(0, 3).map((m, i) => marketWork(m, i === 0 && upcoming.length > 1))) : h('p', { class: 'muted' }, 'No upcoming markets are published yet.'),
+        h('p', { style: 'margin-top:28px' }, h('a', { class: 'more', href: '#/markets' }, 'See all markets'))),
+      newsletterBlock(),
+      h('div', { style: 'height:20px' }));
+  }
+
+  // Inline newsletter block at the foot of the home page (mockup .newsletter).
+  function newsletterBlock() {
+    const f = h('form', { class: 'field-row', style: 'align-items:center' },
+      h('input', { type: 'email', name: 'email', placeholder: 'Your email', required: true, 'aria-label': 'Email' }),
+      h('label', { class: 'inline small', style: 'align-self:center' }, h('input', { type: 'checkbox', name: 'consent', required: true }), 'Send me market news'),
+      h('button', { class: 'btn btn-ink', type: 'submit' }, 'Subscribe'));
+    onSubmit(f, async (v) => { await api('/newsletter', { method: 'POST', body: { email: v.email, consent: v.consent } }); f.reset(); return 'You are subscribed. Thank you.'; }, { success: (m) => m });
+    return h('section', { class: 'newsletter', 'aria-label': 'Newsletter' }, h('div', { class: 'wrap inner' },
+      h('h2', null, window.UI.icon('mail'), 'Get the market news'),
+      f));
   }
 
   // Newsletter prompt: shown once per visitor, never again after dismissal or signup (WEB-10).
@@ -83,11 +110,11 @@
   async function marketsList(past) {
     const markets = await api('/markets?past=' + (past ? 1 : 0));
     const city = h('select', { 'aria-label': 'City' }, h('option', { value: '' }, 'All cities'), [...new Set(markets.map((m) => m.city))].map((c) => h('option', { value: c }, c)));
-    const list = h('div', { class: 'grid grid-cards' });
+    const list = h('div', { class: 'works-app' });
     const draw = () => {
       const pick = city.value;
       const rows = markets.filter((m) => !pick || m.city === pick);
-      list.replaceChildren(...(rows.length ? rows.map(marketCard) : [h('p', { class: 'muted' }, past ? 'No past markets yet.' : 'No upcoming markets yet.')]));
+      list.replaceChildren(...(rows.length ? rows.map((m) => marketWork(m, false)) : [h('p', { class: 'muted' }, past ? 'No past markets yet.' : 'No upcoming markets yet.')]));
     };
     city.addEventListener('change', draw);
     draw();

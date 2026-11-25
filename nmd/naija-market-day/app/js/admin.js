@@ -49,11 +49,13 @@
       h('button', { class: 'btn', type: 'submit' }, 'Apply filters'),
       csvLink('/admin/dashboard.csv?' + qs, 'Download figures'));
     const c = d.cards;
-    const cardsRow = h('div', { class: 'grid grid-4' }, [
+    const cardsRow = h('div', { class: 'kpi' }, [
       ['Upcoming markets', c.upcoming_markets], ['Applications awaiting review', c.applications_awaiting_review],
-      ['Booths sold / available', `${c.booths_sold} / ${c.booths_available}`], ['Guest registrations', c.guest_registrations],
-      ['Booth fees received', money(c.booth_fees_cents)], ['Active Marketplace subscriptions', c.active_marketplace_subscriptions],
-    ].map(([l, n]) => h('div', { class: 'card kpi' }, h('div', { class: 'n' }, String(n)), h('div', { class: 'l' }, l))));
+      ['Booths sold', c.booths_sold, `${c.booths_available} still available`], ['Guest registrations', c.guest_registrations],
+      ['Booth fees received', c.booth_fees_cents, null, 'money'], ['Active Marketplace subscriptions', c.active_marketplace_subscriptions],
+    ].map(([l, n, sub, fmt]) => h('div', { class: 'card lift' }, h('div', { class: 'l' }, l),
+      h('div', { class: 'n', 'data-count': n, 'data-format': fmt || 'int' }, fmt === 'money' ? money(n) : String(n)),
+      sub ? h('div', { class: 'small muted' }, sub) : null)));
     const att = d.attendance.per_market.map((r) => ({ label: r.market, registered: r.registered, attended: r.attended, walkins: r.walkins }));
     return h('div', { class: 'stack' },
       h('h1', null, 'Dashboard'),
@@ -448,29 +450,24 @@
   }
 
   // ---------- routing ----------
+  // Labels follow admin-dashboard.html: Dashboard, Approvals, Booth map, Payments, Vendor emails, Ads,
+  // News and events, Chats and support, Roles and permissions. Operations pages sit below them.
   const NAV = () => [
     { items: [
       { label: 'Dashboard', href: '#/dashboard', match: (x) => x.startsWith('#/dashboard') || x === '' || x === '#/' || x === '#' },
-      { label: 'Markets', href: '#/markets', match: (x) => x.startsWith('#/markets') },
-      { label: 'Applications', href: '#/applications', match: (x) => x.startsWith('#/applications') },
-      { label: 'Waitlist and booths', href: '#/waitlist', match: (x) => x.startsWith('#/waitlist') || x.startsWith('#/booths') },
+      { label: 'Approvals', href: '#/applications', match: (x) => x.startsWith('#/applications') },
+      { label: 'Booth map', href: '#/booths', match: (x) => x.startsWith('#/booths') || x.startsWith('#/waitlist') },
       { label: 'Payments', href: '#/payments' },
+      { label: 'Vendor emails', href: '#/messaging', match: (x) => x.startsWith('#/messaging') },
+      { label: 'Ads', href: '#/banners' },
+      { label: 'News and events', href: '#/content/blog_posts', match: (x) => x.startsWith('#/content') || x.startsWith('#/events') },
+      { label: 'Chats and support', href: '#/inquiries', match: (x) => x.startsWith('#/inquiries') || x.startsWith('#/subscribers') },
+      { label: 'Roles and permissions', href: '#/users', match: (x) => x.startsWith('#/users') },
+    ] },
+    { title: 'Operations', items: [
+      { label: 'Markets', href: '#/markets', match: (x) => x.startsWith('#/markets') },
       { label: 'Directory', href: '#/directory', match: (x) => x.startsWith('#/directory') },
       { label: 'Marketplace', href: '#/marketplace' },
-    ] },
-    { title: 'Messaging and content', items: [
-      { label: 'Messaging', href: '#/messaging', match: (x) => x.startsWith('#/messaging') },
-      { label: 'Banner ads', href: '#/banners' },
-      { label: 'Blog', href: '#/content/blog_posts' },
-      { label: 'Community events', href: '#/events' },
-      { label: 'Gallery', href: '#/content/gallery' },
-      { label: 'Sponsors', href: '#/content/sponsors' },
-      { label: 'Vendor resources', href: '#/content/resources' },
-      { label: 'Inquiries', href: '#/inquiries' },
-      { label: 'Subscribers', href: '#/subscribers' },
-    ] },
-    { title: 'Team and system', items: [
-      { label: 'Users', href: '#/users', match: (x) => x.startsWith('#/users') },
       { label: 'Activity', href: '#/activity' },
       { label: 'Settings', href: '#/settings' },
     ] },
@@ -870,6 +867,8 @@
     shellRef = side;
     root.replaceChildren(side.root);
     renderRoute = router(side.main, routes, '#/dashboard');
+    // Live: the dashboard refreshes itself every minute while it is on screen.
+    window.UI.poll(() => { if (/^#\/dashboard|^#?\/?$|^#$/.test(location.hash || '#/')) go(); }, 60000);
   }
   boot();
 })();

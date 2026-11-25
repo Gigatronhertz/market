@@ -1,0 +1,30 @@
+# Render Blueprint: deploys the app from this repo on every push to main.
+# The database is a SQLite file on a persistent disk, so it survives restarts and redeploys.
+services:
+  - type: web
+    name: naija-market-day
+    runtime: node
+    plan: starter            # persistent disks need a paid plan
+    rootDir: nmd/naija-market-day
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    branch: main
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.5       # node:sqlite needs Node 22.13 or newer
+      - key: DATA_DIR
+        value: /var/data     # the database lives on the persistent disk
+      - key: DEMO_DATA
+        value: "1"           # demo content on an empty database; set to 0 to turn off
+      - key: ADMIN_EMAIL
+        sync: false          # first admin account, entered in the Render dashboard
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: APP_URL
+        sync: false          # e.g. https://naija-market-day.onrender.com
+    disk:
+      name: nmd-data
+      mountPath: /var/data
+      sizeGB: 1

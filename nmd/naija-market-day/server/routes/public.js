@@ -17,6 +17,7 @@ const router = express.Router();
 
 // ======================= PUBLIC =======================
 
+router.get('/health', (_req, res) => res.json({ ok: true }));
 router.get('/markets', wrap(async (req, res) => res.json(markets.publicMarkets({ city: req.query.city, season: req.query.season, past: req.query.past === '1' }))));
 router.get('/markets/:id', wrap(async (req, res) => res.json(markets.publicMarket(req.params.id))));
 router.post('/markets/:id/register', wrap(async (req, res) => res.status(201).json(markets.registerGuest(req.params.id, req.body || {}))));

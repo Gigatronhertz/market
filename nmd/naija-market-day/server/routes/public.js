@@ -24,7 +24,7 @@ router.get('/tickets/:token', wrap(async (req, res) => res.json(markets.guestTic
 
 router.get('/banners', wrap(async (req, res) => res.json(admin.liveBanners(req.query.location, req.query.city))));
 router.get('/sponsors', wrap(async (_req, res) => res.json(admin.contentList('sponsors'))));
-router.get('/blog', wrap(async (_req, res) => res.json(admin.contentList('blog_posts', { publishedOnly: true }).map(({ body, ...rest }) => rest))));
+router.get('/blog', wrap(async (_req, res) => res.json(admin.contentList('blog_posts', { publishedOnly: true }).map(({ body, ...rest }) => ({ ...rest, excerpt: String(body || '').slice(0, 160) })))));
 router.get('/blog/:slug', wrap(async (req, res) => {
   const post = db.get("SELECT * FROM blog_posts WHERE slug = ? AND status = 'published' AND publish_at <= ?", req.params.slug, nowIso());
   if (!post) throw new HttpError(404, 'That post was not found.');
@@ -284,8 +284,8 @@ vendor.post('/listings', wrap(async (req, res) => {
   const v = listingInput(req.body || {});
   const now = nowIso();
   const info = db.run(
-    'INSERT INTO listings (business_id, name, description, category, price_cents, sale_price_cents, photos, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    biz.id, v.name, v.description, v.category, v.price, v.sale, v.photos, now, now
+    'INSERT INTO listings (business_id, name, description, category, price_cents, sale_price_cents, photos, hidden, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    biz.id, v.name, v.description, v.category, v.price, v.sale, v.photos, req.body.hidden ? 1 : 0, now, now
   );
   res.status(201).json({ id: info.lastInsertRowid });
 }));

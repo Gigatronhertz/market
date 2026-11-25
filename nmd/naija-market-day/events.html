@@ -23,7 +23,7 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="events">
 <header class="site-header">
   <div class="wrap bar">
     <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
@@ -63,35 +63,21 @@ img{display:block;width:100%;height:100%;object-fit:cover}
     <a href="summit.html" style="font-weight:600;color:var(--accent)">Annual summit &rarr;</a>
   </div>
   <div role="group" aria-label="Filter by city" id="cities" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
-    <button class="chip" aria-pressed="true" data-city="All">All cities</button>
-    <button class="chip" aria-pressed="false" data-city="Brampton">Brampton</button>
-    <button class="chip" aria-pressed="false" data-city="Edmonton">Edmonton</button>
-    <button class="chip" aria-pressed="false" data-city="Winnipeg">Winnipeg</button>
-    <button class="chip" aria-pressed="false" data-city="Ottawa">Ottawa</button>
-    <button class="chip" aria-pressed="false" data-city="Moncton">Moncton</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="true" data-city="">All cities</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="false" data-city="Brampton">Brampton</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="false" data-city="Edmonton">Edmonton</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="false" data-city="Winnipeg">Winnipeg</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="false" data-city="Ottawa">Ottawa</button>
+    <button class="chip" type="button" data-action="city" aria-pressed="false" data-city="Moncton">Moncton</button>
   </div>
 
-  <div class="grid" id="events">
-    <article class="event" data-city="Brampton">
-      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1777065851469-71aef898a26f?w=900&q=80&auto=format&fit=crop" alt="Market stalls with vendors and shoppers"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">MAY</div><div class="display" style="font-size:28px;line-height:1">30</div></div></div>
-      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Brampton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Brampton Market Day</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Market like never before. The 2026 Summer Tour takes off here.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
-    </article>
-    <article class="event" data-city="Edmonton">
-      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1585540083814-ea6ee8af9e4f?w=900&q=80&auto=format&fit=crop" alt="Fruit stand at a market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
-      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Edmonton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Edmonton, loud and proud</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Enugu is landing in Edmonton this summer.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
-    </article>
-    <article class="event" data-city="Winnipeg">
-      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1577116730797-5d99b71d3946?w=900&q=80&auto=format&fit=crop" alt="Fresh fruit on display"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
-      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Winnipeg · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Winnipeg Street Market</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">The Forks CN Stage and Field, Warri style.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
-    </article>
-    <article class="event" data-city="Ottawa">
-      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=900&q=80&auto=format&fit=crop" alt="Aerial view of a street market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
-      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Ottawa · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Onitsha meets Ottawa</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">The largest market in West Africa lands in Ottawa.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
-    </article>
-    <article class="event" data-city="Moncton">
-      <div style="position:relative;height:170px"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=900&q=80&auto=format&fit=crop" alt="Assorted fruit at a market"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)">SUMMER</div><div class="display" style="font-size:28px;line-height:1">26</div></div></div>
-      <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)">Moncton · Free entry</div><div class="display" style="font-size:24px;margin-top:2px">Moncton, first time</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px">Naija Market Day hits Moncton for the very first time.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="index.html" style="border:1px solid #111816">Details</a><a class="btn" href="login.html" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
-    </article>
+  <div class="grid" id="events" data-list="markets" data-empty="No markets are listed yet. Check back soon.">
+    <template>
+      <article class="event">
+        <div style="position:relative;height:170px"><img data-src="flyer_url" alt="" style="width:100%;height:100%;object-fit:cover"><div class="date"><div style="font-size:11px;font-weight:700;color:var(--accent)" data-f="month"></div><div class="display" style="font-size:28px;line-height:1" data-f="day"></div></div></div>
+        <div style="padding:42px 20px 20px"><div style="font-size:13px;color:var(--muted)" data-f="where"></div><div class="display" style="font-size:24px;margin-top:2px" data-f="name"></div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:6px 0 14px" data-f="description"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" data-href="/app/#/markets/{id}" style="border:1px solid #111816">Register as guest</a><a class="btn" data-href="vendor-onboarding.html?market={id}" style="background:var(--accent);color:#fff">Vendors: book a booth</a></div></div>
+      </article>
+    </template>
   </div>
 
   <section style="margin-top:48px;border:1px solid var(--line);border-radius:8px;padding:28px">
@@ -134,5 +120,37 @@ document.querySelectorAll('#cities .chip').forEach(function (btn) {
 });
 </script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Events page: Summer Tour markets from the live API, filtered by city.
+(function () {
+  var city = '';
+  var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  nmdPages.events = {
+    lists: {
+      markets: {
+        path: function () { return '/markets'; },
+        map: function (rows) {
+          return rows.filter(function (m) { return !city || m.city === city; }).map(function (m) {
+            var d = new Date(m.date + 'T12:00:00');
+            return {
+              id: m.id, name: m.name, flyer_url: m.flyer_url || '', description: m.description || 'Market day with food, fashion, music and small businesses.',
+              month: MONTHS[d.getMonth()], day: String(d.getDate()),
+              where: m.city + ' · ' + (m.effective_status === 'past' ? 'Past market' : 'Free entry'),
+            };
+          });
+        },
+      },
+    },
+    actions: {
+      city: function (el) {
+        city = el.getAttribute('data-city') || '';
+        document.querySelectorAll('[data-action=city]').forEach(function (c) { c.setAttribute('aria-pressed', String(c === el)); });
+        nmd.reload();
+      },
+    },
+  };
+})();
+</script>
 </body>
 </html>

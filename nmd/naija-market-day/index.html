@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -108,7 +108,7 @@
 @media (max-width:1000px){.summit-grid,.sell{grid-template-columns:1fr}.sell .frame{height:420px}.stat-line div{border-left:0;border-top:1px solid var(--line)}}
 </style>
 </head>
-<body>
+<body data-nmd="index">
 
 <header class="site-header">
   <div class="wrap bar">
@@ -137,7 +137,7 @@
       <div class="hero-meta">
         <p>The only travelling African market in North America. Food, fashion, music and small businesses, free to attend.</p>
         <div class="actions">
-          <a class="btn btn-ink" href="#markets">Find a market</a>
+          <a class="btn btn-ink" href="events.html">Find a market</a>
           <a class="btn" href="market-square.html">Shop the Market Square</a>
         </div>
       </div>
@@ -150,8 +150,8 @@
       <p class="lede">Traditional clothing, handmade crafts and Nigerian food, brought to a new city every summer by the people who make them.</p>
       <aside class="next">
         Next market
-        <b>Brampton, May 30</b>
-        Summer Tour 2026 kicks off. Free entry.
+        <b id="next-when">Dates coming soon</b>
+        <span id="next-name">Check back for the next market.</span>
       </aside>
     </section>
 
@@ -304,9 +304,10 @@
     <section class="newsletter" aria-label="Newsletter">
       <div class="inner">
         <h2><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/></svg>Get market updates</h2>
-        <form class="field-row" data-toast="You are on the list. See you at the market!">
+        <form class="field-row" data-api="subscribe">
           <label for="email" style="position:absolute;left:-9999px">Email address</label>
-          <input id="email" type="email" placeholder="Email address" required>
+          <input id="email" name="email" type="email" placeholder="Email address" required>
+      <label class="inline small" style="align-self:center"><input type="checkbox" name="consent" required style="margin-right:6px">Send me market news</label>
           <button class="btn btn-ink" type="submit">Subscribe</button>
         </form>
       </div>
@@ -333,5 +334,24 @@
 </footer>
 
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+nmdPages.index = {
+  init: function () {
+    nmd.api('/markets').then(function (rows) {
+      var next = rows.filter(function (m) { return m.effective_status === 'published'; })[0];
+      if (!next) return;
+      document.getElementById('next-when').textContent = next.city + ', ' + nmd.fmtDate(next.date);
+      document.getElementById('next-name').textContent = next.name + '. Free entry.';
+    }).catch(function () {});
+  },
+  forms: {
+    subscribe: function (v, form) {
+      return nmd.api('/newsletter', { method: 'POST', body: { email: v.email, consent: !!v.consent } })
+        .then(function () { form.reset(); return 'You are on the list. See you at the market!'; });
+    },
+  },
+};
+</script>
 </body>
 </html>

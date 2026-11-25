@@ -94,6 +94,8 @@ function render() {
 }
 function mode(m) { state.mode = m; setPressed('.seg button', m === 'in' ? 0 : 1); render(); }
 function chooseRole(r) { state.role = r; setPressed('.roles button', r === 'buyer' ? 0 : 1); render(); }
+// Links from elsewhere can open the right side: ?as=vendor or ?as=buyer.
+(function () { var as = new URLSearchParams(location.search).get('as'); if (as === 'vendor' || as === 'buyer') chooseRole(as); })();
 </script>
 <script src="assets/site.js" defer></script>
 <script src="assets/nmd-wire.js"></script>

@@ -24,7 +24,7 @@ details p{margin:0 0 18px;color:var(--muted);line-height:1.6}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="contact">
 
 <header class="site-header">
   <div class="wrap bar">
@@ -53,12 +53,12 @@ details p{margin:0 0 18px;color:var(--muted);line-height:1.6}
 </section>
 
 <main class="wrap" style="padding-top:48px;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
-  <form onsubmit="event.preventDefault()" class="card" style="flex:2 1 420px;display:flex;flex-direction:column;gap:14px;padding:28px">
+  <form data-api="contact" class="card" style="flex:2 1 420px;display:flex;flex-direction:column;gap:14px;padding:28px">
     <h2 style="margin:0 0 4px;font-size:22px">Send us a message</h2>
-    <label class="field">Name<input type="text" placeholder="Your name"></label>
-    <label class="field">Email<input type="email" placeholder="you@example.com"></label>
-    <label class="field">Topic<select><option>General question</option><option>Vendor registration</option><option>Booth or payment</option><option>Advertising</option><option>Media and press</option></select></label>
-    <label class="field">Message<textarea rows="5"></textarea></label>
+    <label class="field">Name<input type="text" name="name" required placeholder="Your name"></label>
+    <label class="field">Email<input type="email" name="email" required placeholder="you@example.com"></label>
+    <label class="field">Topic<select name="topic"><option>General question</option><option>Vendor registration</option><option>Booth or payment</option><option>Advertising</option><option>Media and press</option></select></label>
+    <label class="field">Message<textarea name="message" rows="5" required></textarea></label>
     <button type="submit" style="background:var(--accent);color:#fff;border:0;padding:14px;border-radius:6px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit">Send message</button>
   </form>
 
@@ -96,5 +96,16 @@ details p{margin:0 0 18px;color:var(--muted);line-height:1.6}
 </footer>
 
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+nmdPages.contact = {
+  forms: {
+    contact: function (v, form) {
+      return nmd.api('/contact', { method: 'POST', body: { name: v.name, email: v.email, topic: v.topic, message: v.message } })
+        .then(function (r) { form.reset(); return r.message || 'Thank you. We will reply soon.'; });
+    },
+  },
+};
+</script>
 </body>
 </html>

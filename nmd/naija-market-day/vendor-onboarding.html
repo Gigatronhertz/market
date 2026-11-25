@@ -147,6 +147,8 @@ a{color:inherit;text-decoration:none}
       sel.innerHTML = '';
       if (!open.length) { sel.innerHTML = '<option value="">No markets are open for applications yet</option>'; return; }
       open.forEach(function (m) { var o = document.createElement('option'); o.value = m.id; o.textContent = m.name + ' (' + m.city + ', ' + nmd.fmtDate(m.date) + ')'; sel.appendChild(o); });
+      var preset = new URLSearchParams(location.search).get('market');
+      if (preset) sel.value = preset;
     }).catch(fail);
     var qEmail = new URLSearchParams(location.search).get('email');
     if (qEmail) document.querySelector('input[name=email]').value = qEmail;

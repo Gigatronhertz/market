@@ -21,7 +21,7 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="news">
 <header class="site-header">
   <div class="wrap bar">
     <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
@@ -59,11 +59,10 @@ img{display:block;width:100%;height:100%;object-fit:cover}
   </article>
 
   <h2 class="display" style="font-size:38px;margin:56px 0 24px">Latest news</h2>
-  <div class="grid">
-    <article class="card lift"><img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=800&q=80&auto=format&fit=crop" alt="" style="height:170px"><div style="padding:18px"><div class="display" style="font-size:22px;margin:6px 0">NMD Summer Tour 2026 takes off in Brampton</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 10px">Ten cities, one market. What to expect from the biggest tour yet.</p><div style="font-size:13px;color:#8A948F">May 2026</div></div></article>
-    <article class="card lift"><img src="https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=800&q=80&auto=format&fit=crop" alt="" style="height:170px"><div style="padding:18px"><div class="display" style="font-size:22px;margin:6px 0">Ade's Adire: from a kitchen table to the main stage</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 10px">How one dyer found her customers across Canada.</p><div style="font-size:13px;color:#8A948F">Apr 2026</div></div></article>
-    <article class="card lift"><img src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?w=800&q=80&auto=format&fit=crop" alt="" style="height:170px"><div style="padding:18px"><div class="display" style="font-size:22px;margin:6px 0">Jollof wars: the market edition</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 10px">Who makes it best? We asked the stalls.</p><div style="font-size:13px;color:#8A948F">Jan 2026</div></div></article>
-    <article class="card lift"><img src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=800&q=80&auto=format&fit=crop" alt="" style="height:170px"><div style="padding:18px"><div class="display" style="font-size:22px;margin:6px 0">Naija Market Day in the media</div><p style="font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 10px">Coverage from the cities we have visited.</p><div style="font-size:13px;color:#8A948F">Feb 2026</div></div></article>
+  <div class="grid" data-list="blog" data-empty="No posts yet. Check back soon.">
+    <template>
+      <article class="card lift"><img data-src="image_url" alt="" style="height:170px;width:100%;object-fit:cover"><div style="padding:18px"><a data-href="/app/#/blog/{slug}" style="color:inherit;text-decoration:none"><div class="display" data-f="title" style="font-size:22px;margin:6px 0"></div></a><p data-f="excerpt" style="font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 10px"></p><div data-f="date_text" style="font-size:13px;color:#8A948F"></div></div></article>
+    </template>
   </div>
 
   <h2 class="display" style="font-size:38px;margin:56px 0 24px">Gallery</h2>
@@ -76,9 +75,9 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 
   <section style="margin:56px 0 0;background:#0B3D2A;color:#fff;border-radius:10px;padding:44px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between">
     <div style="flex:1 1 320px"><h2 class="display" style="font-size:34px">Get market updates</h2><p style="margin:8px 0 0;color:#B7DCC8">Dates, new vendors and offers. No spam.</p></div>
-    <form onsubmit="event.preventDefault()" style="display:flex;gap:10px;flex:1 1 360px;flex-wrap:wrap">
+    <form data-api="subscribe" style="display:flex;gap:10px;flex:1 1 360px;flex-wrap:wrap">
       <label for="em" style="position:absolute;left:-9999px">Email</label>
-      <input id="em" type="email" placeholder="you@example.com" style="flex:1;min-width:180px;padding:12px 14px;border:0;border-radius:6px;font-size:15px;font-family:inherit">
+      <input id="em" name="email" type="email" required placeholder="you@example.com" style="flex:1;min-width:180px;padding:12px 14px;border:0;border-radius:6px;font-size:15px;font-family:inherit">
       <button type="submit" style="background:#8EE0B0;color:#0B3D2A;border:0;padding:13px 26px;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit">Subscribe</button>
     </form>
   </section>
@@ -100,5 +99,25 @@ img{display:block;width:100%;height:100%;object-fit:cover}
   </div>
 </footer>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+nmdPages.news = {
+  lists: {
+    blog: { path: function () { return '/blog'; },
+      map: function (rows) {
+        return rows.map(function (p) {
+          var d = new Date(p.publish_at);
+          return { slug: p.slug, title: p.title, image_url: p.image_url, excerpt: p.excerpt || '', date_text: d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }) };
+        });
+      } },
+  },
+  forms: {
+    subscribe: function (v, form) {
+      return nmd.api('/newsletter', { method: 'POST', body: { email: v.email, consent: true } })
+        .then(function () { form.reset(); return 'You are subscribed. Check your inbox for a confirmation.'; });
+    },
+  },
+};
+</script>
 </body>
 </html>

@@ -24,7 +24,7 @@ img{display:block;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="product-form">
 <div class="shell">
   <nav class="side" aria-label="Vendor sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -45,17 +45,17 @@ img{display:block;object-fit:cover}
     </header>
 
     <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
-      <section class="card" aria-label="Listing form" style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px">
-        <label class="field">Product name<input id="title" type="text" value="Hand-dyed adire fabric"></label>
+      <form data-api="listing" class="card" aria-label="Listing form" style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px">
+        <label class="field">Product name<input id="title" name="title" type="text" required placeholder="What are you selling?"></label>
         <div class="grid">
-          <label class="field">Category<select><option>Fashion and textiles</option><option>Food and drink</option><option>Jewellery</option><option>Crafts and home</option><option>Beauty</option></select></label>
-          <label class="field">Price (optional)<input id="price" type="text" value="28" placeholder="e.g. 28"></label>
+          <label class="field">Category<select name="category"><option value="Clothing">Clothing</option><option value="Food">Food</option><option value="Jewellery">Jewellery</option><option value="Crafts">Crafts</option><option value="Beauty">Beauty</option></select></label>
+          <label class="field">Price (optional)<input id="price" name="price" type="number" min="0" step="0.01" required placeholder="e.g. 28"></label>
           <label class="field">Currency<select><option>CAD</option><option>USD</option><option>GBP</option></select></label>
         </div>
-        <label class="field">Description<textarea rows="4" placeholder="Materials, size, colours and how long an order takes."></textarea></label>
+        <label class="field">Description<textarea name="description" rows="4" placeholder="Materials, size, colours and how long an order takes."></textarea></label>
         <div>
           <div style="font-size:14px;font-weight:600;margin-bottom:6px">Photos</div>
-          <label style="display:flex;flex-direction:column;align-items:center;gap:6px;border:2px dashed #BFC9C4;border-radius:14px;padding:22px;text-align:center;cursor:pointer;color:var(--muted)"><b style="color:var(--ink)">Click to upload photos</b><span style="font-size:13px">PNG or JPG, up to 6 photos</span><input id="files" type="file" accept="image/*" multiple style="font-size:13px"></label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:6px;border:2px dashed #BFC9C4;border-radius:14px;padding:22px;text-align:center;cursor:pointer;color:var(--muted)"><b style="color:var(--ink)">Click to upload photos</b><span style="font-size:13px">PNG or JPG, up to 6 photos</span><input id="files" name="files" type="file" accept="image/*" multiple style="font-size:13px"></label>
           <div id="thumbs" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
         </div>
         <div>
@@ -68,20 +68,20 @@ img{display:block;object-fit:cover}
           <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" checked> Let buyers chat with me on NMD</label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--line);padding-top:16px">
-          <button class="pill" type="button" style="background:#fff;border:1px solid #D5DBD8">Save draft</button>
-          <button id="submit" class="pill" type="button" style="background:var(--accent);color:#fff;border:0;font-weight:700">Submit for approval</button>
+          <button class="pill" type="button" data-action="draft" style="background:#fff;border:1px solid #D5DBD8">Save draft</button>
+          <button id="submit" class="pill" type="submit" style="background:var(--accent);color:#fff;border:0;font-weight:700">Submit for approval</button>
         </div>
         <div id="sent" style="display:none;background:#E1F1E8;color:#145A3A;padding:12px 16px;border-radius:12px;font-weight:600">Sent. The NMD team will review your listing before it goes live.</div>
-      </section>
+      </form>
 
       <aside aria-label="Preview" style="flex:1 1 280px;max-width:340px">
         <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px">Preview in the Market Square</div>
         <article style="background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden">
           <img id="cover" src="https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=800&q=80&auto=format&fit=crop" alt="" style="width:100%;height:210px">
           <div style="padding:14px">
-            <div id="pv-title" style="font-size:17px;font-weight:600">Hand-dyed adire fabric</div>
+            <div id="pv-title" style="font-size:17px;font-weight:600">Your product name</div>
             <div style="font-size:14px;color:var(--muted);margin-top:2px">[Your business] · [City]</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><b id="pv-price">CA$28</b><span style="border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600">Chat to order</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><b id="pv-price">Ask the seller</b><span style="border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600">Chat to order</span></div>
           </div>
         </article>
       </aside>
@@ -101,8 +101,46 @@ document.getElementById('files').addEventListener('change', function (e) {
     if (i === 0) document.getElementById('cover').src = url;
   });
 });
-document.getElementById('submit').addEventListener('click', function () { document.getElementById('sent').style.display = 'block'; });
 </script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Product form: saves a live listing (Submit) or a hidden draft (Save draft). Needs a signed-in vendor with a subscribed business.
+(function () {
+  function readPhotos() {
+    var files = Array.prototype.slice.call(document.getElementById('files').files || []).slice(0, 6);
+    return Promise.all(files.map(function (f) {
+      return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsDataURL(f); });
+    }));
+  }
+  function save(v, hidden) {
+    if (!v.title || !v.price) throw new Error('Add a product name and price first.');
+    return readPhotos().then(function (photos) {
+      return nmd.api('/vendor/businesses').then(function (bs) {
+        if (!bs.length) throw new Error('Add your business first, from the Onboarding page.');
+        var biz = bs[0];
+        if (!biz.subscription || !biz.subscription.active) throw new Error('Subscribe this business to Marketplace before adding products. Open the vendor portal and choose Marketplace.');
+        return nmd.api('/vendor/listings', { method: 'POST', body: { business_id: biz.id, name: v.title, category: v.category, price: v.price, description: v.description || '', photos: photos, hidden: hidden } });
+      });
+    }).then(function () {
+      document.getElementById('sent').style.display = 'block';
+      document.getElementById('sent').textContent = hidden ? 'Draft saved. Only you can see it until you submit it.' : 'Submitted. Your product is live in the Market Square.';
+      return hidden ? 'Draft saved.' : 'Product submitted.';
+    }).catch(function (err) {
+      if (err.status === 401) { location.href = 'login.html?as=vendor&next=' + encodeURIComponent('vendor-product-form.html'); throw new Error('Sign in as a vendor first.'); }
+      throw err;
+    });
+  }
+  nmdPages['product-form'] = {
+    forms: { listing: function (v) { return save(v, false); } },
+    actions: { draft: function () { return save(formValues(), true); } },
+  };
+  function formValues() {
+    var f = document.querySelector('form[data-api=listing]');
+    var e = f.elements;
+    return { title: e.title.value, category: e.category.value, price: e.price.value, description: e.description.value };
+  }
+})();
+</script>
 </body>
 </html>

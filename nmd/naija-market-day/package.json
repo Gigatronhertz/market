@@ -14,7 +14,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.21.2",
-    "light-my-request": "^6.8.1",
+    "light-my-request": "6.6.0",
     "next": "16.4.6",
     "qrcode": "^1.5.4",
     "react": "19.3.1",

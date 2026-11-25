@@ -2,21 +2,23 @@
   "name": "naija-market-day",
   "version": "1.0.0",
   "private": true,
-  "description": "Naija Market Day platform: public site, vendor, buyer, admin and check-in workspaces",
-  "main": "app.js",
+  "description": "Naija Market Day: Next.js web app with the Express API it calls through /api",
   "scripts": {
-    "start": "node --disable-warning=ExperimentalWarning server/index.js",
-    "seed:demo": "SEED_DEMO=1 node --disable-warning=ExperimentalWarning -e \"require('./server/db').init(); require('./server/demo').seed(); console.log('demo data added')\"",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "test": "node --disable-warning=ExperimentalWarning --test test/flows.test.js",
+    "seed:demo": "SEED_DEMO=1 node --disable-warning=ExperimentalWarning -e \"require('./server/db').init(); require('./server/demo').seed(); console.log('demo data added')\"",
     "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js"
-  },
-  "engines": {
-    "node": "22.x"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.21.2",
+    "light-my-request": "^6.8.1",
+    "next": "16.4.6",
     "qrcode": "^1.5.4",
-    "stripe": "^17.7.0"
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "stripe": "^17.0.0"
   }
 }

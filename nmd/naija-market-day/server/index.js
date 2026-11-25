@@ -2,7 +2,6 @@
 // Naija Market Day server. Serves the existing site (mockups at the root and the working app under /app)
 // and the JSON API under /api.
 
-const path = require('path');
 const express = require('express');
 const db = require('./db');
 const seed = require('./seed');
@@ -39,12 +38,6 @@ function createApp() {
   app.use('/api', require('./routes/admin'));
 
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }));
-
-  const root = path.join(__dirname, '..');
-  app.use(express.static(root, { extensions: ['html'], index: 'index.html' }));
-  // /app must end with a slash so the relative script and style paths inside the app resolve.
-  app.get('/app', (_req, res) => res.redirect(301, '/app/'));
-  app.use('/app', express.static(path.join(root, 'app'), { extensions: ['html'], index: 'index.html' }));
 
   app.use((err, req, res, _next) => {
     if (err instanceof HttpError) {

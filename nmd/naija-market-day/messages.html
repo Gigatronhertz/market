@@ -21,7 +21,7 @@ img{display:block;object-fit:cover}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="messages">
 <header class="site-header">
   <div class="wrap bar">
     <a class="logo" href="index.html"><span class="logo-mark">N</span>Naija Market Day</a>
@@ -49,12 +49,12 @@ img{display:block;object-fit:cover}
     <section aria-label="Conversation" style="flex:1 1 420px;display:flex;flex-direction:column;min-width:0">
       <div style="padding:14px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px">
         <div><b id="name" style="font-size:17px"></b><div id="about" style="font-size:13px;color:var(--muted)"></div></div>
-        <button id="report" type="button" style="background:#fff;border:1px solid #D5DBD8;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit">Report this chat</button>
+        <button id="report" type="button" data-action="report" style="background:#fff;border:1px solid #D5DBD8;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit">Report this chat</button>
       </div>
       <div id="log" role="log" aria-live="polite" style="flex:1;padding:20px;display:flex;flex-direction:column;gap:10px;background:#FAFBFA"></div>
-      <form id="send" style="border-top:1px solid var(--line);padding:14px 20px;display:flex;gap:10px;flex-wrap:wrap">
+      <form id="send" data-api="send" style="border-top:1px solid var(--line);padding:14px 20px;display:flex;gap:10px;flex-wrap:wrap">
         <label for="msg" style="position:absolute;left:-9999px">Message</label>
-        <input id="msg" type="text" placeholder="Write a message" style="flex:1;min-width:180px;padding:12px 14px;border:1px solid #D5DBD8;border-radius:6px;font-size:15px;font-family:inherit">
+        <input id="msg" name="msg" type="text" placeholder="Write a message" style="flex:1;min-width:180px;padding:12px 14px;border:1px solid #D5DBD8;border-radius:6px;font-size:15px;font-family:inherit">
         <button type="submit" style="background:var(--accent);color:#fff;border:0;border-radius:6px;padding:12px 22px;font-weight:600;cursor:pointer;font-family:inherit">Send</button>
       </form>
     </section>
@@ -77,45 +77,115 @@ img{display:block;object-fit:cover}
   </div>
 </footer>
 
-<script>
-// Demo data only. Messages are kept in memory and reset on reload.
-var threads = [
-  { name: "Ade's Adire", product: 'Hand-dyed adire fabric', img: 'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?w=120&q=80&auto=format&fit=crop', time: '10:42', msgs: [ { me: false, t: 'Hello! Thanks for your interest in the adire fabric.' }, { me: true, t: 'Hi, is it available in blue? Can you ship to Calgary?' }, { me: false, t: 'Yes, blue is in stock. Shipping to Calgary is $12.' } ] },
-  { name: "Mama Chioma's Kitchen", product: 'House spice blend', img: 'https://images.unsplash.com/photo-1664992960082-0ea299a9c53e?w=120&q=80&auto=format&fit=crop', time: 'Yesterday', msgs: [ { me: true, t: 'Is the spice blend very hot?' }, { me: false, t: 'Medium. I can make a milder one for you.' } ] },
-  { name: 'Zuri Beads', product: 'Beaded necklace set', img: 'https://images.unsplash.com/photo-1625646741211-711bdd65c570?w=120&q=80&auto=format&fit=crop', time: 'Mon', msgs: [ { me: false, t: 'We will be at the Brampton market on May 30. Come and see us!' } ] }
-];
-var sel = 0;
-function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function renderThreads() {
-  document.getElementById('threads').innerHTML = threads.map(function (t, i) {
-    return '<button class="thread" type="button" aria-current="' + (i === sel) + '" data-i="' + i + '">' +
-      '<img src="' + t.img + '" alt="" style="width:44px;height:44px;border-radius:50%;flex:none">' +
-      '<span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px">' + esc(t.name) + '</b><span style="font-size:12px;color:#8A948F">' + esc(t.time) + '</span></span>' +
-      '<span style="display:block;font-size:13px;color:#5F6B66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(t.msgs[t.msgs.length - 1].t) + '</span></span></button>';
-  }).join('');
-}
-function renderActive() {
-  var t = threads[sel];
-  document.getElementById('name').textContent = t.name;
-  document.getElementById('about').textContent = 'About: ' + t.product;
-  document.getElementById('log').innerHTML = t.msgs.map(function (m) {
-    return '<div class="bubble ' + (m.me ? 'me' : 'them') + '">' + esc(m.t) + '</div>';
-  }).join('');
-}
-document.getElementById('threads').addEventListener('click', function (e) {
-  var b = e.target.closest('.thread'); if (!b) return;
-  sel = Number(b.getAttribute('data-i')); renderThreads(); renderActive();
-});
-document.getElementById('send').addEventListener('submit', function (e) {
-  e.preventDefault();
-  var input = document.getElementById('msg'); var text = input.value.trim(); if (!text) return;
-  threads[sel].msgs.push({ me: true, t: text }); input.value = ''; renderThreads(); renderActive();
-});
-document.getElementById('report').addEventListener('click', function () {
-  this.textContent = 'Reported to NMD'; this.disabled = true;
-});
-renderThreads(); renderActive();
-</script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Inbox: buyer chats for buyers, buyer conversations for sellers. Live from the API.
+(function () {
+  var me = null, role = null, chats = [], sel = 0, detail = null, seen = -1, timer = null;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function base() { return role === 'vendor' ? '/vendor/chats' : '/buyer/chats'; }
+  function nameOf(c) { return role === 'vendor' ? (c.buyer_name || 'Buyer') : (c.business_name || 'Seller'); }
+
+  function renderThreads() {
+    if (!chats.length) {
+      $('threads').innerHTML = '<div style="padding:18px;color:#5F6B66;font-size:14px">No conversations yet. Start one from the Market Square.</div>';
+      return;
+    }
+    $('threads').innerHTML = chats.map(function (c, i) {
+      return '<button class="thread" type="button" aria-current="' + (i === sel) + '" data-i="' + i + '">' +
+        '<span style="width:44px;height:44px;border-radius:50%;background:#EDF1EF;flex:none"></span>' +
+        '<span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px">' + esc(nameOf(c)) + '</b><span style="font-size:12px;color:#8A948F">' + esc(nmd.fmtDate(c.last_at)) + '</span></span>' +
+        '<span style="display:block;font-size:13px;color:#5F6B66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(c.last_message) + '</span></span></button>';
+    }).join('');
+  }
+
+  function renderActive() {
+    if (!chats.length) { $('name').textContent = ''; $('about').textContent = ''; $('log').innerHTML = ''; return; }
+    var c = chats[sel];
+    $('name').textContent = nameOf(c);
+    $('about').textContent = role === 'vendor' ? 'Buyer conversation' : 'Seller: ' + (c.business_name || '');
+    if (!detail) { $('log').innerHTML = ''; return; }
+    $('log').innerHTML = '';
+    detail.messages.forEach(function (m) {
+      var mine = (role === 'buyer' && m.sender_role === 'buyer') || (role === 'vendor' && m.sender_role === 'vendor');
+      var b = document.createElement('div');
+      b.className = 'bubble ' + (mine ? 'me' : 'them');
+      b.style.whiteSpace = 'pre-wrap';
+      b.textContent = m.body;
+      if (m.payment_link) { var a = document.createElement('a'); a.href = m.payment_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open payment link'; a.style.cssText = 'display:block;margin-top:8px;font-weight:600'; b.appendChild(a); }
+      $('log').appendChild(b);
+    });
+    $('log').scrollTop = $('log').scrollHeight;
+  }
+
+  function loadActive() {
+    if (!chats.length) return Promise.resolve();
+    var id = chats[sel].id;
+    return nmd.api(base() + '/' + id).then(function (d) {
+      detail = d; seen = d.messages.length; renderActive();
+    });
+  }
+
+  function loadChats() {
+    return nmd.api(base()).then(function (rows) {
+      chats = rows;
+      if (sel >= chats.length) sel = 0;
+      renderThreads();
+      return loadActive();
+    });
+  }
+
+  function gate() {
+    $('threads').innerHTML = '<div style="padding:18px;font-size:14px;color:#5F6B66">Sign in to see your messages. <a href="login.html?next=messages.html" style="color:var(--accent);font-weight:600">Sign in</a></div>';
+    $('send').style.display = 'none';
+    $('report').style.display = 'none';
+  }
+
+  nmdPages.messages = {
+    init: function () {
+      $('threads').addEventListener('click', function (e) {
+        var b = e.target.closest('.thread'); if (!b) return;
+        sel = Number(b.getAttribute('data-i')); detail = null; renderThreads();
+        loadActive().catch(function (err) { nmdToast(err.message, true); });
+      });
+      nmd.me().then(function (user) {
+        me = user;
+        if (!user) { gate(); return; }
+        var roles = user.roles || [];
+        role = roles.indexOf('vendor') >= 0 && roles.indexOf('buyer') < 0 ? 'vendor' : 'buyer';
+        return loadChats().then(function () {
+          timer = setInterval(function () {
+            if (document.hidden) return;
+            nmd.api(base()).then(function (rows) {
+              var changed = rows.length !== chats.length || rows.some(function (r, i) { return !chats[i] || r.last_at !== chats[i].last_at; });
+              if (changed) { chats = rows; renderThreads(); }
+              if (chats.length) loadActive();
+            }).catch(function () {});
+          }, 8000);
+        });
+      }).catch(function (err) { nmdToast(err.message, true); });
+    },
+    forms: {
+      send: function (v, form) {
+        var text = (v.msg || '').trim();
+        if (!text || !chats.length) return;
+        return nmd.api(base() + '/' + chats[sel].id + '/messages', { method: 'POST', body: role === 'vendor' ? { body: text } : { body: text } })
+          .then(function () { form.msg.value = ''; return loadActive(); });
+      },
+    },
+    actions: {
+      report: function (el) {
+        if (!chats.length || !me) return;
+        var c = chats[sel];
+        return nmd.api('/contact', { method: 'POST', body: { name: me.name || me.email, email: me.email, topic: 'Report a chat', message: 'Please review chat #' + c.id + ' with ' + nameOf(c) + '.' } })
+          .then(function () { el.textContent = 'Reported to NMD'; el.disabled = true; return 'Thank you. The NMD team will review this chat.'; });
+      },
+    },
+  };
+})();
+</script>
+
 </body>
 </html>

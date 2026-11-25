@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -25,7 +25,7 @@ a{color:inherit;text-decoration:none}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="booth">
 <div class="shell">
   <nav class="side" aria-label="Vendor sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD</a>
@@ -48,10 +48,7 @@ a{color:inherit;text-decoration:none}
     <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
       <section class="card" aria-label="Market map" style="flex:2 1 600px;min-width:0">
         <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px">
-          <div role="group" aria-label="Choose market" style="display:flex;gap:8px">
-            <button class="pill on" type="button" data-m="brampton">Brampton</button>
-            <button class="pill" type="button" data-m="winnipeg">Winnipeg</button>
-          </div>
+          <div id="markets" role="group" aria-label="Choose market" style="display:flex;gap:8px;flex-wrap:wrap"><span style="color:var(--muted);font-size:14px">Loading markets...</span></div>
           <div style="display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap"><span>&#9633; Free</span><span>&#9632; Taken</span><span style="color:var(--accent)">&#9632; Your pick</span></div>
         </div>
         <div id="map" style="position:relative;width:100%;aspect-ratio:3/2;border-radius:14px;overflow:hidden;background:#E4EFD9"><img src="https://images.unsplash.com/photo-1785094165709-54fef69c2c4d?w=1200&q=80&auto=format&fit=crop" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45"></div>
@@ -73,13 +70,8 @@ a{color:inherit;text-decoration:none}
             <div style="display:flex;justify-content:space-between"><span>Size</span><b>3 m x 3 m</b></div>
             <div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;font-size:18px"><span>Total</span><b id="d-total">-</b></div>
           </div>
-          <div style="margin:16px 0 8px;font-size:13px;font-weight:600">Pay in</div>
-          <div role="group" aria-label="Currency" style="display:flex;gap:6px">
-            <button class="pill cur on" type="button" data-c="CAD">CAD</button>
-            <button class="pill cur" type="button" data-c="USD">USD</button>
-            <button class="pill cur" type="button" data-c="GBP">GBP</button>
-          </div>
-          <button id="pay" type="button" disabled style="width:100%;margin-top:18px;border:0;border-radius:999px;padding:14px;font-size:16px;font-weight:700;background:#E6EAE8;color:#8A948F;cursor:not-allowed;font-family:inherit">Pay booth fee with Stripe</button>
+          
+          <button id="pay" data-action="pay" type="button" disabled style="width:100%;margin-top:18px;border:0;border-radius:999px;padding:14px;font-size:16px;font-weight:700;background:#E6EAE8;color:#8A948F;cursor:not-allowed;font-family:inherit">Pay booth fee with Stripe</button>
           <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0">Your spot is held for 15 minutes. Cards are handled by Stripe, so NMD never sees your card number.</p>
         </div>
       </aside>
@@ -87,68 +79,117 @@ a{color:inherit;text-decoration:none}
   </main>
 </div>
 
-<script>
-// Booth layout is illustrative. Prices are placeholders; no payment is taken.
-var RATE = { CAD: 1, USD: 0.73, GBP: 0.54 }, SYM = { CAD: 'CA$', USD: '$', GBP: 'Â£' };
-var BOOTHS = [
-  ['A1',8,28,400,'Front',0],['A2',15,28,400,'Front',1],['A3',22,28,400,'Front',0],['A4',29,28,400,'Front',1],
-  ['B1',64,28,400,'Front',1],['B2',71,28,400,'Front',0],['B3',78,28,400,'Front',1],['B4',85,28,400,'Front',0],
-  ['C1',8,46,300,'Standard',0],['C2',15,46,300,'Standard',1],['C3',22,46,300,'Standard',0],['C4',29,46,300,'Standard',0],
-  ['D1',66,46,450,'Food',1],['D2',73,46,450,'Food',0],['D3',80,46,450,'Food',0],['D4',87,46,450,'Food',1],
-  ['E1',8,64,300,'Standard',0],['E2',15,64,300,'Standard',0],['E3',22,64,300,'Standard',1],['E4',29,64,300,'Standard',0],
-  ['F1',66,64,450,'Food',0],['F2',73,64,450,'Food',1],['F3',80,64,450,'Food',0],['F4',87,64,450,'Food',0],
-  ['G1',12,82,350,'Corner',0],['G2',19,82,350,'Corner',1],['G3',26,82,350,'Corner',0],['G4',33,82,350,'Corner',0],
-  ['H1',62,82,350,'Corner',1],['H2',69,82,350,'Corner',0],['H3',76,82,350,'Corner',0],['H4',83,82,350,'Corner',1]
-];
-var state = { market: 'Brampton', sel: null, cur: 'CAD' };
-var map = document.getElementById('map');
-BOOTHS.forEach(function (b) {
-  var el = document.createElement('button');
-  el.type = 'button'; el.className = 'booth' + (b[5] ? ' taken' : '');
-  el.style.left = b[1] + '%'; el.style.top = b[2] + '%';
-  el.textContent = b[0];
-  el.setAttribute('aria-label', 'Booth ' + b[0] + (b[5] ? ', taken' : ''));
-  el.addEventListener('click', function () { if (!b[5]) { state.sel = b; render(); } });
-  el.dataset.id = b[0];
-  map.appendChild(el);
-});
-function render() {
-  document.querySelectorAll('.booth').forEach(function (el) {
-    el.classList.toggle('sel', !!state.sel && el.dataset.id === state.sel[0]);
-  });
-  document.getElementById('mkt').textContent = state.market + ' Market Day';
-  document.getElementById('d-id').textContent = state.sel ? state.sel[0] : 'None';
-  document.getElementById('d-zone').textContent = state.sel ? state.sel[4] : '-';
-  document.getElementById('d-total').textContent = state.sel ? SYM[state.cur] + Math.round(state.sel[3] * RATE[state.cur]) : '-';
-  var pay = document.getElementById('pay');
-  pay.disabled = !state.sel;
-  pay.style.background = state.sel ? '#0F6B4A' : '#E6EAE8';
-  pay.style.color = state.sel ? '#fff' : '#8A948F';
-  pay.style.cursor = state.sel ? 'pointer' : 'not-allowed';
-}
-document.querySelectorAll('[data-m]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    document.querySelectorAll('[data-m]').forEach(function (x) { x.classList.toggle('on', x === b); });
-    state.market = b.dataset.m === 'brampton' ? 'Brampton' : 'Winnipeg'; state.sel = null; render();
-  });
-});
-document.querySelectorAll('[data-c]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    document.querySelectorAll('[data-c]').forEach(function (x) { x.classList.toggle('on', x === b); });
-    state.cur = b.dataset.c; render();
-  });
-});
-document.getElementById('pay').addEventListener('click', function () {
-  if (!state.sel) return;
-  document.getElementById('open').style.display = 'none';
-  var paid = document.getElementById('paid');
-  paid.style.display = 'block';
-  document.getElementById('paid-title').textContent = 'Booth ' + state.sel[0] + ' is yours';
-  document.getElementById('paid-text').textContent = state.market + ' Market Day. A receipt and your QR check-in code would be emailed.';
-});
-render();
-</script>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Booth page: real markets and booths, a real hold, terms and payment. CAD only.
+(function () {
+  var state = { market: null, app: null, booths: [], sel: null };
+  function $(id) { return document.getElementById(id); }
+  function money(c) { return 'CA$' + (Number(c) / 100).toFixed(0); }
+
+  function placeBooths() {
+    var map = $('map');
+    map.querySelectorAll('.booth').forEach(function (b) { b.remove(); });
+    var n = state.booths.length, cols = Math.max(1, Math.ceil(Math.sqrt(n * 1.5)));
+    state.booths.forEach(function (b, i) {
+      var el = document.createElement('button');
+      var taken = b.status !== 'available';
+      el.type = 'button';
+      el.className = 'booth' + (taken ? ' taken' : '') + (b.type === 'food' ? ' food' : '');
+      el.style.position = 'absolute';
+      el.style.left = (6 + (i % cols) * (88 / cols)) + '%';
+      el.style.top = (8 + Math.floor(i / cols) * (84 / Math.ceil(n / cols))) + '%';
+      el.style.width = (80 / cols) + '%';
+      el.textContent = b.number;
+      el.setAttribute('aria-label', 'Booth ' + b.number + ' ' + b.tier + (taken ? ', not available' : ''));
+      el.disabled = taken;
+      el.addEventListener('click', function () { if (!taken) { state.sel = b; render(); } });
+      el.dataset.id = b.id;
+      map.appendChild(el);
+    });
+  }
+
+  function render() {
+    document.querySelectorAll('.booth').forEach(function (el) {
+      el.classList.toggle('sel', !!state.sel && String(el.dataset.id) === String(state.sel.id));
+    });
+    $('mkt').textContent = state.market ? state.market.name : 'Choose a market';
+    $('d-id').textContent = state.sel ? state.sel.number : 'None';
+    $('d-zone').textContent = state.sel ? state.sel.tier : '-';
+    $('d-total').textContent = state.sel ? money(state.sel.price_cents) : '-';
+    var pay = $('pay');
+    pay.disabled = !state.sel;
+    pay.style.background = state.sel ? '#0F6B4A' : '#E6EAE8';
+    pay.style.color = state.sel ? '#fff' : '#8A948F';
+    pay.style.cursor = state.sel ? 'pointer' : 'not-allowed';
+  }
+
+  // Find this vendor's open application for a market, or start one.
+  function applicationFor(market) {
+    return nmd.api('/vendor/applications').then(function (rows) {
+      var open = rows.filter(function (a) { return a.market_id === market.id && ['draft', 'waitlisted', 'offered'].indexOf(a.status) >= 0; })[0];
+      if (open) return nmd.api('/apply/' + open.id);
+      return nmd.api('/apply/start', { method: 'POST', body: { market_id: market.id } }).then(function (r) { return r.application; });
+    });
+  }
+
+  function choose(market) {
+    state.market = market; state.sel = null;
+    document.querySelectorAll('#markets button').forEach(function (x) { x.classList.toggle('on', x.dataset.id === String(market.id)); });
+    $('open').style.display = '';
+    return applicationFor(market).then(function (app) {
+      state.app = app;
+      return nmd.api('/apply/' + app.id + '/booths');
+    }).then(function (booths) {
+      state.booths = booths; placeBooths(); render();
+    }).catch(function (err) { nmdToast(err.message, true); });
+  }
+
+  nmdPages.booth = {
+    init: function () {
+      nmd.me().then(function (user) {
+        if (!user || (user.roles || []).indexOf('vendor') < 0) {
+          $('markets').innerHTML = '<a href="login.html?as=vendor&next=' + encodeURIComponent('vendor-booth.html') + '" style="color:var(--accent);font-weight:600">Sign in as a vendor to book a booth</a>';
+          return;
+        }
+        return nmd.api('/markets').then(function (rows) {
+          var open = rows.filter(function (m) { return m.effective_status === 'published'; });
+          $('markets').innerHTML = '';
+          if (!open.length) { $('markets').innerHTML = '<span style="color:var(--muted);font-size:14px">No markets are open for booths yet.</span>'; return; }
+          open.forEach(function (m, i) {
+            var b = document.createElement('button');
+            b.type = 'button'; b.className = 'pill' + (i === 0 ? ' on' : ''); b.dataset.id = m.id; b.textContent = m.city;
+            b.addEventListener('click', function () { choose(m); });
+            $('markets').appendChild(b);
+          });
+          return choose(open[0]);
+        });
+      }).catch(function (err) { nmdToast(err.message, true); });
+    },
+    actions: {
+      pay: function () {
+        if (!state.sel || !state.app) return;
+        var b = state.sel, app = state.app;
+        var terms = (app.market && app.market.terms) || 'No terms have been posted for this market yet.';
+        if (!confirm('Event terms\n\n' + terms + '\n\nBooth ' + b.number + ' (' + b.tier + ') for ' + money(b.price_cents) + '. Booth fees are non-refundable after payment unless we decline your application.\n\nAccept and pay?')) return;
+        return nmd.api('/apply/' + app.id + '/booth', { method: 'POST', body: { booth_id: b.id } })
+          .then(function () { return nmd.api('/apply/' + app.id + '/terms', { method: 'POST', body: { accepted: true } }); })
+          .then(function () { return nmd.api('/apply/' + app.id + '/pay', { method: 'POST', body: {} }); })
+          .then(function (r) {
+            if (r.redirect) { location.href = r.redirect; return 'Opening secure payment...'; }
+            $('open').style.display = 'none';
+            $('paid').style.display = 'block';
+            $('paid-title').textContent = 'Booth ' + b.number + ' is reserved';
+            $('paid-text').textContent = 'Your booth fee is paid. Your application is under review. We email you when it is approved, and your QR code appears in your dashboard.';
+            return 'Booth fee paid.';
+          });
+      },
+    },
+  };
+})();
+</script>
+
 </body>
 </html>
 

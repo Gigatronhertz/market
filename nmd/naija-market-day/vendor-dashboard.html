@@ -28,7 +28,7 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body data-nmd="vendor-dashboard">
 <div class="shell">
   <nav class="side" aria-label="Vendor sections">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-bottom:24px;padding:0 8px"><span style="width:32px;height:32px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center">N</span>NMD Vendor</a>
@@ -56,8 +56,8 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
     <section class="stats" aria-label="Summary">
       <div class="card stat"><div class="l">Next market</div><div class="v">[City] · [date]</div><div style="font-size:14px;margin-top:4px;color:var(--muted)">Booth [number]</div></div>
       <div class="card stat"><div class="l">Booth fee</div><div class="v">[amount]</div><div style="font-size:14px;margin-top:4px;color:#7A4A0A;font-weight:600">Awaiting payment</div></div>
-      <div class="card stat"><div class="l">Unread chats</div><div class="v">3</div><a href="messages.html" style="font-size:14px;margin-top:4px;display:inline-block;color:var(--accent);font-weight:600">Open inbox</a></div>
-      <div class="card stat"><div class="l">Listings live</div><div class="v">[count]</div><div style="font-size:14px;margin-top:4px;color:var(--muted)">[count] awaiting review</div></div>
+      <div class="card stat"><div class="l">Unread chats</div><div class="v" id="unread">0</div><a href="messages.html" style="font-size:14px;margin-top:4px;display:inline-block;color:var(--accent);font-weight:600">Open inbox</a></div>
+      <div class="card stat"><div class="l">Listings live</div><div class="v" id="live-count">0</div><div style="font-size:14px;margin-top:4px;color:var(--muted)" id="draft-count">0 drafts</div></div>
     </section>
 
     <section class="card" aria-label="Products">
@@ -68,10 +68,10 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
       <div style="overflow-x:auto">
         <table>
           <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Hand-dyed adire fabric</td><td style="color:var(--muted)">Clothing</td><td>[price]</td><td><span class="chip ok">Live</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
-            <tr><td style="font-weight:500">Ankara tote bag</td><td style="color:var(--muted)">Clothing</td><td>[price]</td><td><span class="chip wait">Pending review</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
-            <tr><td style="font-weight:500">Beaded necklace set</td><td style="color:var(--muted)">Jewellery</td><td>[price]</td><td><span class="chip no">Changes requested</span></td><td style="text-align:right"><a href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
+          <tbody data-list="listings" data-empty="No products yet. Add your first product.">
+            <template>
+              <tr><td style="font-weight:500" data-f="name"></td><td style="color:var(--muted)" data-f="category"></td><td data-f="price_text"></td><td><span class="chip" data-f="status_text" data-status-class=""></span></td><td style="text-align:right"><a data-href="vendor-product-form.html" style="color:var(--accent);font-weight:600">Edit</a></td></tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -81,17 +81,17 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
       <div class="card" style="flex:1 1 320px">
         <h2 style="margin:0 0 14px;font-size:20px">Booth and payments</h2>
         <div style="display:flex;flex-direction:column;gap:12px;font-size:15px">
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Market</span><span>[City] · [date]</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Booth</span><span>[number]</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Fee</span><span>[amount]</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Market</span><span id="b-market">None booked yet</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Booth</span><span id="b-booth">-</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Payment</span><span id="b-fee">-</span></div>
         </div>
         <a href="vendor-booth.html" class="pill" style="display:inline-block;margin-top:16px;background:var(--accent);color:#fff">Pay booth fee</a>
       </div>
       <div id="checkin" class="card" style="flex:1 1 260px">
         <h2 style="margin:0 0 14px;font-size:20px">QR check-in</h2>
         <div style="display:flex;gap:16px;align-items:center">
-          <div aria-hidden="true" style="width:112px;height:112px;border-radius:8px;background:repeating-conic-gradient(#111816 0 25%,#fff 0 50%) 0 0/22px 22px;border:1px solid var(--line);flex:none"></div>
-          <p style="margin:0;font-size:14px;line-height:1.5;color:var(--muted)">Show this code to NMD staff when you arrive at [City] on [date].</p>
+          <div id="qr-box" aria-hidden="true" style="width:112px;height:112px;border-radius:8px;background:repeating-conic-gradient(#111816 0 25%,#fff 0 50%) 0 0/22px 22px;border:1px solid var(--line);flex:none"></div>
+          <p id="qr-text" style="margin:0;font-size:14px;line-height:1.5;color:var(--muted)">Your code appears here once an application is approved.</p>
         </div>
       </div>
     </section>
@@ -103,5 +103,55 @@ td{padding:14px 12px;border-bottom:1px solid #EEF1EF}
   </main>
 </div>
 <script src="assets/site.js" defer></script>
+<script src="assets/nmd-wire.js"></script>
+<script>
+// Vendor overview: live counts, products, booth and QR check-in.
+(function () {
+  function money(c) { return c == null ? '' : '$' + (Number(c) / 100).toFixed(2); }
+  nmdPages['vendor-dashboard'] = {
+    lists: {
+      listings: {
+        path: function () { return '/vendor/listings'; },
+        map: function (rows) {
+          var live = rows.filter(function (l) { return !l.hidden && l.subscription_active; }).length;
+          var drafts = rows.filter(function (l) { return l.hidden; }).length;
+          document.getElementById('live-count').textContent = String(live);
+          document.getElementById('draft-count').textContent = drafts + ' draft' + (drafts === 1 ? '' : 's');
+          return rows.map(function (l) {
+            return {
+              name: l.name, category: l.category || '',
+              price_text: l.sale_price_cents ? money(l.sale_price_cents) : money(l.price_cents),
+              status_text: l.hidden ? 'Draft' : (l.subscription_active ? 'Live' : 'Offline'),
+            };
+          });
+        },
+      },
+    },
+    init: function () {
+      nmd.me().then(function (user) {
+        if (!user || (user.roles || []).indexOf('vendor') < 0) { location.href = 'login.html?as=vendor&next=vendor-dashboard.html'; return; }
+        return nmd.api('/vendor/dashboard').then(function (d) {
+          document.getElementById('unread').textContent = String(d.unread_messages);
+          if (d.next_market) {
+            document.getElementById('b-market').textContent = d.next_market.name + ' · ' + d.next_market.city;
+            document.getElementById('b-booth').textContent = d.next_market.booth || 'To be confirmed';
+            document.getElementById('qr-text').textContent = 'Show this code to NMD staff when you arrive at ' + d.next_market.city + ' on ' + nmd.fmtDate(d.next_market.date) + '.';
+            return nmd.api('/vendor/applications/' + d.next_market.application_id + '/qr').then(function (q) {
+              var box = document.getElementById('qr-box');
+              box.style.background = '#fff';
+              var img = document.createElement('img'); img.src = q.qr_data_url; img.alt = 'Your entry QR code'; img.style.cssText = 'width:112px;height:112px;border-radius:8px';
+              box.replaceWith(img);
+            }).catch(function () {});
+          }
+          return nmd.api('/vendor/applications').then(function (apps) {
+            var open = apps.filter(function (a) { return a.payment_status !== 'paid'; })[0];
+            document.getElementById('b-fee').textContent = open ? 'Booth fee not paid yet' : 'Paid';
+          });
+        });
+      }).catch(function (err) { nmdToast(err.message, true); });
+    },
+  };
+})();
+</script>
 </body>
 </html>
